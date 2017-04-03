@@ -40,6 +40,22 @@ local function CreateAccountListener( event )
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
+    local body = "name=".. txfUsername.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "https://mapofmem.000webhostapp.com/android_login_api/register.php"
+
+    network.request( url, "POST", networkListener, params )
+    
+--[[
+    local headers = {}
+
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
     local body = "username=".. txfUsername.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
 
     local params = {}
@@ -48,6 +64,7 @@ local function CreateAccountListener( event )
 
     network.request( "https://mapofmem.000webhostapp.com/string_get.php", "POST", networkListener, params )
     
+]]
 
     --[[
     local json = require( "json" )
