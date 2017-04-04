@@ -6,13 +6,20 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
  
-if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_POST['fname']) && isset($_POST['email']) && isset($_POST['password'])) {
  
     // receiving the post params
-    $name = $_POST['name'];
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
     $email = $_POST['email'];
     $password = $_POST['password'];
- 
+    $gender = $_POST['gender'];
+    $BirthMonth = $_POST['BirthMonth'];
+    $BirthDay = $_POST['BirthDay'];
+    $BirthYear = $_POST['BirthYear'];
+    $Country = $_POST['Country'];
+    $UserFrom = $_POST['UserFrom'];
+
     // check if user is already existed with the same email
     if ($db->isUserExisted($email)) {
         // user already existed
@@ -21,13 +28,18 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['password'])
         echo json_encode($response);
     } else {
         // create a new user
-        $user = $db->storeUser($name, $email, $password);
+        $user = $db->storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom);
         if ($user) {
             // user stored successfully
             $response["error"] = FALSE;
-            $response["uid"] = $user["unique_id"];
-            $response["user"]["name"] = $user["name"];
+            $response["uid"] = $user["id"];
+            $response["user"]["fname"] = $user["fname"];
+            $response["user"]["lname"] = $user["lname"];
             $response["user"]["email"] = $user["email"];
+            $response["user"]["gender"] = $user["gender"];
+            $response["user"]["dob"] = $user["dob"];
+            $response["user"]["Country"] = $user["country"];
+            $response["user"]["UserFrom"] = $user["userfrom"];
             $response["user"]["created_at"] = $user["created_at"];
             $response["user"]["updated_at"] = $user["updated_at"];
             echo json_encode($response);

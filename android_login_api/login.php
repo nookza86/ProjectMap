@@ -17,9 +17,14 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     if ($user != false) {
         // use is found
         $response["error"] = FALSE;
-        $response["uid"] = $user["unique_id"];
-        $response["user"]["name"] = $user["name"];
+        $response["uid"] = $user["id"];
+        $response["user"]["fname"] = $user["fname"];
+        $response["user"]["lname"] = $user["lname"];
         $response["user"]["email"] = $user["email"];
+        $response["user"]["gender"] = $user["gender"];
+        $response["user"]["dob"] = $user["dob"];
+        $response["user"]["Country"] = $user["country"];
+        $response["user"]["UserFrom"] = $user["userfrom"];
         $response["user"]["created_at"] = $user["created_at"];
         $response["user"]["updated_at"] = $user["updated_at"];
         echo json_encode($response);

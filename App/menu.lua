@@ -30,9 +30,11 @@ local function networkListener( event )
         ErrorCheck = decodedData["error"]
 
     	if( ErrorCheck == true) then
+    		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
         else
-        	print( "Welcome " .. decodedData["user"]["name"] )
+        	local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
+        	print( "Welcome " .. decodedData["user"]["fname"] )
     	end
 
         
@@ -174,6 +176,8 @@ function scene:hide(event)
 		RemoveAll(LoginBtn)
 		RemoveAll(LoginWithFaceBookBtn)
 		RemoveAll(register)
+		RemoveAll(UsernameTxf)
+		RemoveAll(PasswordTxf)
 		
 		print("Scene #Menu : hide (will)")
 	elseif (phase == "did") then

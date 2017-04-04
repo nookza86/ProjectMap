@@ -28,7 +28,7 @@ local function CreateAccountListener( event )
  
     -- Get the value for each column in the wheel, by column index
     local GenderValue = values[1].value
-    local BirthMonthValue = values[2].value
+    local BirthMonthValue = values[2].index
     local BirthDayValue = values[3].value
     local BirthYearValue = values[4].value
     local CountryValue = values[5].value
@@ -40,7 +40,7 @@ local function CreateAccountListener( event )
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "name=".. txfUsername.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
+    local body = "fname=".. txfUsername.text .."&lname=we" .. "&password=".. txfPassword.text .."&email=" .. txfEmail.text .. "&gender=".. GenderValue .. "&BirthMonth=".. BirthMonthValue .. "&BirthDay=".. BirthDayValue .. "&BirthYear=".. BirthYearValue .. "&Country=".. CountryValue .. "&UserFrom=0"
 
     local params = {}
     params.headers = headers

@@ -11,7 +11,7 @@
     }
 	else{ echo "Connected successfully";
 	}
-	$sql = 'SELECT * FROM members';
+	$sql = 'SELECT * FROM users';
 	$result = mysqli_query($connect, $sql);
 	if(!$result){
 		echo mysqli_error().'<br>';
