@@ -175,11 +175,11 @@ function scene:show(event)
     PicTitle.x = cx + 20
     PicTitle.y = cy - 140
 
-    PicFirstName = display.newImageRect( "Phuket/CreateAccount/username.png", 331/2.8, 80/2.8 )
+    PicFirstName = display.newImageRect( "Phuket/CreateAccount/firstname.png", 367/2.8, 80/2.8 )
     PicFirstName.x = cx - 70
     PicFirstName.y = cy - 80
 
-    PicLastName = display.newImageRect( "Phuket/CreateAccount/username.png", 331/2.8, 80/2.8 )
+    PicLastName = display.newImageRect( "Phuket/CreateAccount/lastname.png", 331/2.8, 80/2.8 )
     PicLastName.x = cx - 70
     PicLastName.y = cy - 40
 
