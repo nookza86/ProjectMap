@@ -6,19 +6,21 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
  
-if (isset($_POST['fname']) && isset($_POST['email']) && isset($_POST['password'])) {
- 
+//if (isset($_POST['fname']) && isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_POST['RegisterSend'])) { 
+    $RegisterData = json_decode($_POST['RegisterSend'], true);
+
     // receiving the post params
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $gender = $_POST['gender'];
-    $BirthMonth = $_POST['BirthMonth'];
-    $BirthDay = $_POST['BirthDay'];
-    $BirthYear = $_POST['BirthYear'];
-    $Country = $_POST['Country'];
-    $UserFrom = $_POST['UserFrom'];
+    $fname = $RegisterData['fname'];
+    $lname = $RegisterData['lname'];
+    $email = $RegisterData['email'];
+    $password = $RegisterData['password'];
+    $gender = $RegisterData['gender'];
+    $BirthMonth = $RegisterData['BirthMonth'];
+    $BirthDay = $RegisterData['BirthDay'];
+    $BirthYear = $RegisterData['BirthYear'];
+    $Country = $RegisterData['Country'];
+    $UserFrom = $RegisterData['UserFrom'];
 
     // check if user is already existed with the same email
     if ($db->isUserExisted($email)) {

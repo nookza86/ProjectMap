@@ -18,6 +18,7 @@ settings =
 	--
 	android =
 	{
+		facebookAppId = "1242067789163598",
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
@@ -69,7 +70,11 @@ settings =
 	--
 	plugins =
 	{
-
+		["plugin.facebook.v4"] =
+		{
+			publisherId = "com.coronalabs",
+			supportedPlatforms = { iphone=true, android=true, ["android-kindle"]=true }
+		},
 	},
 
 	--

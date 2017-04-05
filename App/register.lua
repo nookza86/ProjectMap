@@ -1,18 +1,48 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
 local scene = composer.newScene()
- 
-local txfUsername, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
-local PicUser, PicTitle, PicUsername, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
+local json = require ("json")
+require("valid-email")
+
+local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
+local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
 local Bg, CreateBtn
 local cx, cy
 local ImageGroup, txfGroup
 local ImageGroup = display.newGroup()
 local pickerWheel
+local CheckPasswordMatch, CheckEmail
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
- 
+
+local function textFieldHandler( event )
+    --print( event.target.name )
+    if(event.target.name == "txfConfirmPassword") then
+        CheckPasswordMatch = false
+        if(txfPassword.text ~= txfConfirmPassword.text ) then
+            CheckPasswordMatch = false
+            print( "Password doesn't match" )
+
+        elseif(txfPassword.text == txfConfirmPassword.text) then
+            CheckPasswordMatch = true
+            print( "Password match" )
+        end
+
+    elseif (event.target.name == "txfEmail" and string.len( txfEmail.text ) > 0) then
+        CheckEmail = false
+        if (txfEmail.text:match("[A-Za-z0-9%.%%%+%-]+@[A-Za-z0-9%.%%%+%-]+%.%w%w%w?%w?")) then
+            CheckEmail = true
+            print("VALID EMAIL")
+        else
+            CheckEmail = false
+             print("INVALID EMAIL")                
+        end
+        --CheckEmail = validemail(txfEmail.text)
+        --print( string.len( txfEmail.text ), CheckEmail )
+    end
+end
+
 local function networkListener( event )
     if ( event.isError ) then
         print( "Network error!" )
@@ -23,7 +53,13 @@ end
 
 local function CreateAccountListener( event )
     print( event.phase )
-    if(event.phase == "began") then
+
+    if(txfFirstName.text == "" or txfLastName.text == "" or txfPassword.text == "" or txfConfirmPassword.text == "" or txfEmail.text == "") then
+        print( "some Field null" )
+        return
+    end
+
+    if(event.phase == "began" and CheckPasswordMatch == true and CheckEmail == true) then
         local values = pickerWheel:getValues()
  
     -- Get the value for each column in the wheel, by column index
@@ -33,14 +69,33 @@ local function CreateAccountListener( event )
     local BirthYearValue = values[4].value
     local CountryValue = values[5].value
      
-    print( GenderValue, BirthMonthValue, BirthDayValue, BirthYearValue, CountryValue )
-    print( txfUsername.text, txfPassword.text, txfEmail.text )
+   -- print( GenderValue, BirthMonthValue, BirthDayValue, BirthYearValue, CountryValue )
+    --print( txfFirstName.text, txfPassword.text, txfEmail.text )
+
+    local register = {}
+    register["fname"] = txfFirstName.text
+    register["lname"] = txfLastName.text
+    register["email"] = txfEmail.text
+    register["password"] = txfPassword.text
+    register["gender"] = GenderValue
+    register["BirthMonth"] = BirthMonthValue
+    register["BirthDay"] = BirthDayValue
+    register["BirthYear"] = BirthYearValue
+    register["Country"] = CountryValue
+    register["UserFrom"] = "0"
+
+    local RegisterSend = json.encode( register )
+
+    print( "Register Data Sending To Web Server : " .. RegisterSend )
+
     local headers = {}
 
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "fname=".. txfUsername.text .."&lname=we" .. "&password=".. txfPassword.text .."&email=" .. txfEmail.text .. "&gender=".. GenderValue .. "&BirthMonth=".. BirthMonthValue .. "&BirthDay=".. BirthDayValue .. "&BirthYear=".. BirthYearValue .. "&Country=".. CountryValue .. "&UserFrom=0"
+    --local body = "fname=".. txfFirstName.text .."&lname=we" .. "&password=".. txfPassword.text .."&email=" .. txfEmail.text .. "&gender=".. GenderValue .. "&BirthMonth=".. BirthMonthValue .. "&BirthDay=".. BirthDayValue .. "&BirthYear=".. BirthYearValue .. "&Country=".. CountryValue .. "&UserFrom=0"
+
+    local body = "RegisterSend=" .. RegisterSend
 
     local params = {}
     params.headers = headers
@@ -56,7 +111,7 @@ local function CreateAccountListener( event )
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "username=".. txfUsername.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
+    local body = "username=".. txfFirstName.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
 
     local params = {}
     params.headers = headers
@@ -120,38 +175,47 @@ function scene:show(event)
     PicTitle.x = cx + 20
     PicTitle.y = cy - 140
 
-    PicUsername = display.newImageRect( "Phuket/CreateAccount/username.png", 331/2.8, 80/2.8 )
-    PicUsername.x = cx - 70
-    PicUsername.y = cy - 80
+    PicFirstName = display.newImageRect( "Phuket/CreateAccount/username.png", 331/2.8, 80/2.8 )
+    PicFirstName.x = cx - 70
+    PicFirstName.y = cy - 80
+
+    PicLastName = display.newImageRect( "Phuket/CreateAccount/username.png", 331/2.8, 80/2.8 )
+    PicLastName.x = cx - 70
+    PicLastName.y = cy - 40
 
     PicPassword = display.newImageRect( "Phuket/CreateAccount/pass.png", 279/2.8, 55/2.8 )
     PicPassword.x = cx - 80
-    PicPassword.y = cy - 40
+    PicPassword.y = cy
 
     PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/confirm.png", 279/2.8, 112/2.8 )
     PicConfirmPassword.x = cx - 80
-    PicConfirmPassword.y = cy
+    PicConfirmPassword.y = cy + 40
 
     PicEmail = display.newImageRect( "Phuket/CreateAccount/email.png", 210/2.8, 55/2.8 )
     PicEmail.x = cx - 90
-    PicEmail.y = cy + 40
+    PicEmail.y = cy + 80
 
     PicBirthDay = display.newImageRect( "Phuket/CreateAccount/birth.png", 314/2.8, 55/2.8 )
     PicBirthDay.x = cx - 60
-    PicBirthDay.y = cy + 100
+    PicBirthDay.y = cy + 140
 
     PicGender = display.newImageRect( "Phuket/CreateAccount/gender.png", 211/2.8, 55/2.8 )
     PicGender.x = cx - 210
-    PicGender.y = cy + 100
+    PicGender.y = cy + 140
 
     PicCountry = display.newImageRect( "Phuket/CreateAccount/country.png", 245/2.8, 55/2.8 )
     PicCountry.x = cx + 120
-    PicCountry.y = cy + 100
+    PicCountry.y = cy + 140
 
-    txfUsername = native.newTextField( PicUsername.x + 180, PicUsername.y, 250, 30 )
-    txfUsername.inputType = "default"
-    txfUsername.text = ""
-    txfUsername.hasBackground = false
+    txfFirstName = native.newTextField( PicFirstName.x + 180, PicFirstName.y, 250, 30 )
+    txfFirstName.inputType = "default"
+    txfFirstName.text = ""
+    txfFirstName.hasBackground = false
+
+    txfLastName = native.newTextField( PicLastName.x + 180, PicLastName.y, 250, 30 )
+    txfLastName.inputType = "default"
+    txfLastName.text = ""
+    txfLastName.hasBackground = false
 
     txfPassword = native.newTextField( PicPassword.x + 190, PicPassword.y, 250, 30 )
     txfPassword.inputType = "default"
@@ -164,15 +228,21 @@ function scene:show(event)
     txfConfirmPassword.text = ""
     txfConfirmPassword.isSecure = true
     txfConfirmPassword.hasBackground = false
+    txfConfirmPassword.name = "txfConfirmPassword"
+
+    txfConfirmPassword:addEventListener("userInput", textFieldHandler)
 
     txfEmail = native.newTextField( PicEmail.x + 200, PicEmail.y, 250, 30 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
     txfEmail.hasBackground = false
+    txfEmail.name = "txfEmail"
+
+    txfEmail:addEventListener("userInput", textFieldHandler)
 
     CreateBtn = display.newImageRect("Phuket/Button/create.png",3000/30, 1280/30)
     CreateBtn.x = cx 
-    CreateBtn.y = cy + 320
+    CreateBtn.y = cy + 360
     CreateBtn:addEventListener( "touch", CreateAccountListener )
 
 
@@ -181,7 +251,8 @@ function scene:show(event)
     --ImageGroup:insert(Bg)
     ImageGroup:insert(PicUser)
     ImageGroup:insert(PicTitle)
-    ImageGroup:insert(PicUsername)
+    ImageGroup:insert(PicFirstName)
+    ImageGroup:insert(PicLastName)
     ImageGroup:insert(PicPassword)
     ImageGroup:insert(PicConfirmPassword)
     ImageGroup:insert(PicEmail)
@@ -192,7 +263,8 @@ function scene:show(event)
 
     txfGroup = display.newGroup()
     ----------------------------------- Group Button -----------------------------------------
-    ImageGroup:insert(txfUsername)
+    ImageGroup:insert(txfFirstName)
+    ImageGroup:insert(txfLastName)
     ImageGroup:insert(txfPassword)
     ImageGroup:insert(txfConfirmPassword)
     ImageGroup:insert(txfEmail)
@@ -262,7 +334,7 @@ function scene:show(event)
     pickerWheel = widget.newPickerWheel(
     {
         x = display.contentCenterX ,
-        y = display.contentCenterY + 200,
+        y = display.contentCenterY + 240,
         top = display.contentHeight - 228,
         columns = columnData,
         style = "resizable",
@@ -314,7 +386,8 @@ function scene:hide(event)
         --[[
         ImageGroup:remove(PicUser)
         ImageGroup:remove(PicTitle)
-        ImageGroup:remove(PicUsername)
+        ImageGroup:remove(PicFirstName)
+        ImageGroup:remove(PicLastName)
         ImageGroup:remove(PicPassword)
         ImageGroup:remove(PicConfirmPassword)
         ImageGroup:remove(PicEmail)
@@ -322,14 +395,16 @@ function scene:hide(event)
         ImageGroup:remove(PicGender)
         ImageGroup:remove(PicCountry)
 
-        ImageGroup:remove(txfUsername)
+        ImageGroup:remove(txfFirstName)
+        ImageGroup:remove(txfLastName)
         ImageGroup:remove(txfPassword)
         ImageGroup:remove(txfConfirmPassword)
         ImageGroup:remove(txfEmail)
         ImageGroup:removeSelf( )
         ImageGroup = nil
 
-        txfUsername = nil
+        txfFirstName = nil
+        txfLastName = nil
         txfPassword = nil
         txfConfirmPassword = nil
         txfEmail = nil
@@ -341,7 +416,7 @@ function scene:hide(event)
         Bg = nil
         PicUser = nil
         PicTitle = nil
-        PicUsername = nil
+        PicFirstName = nil
         PicPassword = nil
         PicConfirmPassword = nil
         PicEmail = nil

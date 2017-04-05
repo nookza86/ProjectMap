@@ -21,16 +21,40 @@
 		echo '<table border = "1" cellpading = "0" cellspacing = "0" >';
 		echo '<tr>';
 		echo '<td>';
-		echo '';
+		echo 'ID';
 		echo '</td>';
 			echo '<td>';
-			echo 'Username';
+			echo 'First name';
+			echo '</td>';
+			echo '<td>';
+			echo 'Last name';
 			echo '</td>';
 			echo '<td>';
 			echo 'Email';
 			echo '</td>';
 			echo '<td>';
 			echo 'password';
+			echo '</td>';
+			echo '<td>';
+			echo 'salt';
+			echo '</td>';
+			echo '<td>';
+			echo 'Gender';
+			echo '</td>';
+			echo '<td>';
+			echo 'Date of Birth';
+			echo '</td>';
+			echo '<td>';
+			echo 'Country';
+			echo '</td>';
+			echo '<td>';
+			echo 'User from';
+			echo '</td>';
+			echo '<td>';
+			echo 'Create Date';
+			echo '</td>';
+			echo '<td>';
+			echo 'Update';
 			echo '</td>';
 		echo '</tr>';
 
@@ -47,6 +71,8 @@
 			echo '</tr>';
 		}
 		echo '</table>';
+		echo 'NOTE User from 0 Register in Application';
+		echo 'NOTE User from 1 Register in FACEBOOK';
 		mysqli_close($connect);
 	}
 ?>

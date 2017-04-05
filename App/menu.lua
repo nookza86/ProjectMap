@@ -45,12 +45,22 @@ local function LoginListener(  )
 
     print( UsernameTxf.text, PasswordTxf.text)
 
+    local login = {}
+    login["email"] = UsernameTxf.text
+    login["password"] = PasswordTxf.text
+
+    local LoginSend = json.encode( login )
+
+    print( "Login Data Sending To Web Server : " .. LoginSend )
+
     local headers = {}
 
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "email=".. UsernameTxf.text .."&password=".. PasswordTxf.text 
+    --local body = "email=".. UsernameTxf.text .."&password=".. PasswordTxf.text 
+
+    local body = "LoginSend=" .. LoginSend
 
     local params = {}
     params.headers = headers

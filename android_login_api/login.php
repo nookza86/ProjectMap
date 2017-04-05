@@ -5,11 +5,17 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
  
-if (isset($_POST['email']) && isset($_POST['password'])) {
- 
+//if (isset($_POST['email']) && isset($_POST['password'])) {
+if (isset($_POST['LoginSend'])) { 
+
+    $LoginData = json_decode($_POST['LoginSend'], true);
+
+    //echo $LoginData;
+   // echo $LoginData["email"].$LoginData["password"];
+
     // receiving the post params
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = $LoginData["email"];
+    $password = $LoginData['password'];
  
     // get the user by email and password
     $user = $db->getUserByEmailAndPassword($email, $password);
