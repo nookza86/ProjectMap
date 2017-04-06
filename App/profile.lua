@@ -210,8 +210,8 @@ function scene:show(event)
 
 		OkBtn = widget.newButton(
     	{
-	        width = 3000/35,
-	        height = 1280/35,
+	        width = 190 / 3,
+	        height = 128 / 3,
 	        defaultFile = "Phuket/Button/ok.png",
 	        overFile = "Phuket/Button/ok.png",
 	        id = "ok",

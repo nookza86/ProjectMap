@@ -58,28 +58,19 @@ function scene:show(event)
 	if (phase == "will") then
 		print( "User Click " .. params.PlaceName .. " From Overview" )
 
-		Bg = display.newImage("Phuket/Home/".. params.PlaceName .. "/bg.png", cx, cy )
-		Bg:scale( 0.3, 0.3 ) 
+		
+		Bg = display.newImageRect("Phuket/Home/".. params.PlaceName .. "/bg.png", cw, ch )
+		Bg.x = display.contentCenterX 
+		Bg.y = display.contentCenterY
+		--Bg:scale( 0.3, 0.3 ) 
 
-		BgBtn = display.newImage("Phuket/Home/".. params.PlaceName .. "/box.png", cx + 170, cy )
-		BgBtn:scale( 0.3, 0.33 )
+		--BgBtn = display.newImage("Phuket/Home/".. params.PlaceName .. "/box.png", cx + 170, cy )
+		--BgBtn:scale( 0.3, 0.33 )
 
 		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 100, cy - 100 )
 		TitleImage:scale( 0.1, 0.1 )
 
 		--InformationBtn = display.newImageRect( "Phuket/Button/information.png", 3000/30, 1280/30 )
-		InformationBtn = widget.newButton(
-    	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/information.png",
-	        overFile = "Phuket/Button/map.png",
-	        id = "InformationBtn",
-	        onEvent = Check
-    	}
-			)
-		InformationBtn.x = BgBtn.x 
-		InformationBtn.y = BgBtn.y - 90
 
 		InformationBtn = widget.newButton(
     	{
@@ -91,8 +82,8 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		InformationBtn.x = BgBtn.x 
-		InformationBtn.y = BgBtn.y - 90
+		InformationBtn.x = cx + 170 
+		InformationBtn.y = cy - 90
 
 		MapBtn = widget.newButton(
     	{
@@ -104,8 +95,8 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		MapBtn.x = BgBtn.x 
-		MapBtn.y = BgBtn.y - 30
+		MapBtn.x = InformationBtn.x
+		MapBtn.y = InformationBtn.y + 60
 
 		ShareBtn = widget.newButton(
     	{
@@ -117,8 +108,8 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		ShareBtn.x = BgBtn.x 
-		ShareBtn.y = BgBtn.y + 30
+		ShareBtn.x = MapBtn.x
+		ShareBtn.y = MapBtn.y + 60
 
 		DiaryBtn = widget.newButton(
     	{
@@ -130,8 +121,8 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		DiaryBtn.x = BgBtn.x 
-		DiaryBtn.y = BgBtn.y + 90
+		DiaryBtn.x = ShareBtn.x
+		DiaryBtn.y = ShareBtn.y + 60
 
 		BackBtn = widget.newButton(
     	{
@@ -143,8 +134,8 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		BackBtn.x = BgBtn.x - 400
-		BackBtn.y = BgBtn.y + 110
+		BackBtn.x = (cx + 170) - 400
+		BackBtn.y = cy + 110
 		
 
 	elseif (phase == "did") then
@@ -159,7 +150,7 @@ function scene:hide(event)
 	local phase = event.phase
 	if (phase == "will") then
 		RemoveAll(Bg)
-		RemoveAll(BgBtn)
+		--RemoveAll(BgBtn)
 		RemoveAll(InformationBtn)
 		RemoveAll(MapBtn)
 		RemoveAll(ShareBtn)

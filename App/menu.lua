@@ -1,9 +1,10 @@
 local composer = require("composer")
 local widget = require("widget" )
 local json = require ("json")
+local facebook = require( "plugin.facebook.v4" )
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
-local UsernameTxf, PasswordTxf
+local EmailTxf, PasswordTxf
 local myNewData 
 local decodedData 
 local cx, cy, cw, ch
@@ -33,8 +34,10 @@ local function networkListener( event )
     		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
         else
-        	local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
+        	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["fname"] )
+        	composer.gotoScene("overview")
+
     	end
 
         
@@ -43,10 +46,10 @@ end
 
 local function LoginListener(  )
 
-    print( UsernameTxf.text, PasswordTxf.text)
+    print( EmailTxf.text, PasswordTxf.text)
 
     local login = {}
-    login["email"] = UsernameTxf.text
+    login["email"] = EmailTxf.text
     login["password"] = PasswordTxf.text
 
     local LoginSend = json.encode( login )
@@ -54,11 +57,11 @@ local function LoginListener(  )
     print( "Login Data Sending To Web Server : " .. LoginSend )
 
     local headers = {}
-
+    --headers["Content-Type"] = "application/json"
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    --local body = "email=".. UsernameTxf.text .."&password=".. PasswordTxf.text 
+    --local body = "email=".. EmailTxf.text .."&password=".. PasswordTxf.text 
 
     local body = "LoginSend=" .. LoginSend
 
@@ -81,7 +84,7 @@ local function Check( event )
 
 	if(event.phase == "ended") then
 		if(event.target.id == "login") then
-			if(UsernameTxf.text == "" or PasswordTxf.text == "") then
+			if(EmailTxf.text == "" or PasswordTxf.text == "") then
 				print( "NULL" )
 
 				return
@@ -113,27 +116,39 @@ function scene:show(event)
 		print("Scene #Menu : show (will)")
 		display.setStatusBar( display.HiddenStatusBar )
 
-		myText = display.newImageRect("Phuket/menu/bglogin.png", 2149/3, 1084/3 )
-		myText.x = display.contentCenterX - 10
-		myText.y = display.contentCenterY + 18
+		print( display.pixelWidth  )
+		print( display.pixelHeight  )
+		print(display.contentWidth)
+		print(display.contentHeight)
+		print(display.actualContentWidth)
+		print(display.actualContentHeight)
+		print( display.imageSuffix )
+		print( display.pixelWidth / display.actualContentWidth )
+		print( display.pixelHeight / display.actualContentHeight )
 
-		UsernameTxf = native.newTextField( cx , cy, 250, 30 )
-	    UsernameTxf.inputType = "default"
-	    UsernameTxf.text = ""
-	    UsernameTxf.hasBackground = false
+		myText = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
+		myText.x = display.contentCenterX 
+		myText.y = display.contentCenterY
+
+		EmailTxf = native.newTextField( cx , cy, 250, 30 )
+	    EmailTxf.inputType = "default"
+	    EmailTxf.text = ""
+	    EmailTxf.hasBackground = false
+	    EmailTxf.placeholder = "E-mail"
 
 	    PasswordTxf = native.newTextField( cx , cy + 50, 250, 30 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
 	    PasswordTxf.text = ""
 	    PasswordTxf.hasBackground = false
+	    PasswordTxf.placeholder = "Password"
 
 	 LoginBtn = widget.newButton(
     	{
-	        width = 3000/30,
-	        height = 1280/30,
+	        width = 100,
+	        height = 42,
 	        defaultFile = "Phuket/Button/login.png",
-	        overFile = "Phuket/Button/login.png",
+	        overFile = "Phuket/Button/map.png",
 	        id = "login",
 	        onEvent = Check
     	}
@@ -144,8 +159,8 @@ function scene:show(event)
 
 	 LoginWithFaceBookBtn = widget.newButton(
     	{
-	        width = 3500/30,
-	        height = 1280/30,
+	        width = 250 / 2,
+	        height = 52/ 2,
 	        defaultFile = "Phuket/Button/login_w_fb.png",
 	        overFile = "Phuket/Button/login_w_fb.png",
 	        id = "LoginWithFaceBookBtn",
@@ -186,7 +201,7 @@ function scene:hide(event)
 		RemoveAll(LoginBtn)
 		RemoveAll(LoginWithFaceBookBtn)
 		RemoveAll(register)
-		RemoveAll(UsernameTxf)
+		RemoveAll(EmailTxf)
 		RemoveAll(PasswordTxf)
 		
 		print("Scene #Menu : hide (will)")

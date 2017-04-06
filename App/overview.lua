@@ -138,6 +138,18 @@ end
 function scene:show(event
 )	cx = display.contentCenterX
 	cy = display.contentCenterY
+	cw = display.contentWidth
+    ch = display.contentHeight
+
+print( display.pixelWidth  )
+print( display.pixelHeight  )
+print(display.contentWidth)
+print(display.contentHeight)
+print(display.actualContentWidth)
+print(display.actualContentHeight)
+print( display.imageSuffix )
+print( display.pixelWidth / display.actualContentWidth )
+print( display.pixelHeight / display.actualContentHeight )
 
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -145,25 +157,25 @@ function scene:show(event
 		print("Scene #Overview : show (will)")
 	--system.openURL( "https://www.google.com/maps/place/%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%84%E0%B8%8A%E0%B8%A2%E0%B8%98%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%A3%E0%B8%B2%E0%B8%A1/@7.8426086,98.3334015,14.75z/data=!4m5!3m4!1s0x30502fbb832d2361:0x8f6bd319c24a4986!8m2!3d7.8467839!4d98.3369041" )
 	
-	YourLocation = display.newText( "YourLocation", cx + 200, cy + 150, "Cloud-Bold", 14 )
+	YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
 
-	island = display.newImageRect("Phuket/Overview/island2.png", 810, 377)
-	island.x = island.width / 2
-	island.y = island.height / 2
+	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
+	island.x = cx
+	island.y = cy
 
 	ProfileImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/7, 388/7 )
 	ProfileImage.x = cx - 200
 	ProfileImage.y = cy - 130
 	ProfileImage.name = "profile"
 
-	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/3.5, 202/3.5 )
-	watchalong.x = cx + 105
-	watchalong.y = cy + 30
+	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
+	watchalong.x = island.x - 10
+	watchalong.y = island.y
 	watchalong.name = "watchalong"
 
-	ChalongLabel = display.newImageRect( "Phuket/label/chalong.png", 734/7, 137/7 )
+	ChalongLabel = display.newImageRect( "Phuket/label/chalong.png", 734/8, 137/8 )
 	ChalongLabel.x = watchalong.x 
-	ChalongLabel.y = watchalong.y + 40
+	ChalongLabel.y = watchalong.y + 30
 	ChalongLabel.name = "watchalong"
 
 	--CloudWatChalong = display.newImageRect( "Phuket/Overview/cloud.png", 338/10, 135/10 )
@@ -172,9 +184,9 @@ function scene:show(event
 
 	print(cx)
 	print( cy )  
-	bangpae = display.newImageRect( "Phuket/Overview/bangpae.png", 596/5.5, 531/5.5)
-	bangpae.x = cx + 210
-	bangpae.y = cy + 40
+	bangpae = display.newImageRect( "Phuket/Overview/bangpae.png", 596/6, 531/6)
+	bangpae.x = island.x + 80
+	bangpae.y = island.y + 10
 	bangpae.name = "bangpae"
 
 	BangPaeLabel = display.newImageRect( "Phuket/label/bangpae.png", 899/7, 138/7)
@@ -182,32 +194,32 @@ function scene:show(event
 	BangPaeLabel.y = bangpae.y + 60
 	BangPaeLabel.name = "bangpae"
 
-	TribeBangpareImage = display.newImageRect( "Phuket/Overview/tribe.png", 302/7, 228/7)
-	TribeBangpareImage.x = bangpae.x + 80
+	TribeBangpareImage = display.newImageRect( "Phuket/Overview/tribe.png", 302/8, 228/8)
+	TribeBangpareImage.x = bangpae.x + 50
 	TribeBangpareImage.y = bangpae.y + 30
 	
-	bigbuddha = display.newImageRect( "Phuket/Overview/bigbuddha.png", 365/3, 227/3 )
-	bigbuddha.x = cx - 15
-	bigbuddha.y = cy + 25
+	bigbuddha = display.newImageRect( "Phuket/Overview/bigbuddha.png", 365/4, 227/4 )
+	bigbuddha.x = island.x - 120
+	bigbuddha.y = island.y + 10
 	bigbuddha.name = "bigbuddha"
 
 	BigBuddhaLabel = display.newImageRect( "Phuket/label/bigbuddha.png", 533/6, 99/6 )
-	BigBuddhaLabel.x = cx - 10
-	BigBuddhaLabel.y = cy + 50
+	BigBuddhaLabel.x = bigbuddha.x 
+	BigBuddhaLabel.y = bigbuddha.y + 30
 	BigBuddhaLabel.name = "bigbuddha"
 
-	CloudBigBudda = display.newImageRect( "Phuket/Overview/cloud.png", 338/10, 135/10 )
-	CloudBigBudda.x = bigbuddha.x 
-	CloudBigBudda.y = bigbuddha.y 
+	CloudBigBudda = display.newImageRect( "Phuket/Overview/cloud.png", 338/12, 135/12 )
+	CloudBigBudda.x = bigbuddha.x - 20
+	CloudBigBudda.y = bigbuddha.y - 10
 
-	kata = display.newImageRect( "Phuket/Overview/kata.png", 466/5, 214/5 )
-	kata.x = cx - 180
-	kata.y = cy + 10
+	kata = display.newImageRect( "Phuket/Overview/kata.png", 466/7, 214/7 )
+	kata.x = island.x - 220
+	kata.y = island.y - 10
 	kata.name = "kata"
 
 	KataLabel = display.newImageRect( "Phuket/label/kata.png", 515/7, 135/7 )
-	KataLabel.x = kata.x + 10
-	KataLabel.y = kata.y + 30
+	KataLabel.x = kata.x 
+	KataLabel.y = kata.y + 20
 	KataLabel.name = "kata"
 
 	cocoKataImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
@@ -216,8 +228,8 @@ function scene:show(event
 	cocoKataImage.rotation = -15
 
 	kamala1 = display.newImageRect( "Phuket/Overview/kamala_1.png", 356/17, 236/17 )
-	kamala1.x = cx + 190
-	kamala1.y = cy - 115
+	kamala1.x = island.x + 40
+	kamala1.y = island.y - 130
 	kamala1.name = "kamala"
 
 	KamalaLabel = display.newImageRect( "Phuket/label/kamala.png", 638/9, 135/9 )
@@ -235,25 +247,25 @@ function scene:show(event
 	kamala3.y = kamala2.y
 	kamala3.name = "kamala"
 
-	karon = display.newImageRect( "Phuket/Overview/karon.png", 472/7, 385/7 )
-	karon.x = cx - 60
-	karon.y = cy - 40
+	karon = display.newImageRect( "Phuket/Overview/karon.png", 472/9, 385/9 )
+	karon.x = island.x - 110
+	karon.y = island.y - 50
 	karon.name = "karon"
 	karon.xScale = -1
 	cocoKataImage.rotation = -5
 
 	KaronLabel = display.newImageRect( "Phuket/label/karon.png", 581/7, 135/7 )
-	KaronLabel.x = karon.x - 5
-	KaronLabel.y = karon.y + 35
+	KaronLabel.x = karon.x 
+	KaronLabel.y = karon.y + 20
 	KaronLabel.name = "karon"
 
-	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/9, 258/9 )
-	patong.x = cx + 30
-	patong.y = cy - 80
+	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/10, 258/10 )
+	patong.x = island.x - 50
+	patong.y = island.y - 80
 	patong.name = "patong"
 
 	PatongLabel = display.newImageRect( "Phuket/label/patong.png", 613/8, 135/8 )
-	PatongLabel.x = patong.x - 10
+	PatongLabel.x = patong.x + 10
 	PatongLabel.y = patong.y + 30
 	PatongLabel.name = "patong"
 
@@ -262,37 +274,37 @@ function scene:show(event
 	cocokaronImage.y = karon.y - 20
 
 	ChairPatong = display.newImageRect( "Phuket/Overview/chair.png", 323/13, 548/13 )
-	ChairPatong.x = cx + 75
-	ChairPatong.y = cy - 60
+	ChairPatong.x = island.x - 75
+	ChairPatong.y = island.y - 60
 	ChairPatong.xScale = -1
 
-	TreeImage = display.newImageRect( "Phuket/Overview/tree.png", 291/5, 161/5 )
-	TreeImage.x = cx  + 100
-	TreeImage.y = cy - 120
+	TreeImage = display.newImageRect( "Phuket/Overview/tree.png", 291/6, 161/6 )
+	TreeImage.x = island.x - 20
+	TreeImage.y = island.y - 120
 
-	CloudTree = display.newImageRect( "Phuket/Overview/cloud.png", 338/7, 135/7 )
+	CloudTree = display.newImageRect( "Phuket/Overview/cloud.png", 338/8, 135/8 )
 	CloudTree.x = TreeImage.x - 20
-	CloudTree.y = TreeImage.y + 20
+	CloudTree.y = TreeImage.y + 10
 
-	LagoonImage = display.newImageRect( "Phuket/Overview/lagoon.png", 1116/13, 763/13 )
-	LagoonImage.x = cx + 245
-	LagoonImage.y = cy - 70
+	LagoonImage = display.newImageRect( "Phuket/Overview/lagoon.png", 1116/14, 763/14 )
+	LagoonImage.x = island.x + 80
+	LagoonImage.y = island.y - 70
 
 	cocoLagoonImage = display.newImageRect( "Phuket/Overview/coco.png", 340/10, 622/10 )
 	cocoLagoonImage.x = LagoonImage.x + 35
 	cocoLagoonImage.y = LagoonImage.y - 60
 
-	CloudRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/2, 135/2 )
-	CloudRight.x = cx + 365
-	CloudRight.y = cy + 50
+	CloudRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/3, 135/3 )
+	CloudRight.x = island.x + 200
+	CloudRight.y = island.y + 10
 
-	CloudCenter = display.newImageRect( "Phuket/Overview/cloud.png", 338/3, 135/3 )
-	CloudCenter.x = cx + 200
-	CloudCenter.y = cy
+	CloudCenter = display.newImageRect( "Phuket/Overview/cloud.png", 338/4, 135/4 )
+	CloudCenter.x = island.x + 50
+	CloudCenter.y = island.y - 30
 
-	CloudCenterRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/4, 135/4 )
-	CloudCenterRight.x = cx + 350
-	CloudCenterRight.y = cy - 30
+	CloudCenterRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/5, 135/6 )
+	CloudCenterRight.x = island.x + 150
+	CloudCenterRight.y = island.y - 50
 
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
@@ -309,11 +321,11 @@ function scene:show(event
 
 	LocationBtn = widget.newButton(
 		{
-	left = cx + 200,
-	top = 105,
-	width = 150,
+	left = cx + 150,
+	top = 55,
+	width = 100,
 	height = 40,
-	label = "Current Location",
+	label = "Location",
 	onEvent = CheckLocation,
 	shape = "Rect",
 	labelColor = {default={1,1,1}, over={0,0,0,0.5}},
@@ -343,7 +355,7 @@ function scene:show(event
 
 	screenW = display.contentWidth
 	screenH = display.contentHeight
-
+--[[
 	scrollView = widget.newScrollView(
 	{
 		top = 0,
@@ -358,7 +370,7 @@ function scene:show(event
 		--verticalScrollDisabled = true
 		}
 	)
-
+]]
 	PlaceGroup = display.newGroup()
 	---------------------------------- Group Place -----------------------------------------
 	PlaceGroup:insert(island)
@@ -403,15 +415,15 @@ function scene:show(event
 	TextGroup:insert(YourLocation)
 
 	----------------------------------- scrollView -----------------------------------------
-	scrollView:insert(PlaceGroup)
-	scrollView:insert(ButtonGroup)
-	scrollView:insert(TextGroup)
+	--scrollView:insert(PlaceGroup)
+	--scrollView:insert(ButtonGroup)
+	--scrollView:insert(TextGroup)
 
-	scrollView:scrollToPosition{
-	x = -(island.width / 2) + (screenW / 2),
-	y = -((island.height / 2) - (screenH/ 2)),
-	time = 500
-	}
+	--scrollView:scrollToPosition{
+	--x = -(island.width / 2) + (screenW / 2),
+	--y = -((island.height / 2) - (screenH/ 2)),
+	--time = 500
+	--}
 		
 	elseif (phase == "did") then
 		print("Scene Overview : show (did)")
@@ -493,13 +505,13 @@ function scene:hide(event)
 	RemoveAll(PatongLabel)
 
 
-	scrollView:remove(PlaceGroup)
-	scrollView:remove(ButtonGroup)
-	scrollView:remove(TextGroup)
-		ButtonGroup = nil
-		PlaceGroup = nil
-		TextGroup = nil
-		scrollView = nil
+	--scrollView:remove(PlaceGroup)
+	--scrollView:remove(ButtonGroup)
+	--scrollView:remove(TextGroup)
+	--	ButtonGroup = nil
+	--	PlaceGroup = nil
+	--	TextGroup = nil
+	--	scrollView = nil
 
 		print("Scene #Overview : hide (will)")
 	elseif (phase == "did") then

@@ -6,6 +6,8 @@ application = {
    content = {
       width = aspectRatio > 1.5 and 320 or math.ceil( 480 / aspectRatio ),
       height = aspectRatio < 1.5 and 480 or math.ceil( 320 * aspectRatio ),
+     --width = 800,
+     -- height = 1200,
       scale = "letterBox",
       fps = 30,
 

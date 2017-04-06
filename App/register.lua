@@ -6,15 +6,32 @@ require("valid-email")
 
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
-local Bg, CreateBtn
+local Bg, CreateBtn, BackBtn
 local cx, cy
 local ImageGroup, txfGroup
 local ImageGroup = display.newGroup()
 local pickerWheel
 local CheckPasswordMatch, CheckEmail
+local myNewData, decodedData
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
+
+local function RemoveAll( event )
+    if(event) then
+        print( "deletePic in scene #Register " )
+        event:removeSelf( )
+        event = nil
+        
+    end
+end
+
+local function Check( event )
+    print( event.phase )
+    if(event.phase == "ended") then
+        composer.gotoScene( "menu" )
+    end
+end
 
 local function textFieldHandler( event )
     --print( event.target.name )
@@ -43,11 +60,35 @@ local function textFieldHandler( event )
     end
 end
 
+local function showAlertListener( event )
+    print( event.action )
+    if (event.action == "clicked") then
+        composer.gotoScene("menu")
+    end
+end
+
 local function networkListener( event )
     if ( event.isError ) then
         print( "Network error!" )
+
     else
-        print( "RESPONSE: "..event.response )
+        myNewData = event.response
+        print( "RESPONSE: " .. event.response )
+        decodedData = (json.decode( myNewData ))
+
+        native.setActivityIndicator( false )
+
+        ErrorCheck = decodedData["error"]
+        ErrorMessage = decodedData["error_msg"]
+
+        if( ErrorCheck == true) then
+            local alert = native.showAlert( "Error", ErrorMessage, { "OK" })
+            print( "Try again." )
+        else
+            local alert = native.showAlert( "Welcome", "Sucessfuly", { "OK" },showAlertListener)
+            print( "Sucessfuly " )
+
+        end
     end
 end
 
@@ -240,15 +281,38 @@ function scene:show(event)
 
     txfEmail:addEventListener("userInput", textFieldHandler)
 
-    CreateBtn = display.newImageRect("Phuket/Button/create.png",3000/30, 1280/30)
+    CreateBtn = widget.newButton(
+        {
+            width = 3000/30,
+            height = 1280/30,
+            defaultFile = "Phuket/Button/create.png",
+            overFile = "Phuket/Button/create.png",
+            id = "CreateBtn",
+            onEvent = CreateAccountListener
+        }
+            )
+        
     CreateBtn.x = cx 
     CreateBtn.y = cy + 360
-    CreateBtn:addEventListener( "touch", CreateAccountListener )
+
+    BackBtn = widget.newButton(
+        {
+            width = 43,
+            height = 43,
+            defaultFile = "Phuket/Button/back.png",
+            overFile = "Phuket/Button/back.png",
+            id = "BackBtn",
+            onEvent = Check
+        }
+            )
+        
+        BackBtn.x = cx - 240
+        BackBtn.y = cy + 360
 
 
     --ImageGroup = display.newGroup()
     ---------------------------------- Group Place -----------------------------------------
-    --ImageGroup:insert(Bg)
+    ImageGroup:insert(Bg)
     ImageGroup:insert(PicUser)
     ImageGroup:insert(PicTitle)
     ImageGroup:insert(PicFirstName)
@@ -260,6 +324,7 @@ function scene:show(event)
     ImageGroup:insert(PicGender)
     ImageGroup:insert(PicCountry)
     ImageGroup:insert(CreateBtn)
+    ImageGroup:insert(BackBtn)
 
     txfGroup = display.newGroup()
     ----------------------------------- Group Button -----------------------------------------
@@ -344,6 +409,8 @@ function scene:show(event)
         fontSize = 14
     })  
 
+    print( pickerWheel.x , pickerWheel.y )
+
  
 -- Get the table of current values for all columns
 -- This can be performed on a button tap, timer execution, or other event
@@ -383,7 +450,7 @@ function scene:hide(event)
     local sceneGroup = self.view
     local phase = event.phase
     if (phase == "will") then
-        --[[
+        
         ImageGroup:remove(PicUser)
         ImageGroup:remove(PicTitle)
         ImageGroup:remove(PicFirstName)
@@ -394,6 +461,8 @@ function scene:hide(event)
         ImageGroup:remove(PicBirthDay)
         ImageGroup:remove(PicGender)
         ImageGroup:remove(PicCountry)
+        ImageGroup:remove(CreateBtn)
+        ImageGroup:remove(BackBtn)
 
         ImageGroup:remove(txfFirstName)
         ImageGroup:remove(txfLastName)
@@ -403,28 +472,24 @@ function scene:hide(event)
         ImageGroup:removeSelf( )
         ImageGroup = nil
 
-        txfFirstName = nil
-        txfLastName = nil
-        txfPassword = nil
-        txfConfirmPassword = nil
-        txfEmail = nil
-        BirthDay = nil
-        BirthMonth = nil
-        BirthYear = nil
-        Gender = nil
-        Country = nil
-        Bg = nil
-        PicUser = nil
-        PicTitle = nil
-        PicFirstName = nil
-        PicPassword = nil
-        PicConfirmPassword = nil
-        PicEmail = nil
-        PicBirthDay = nil
-        PicGender = nil
-        PicCountry = nil
-]]
+        RemoveAll(PicUser)
+        RemoveAll(PicTitle)
+        RemoveAll(PicFirstName)
+        RemoveAll(PicLastName)
+        RemoveAll(PicPassword)
+        RemoveAll(PicConfirmPassword)
+        RemoveAll(PicEmail)
+        RemoveAll(PicBirthDay)
+        RemoveAll(PicGender)
+        RemoveAll(PicCountry)
+        RemoveAll(CreateBtn)
+        RemoveAll(BackBtn)
 
+        RemoveAll(txfFirstName)
+        RemoveAll(txfLastName)
+        RemoveAll(txfPassword)
+        RemoveAll(txfConfirmPassword)
+        RemoveAll(txfEmail)
         print("Scene #Overview : hide (will)")
     elseif (phase == "did") then
         print("Scene #Overview : hide (did)")

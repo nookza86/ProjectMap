@@ -77,8 +77,8 @@ function scene:show(event)
 		
 		ShareBtn = widget.newButton(
     	{
-	        width = 3500/30,
-	        height = 1280/30,
+	        width = 300/3,
+	        height = 68/3,
 	        defaultFile = "Phuket/Button/share_w_fb.png",
 	        overFile = "Phuket/Button/share_w_fb.png",
 	        id = "ShareBtn",
