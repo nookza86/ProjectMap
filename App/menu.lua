@@ -4,6 +4,7 @@ local json = require ("json")
 local facebook = require( "plugin.facebook.v4" )
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
+local DontHaveImage, SignUpImage, EmailImage, PasswordImage, TextFieldImage
 local EmailTxf, PasswordTxf
 local myNewData 
 local decodedData 
@@ -21,6 +22,7 @@ end
 local function networkListener( event )
     if ( event.isError ) then
         print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
     else
     	myNewData = event.response
         print( "RESPONSE: " .. event.response )
@@ -96,7 +98,7 @@ local function Check( event )
 			end
 
 
-		elseif (event.target.id == "register") then
+		elseif (event.target.id == "SignUp") then
 			composer.gotoScene("register")
 		end
 	end
@@ -130,61 +132,71 @@ function scene:show(event)
 		myText.x = display.contentCenterX 
 		myText.y = display.contentCenterY
 
-		EmailTxf = native.newTextField( cx , cy, 250, 30 )
+		EmailTxf = native.newTextField( cx , cy + 30, 200, 30 )
 	    EmailTxf.inputType = "default"
 	    EmailTxf.text = ""
 	    EmailTxf.hasBackground = false
 	    EmailTxf.placeholder = "E-mail"
 
-	    PasswordTxf = native.newTextField( cx , cy + 50, 250, 30 )
+	    EmailImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
+		EmailImage.x = EmailTxf.x
+		EmailImage.y = EmailTxf.y
+
+	    PasswordTxf = native.newTextField( cx , cy + 70, 200, 30 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
 	    PasswordTxf.text = ""
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 
+	    PasswordImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
+		PasswordImage.x = PasswordTxf.x
+		PasswordImage.y = PasswordTxf.y
+
+		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 500/2, 380/2.5 )
+		TextFieldImage.x = cx
+		TextFieldImage.y = cy + 40
+
+
 	 LoginBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 42,
-	        defaultFile = "Phuket/Button/login.png",
-	        overFile = "Phuket/Button/map.png",
+	        width = 150/1.5,
+	        height = 45/1.5,
+	        defaultFile = "Phuket/Button/Button/login.png",
+	        overFile = "Phuket/Button/ButtonPress/login.png",
 	        id = "login",
 	        onEvent = Check
     	}
 			)
 		
 		LoginBtn.x = cx 
-		LoginBtn.y = cy + 100
+		LoginBtn.y = cy + 110
 
 	 LoginWithFaceBookBtn = widget.newButton(
     	{
 	        width = 250 / 2,
-	        height = 52/ 2,
-	        defaultFile = "Phuket/Button/login_w_fb.png",
-	        overFile = "Phuket/Button/login_w_fb.png",
+	        height = 60/ 2,
+	        defaultFile = "Phuket/Button/Button/login_w_fb.png",
+	        overFile = "Phuket/Button/ButtonPress/login_w_fb.png",
 	        id = "LoginWithFaceBookBtn",
 	        onEvent = Check
     	}
 			)
 		
-		LoginWithFaceBookBtn.x = cx - 100
-		LoginWithFaceBookBtn.y = cy + 100
+		LoginWithFaceBookBtn.x = cx
+		LoginWithFaceBookBtn.y = cy - 10 
 
-	 register = widget.newButton(
-			{
-				left = display.contentCenterX + 60,
-				top = display.contentCenterY + 100,
-				width = 0,
-				height = 0,
-				id = "register",
-				label = "register",
-				onEvent = Check,
-				shape = "Rect",
-				labelColor = {default={1,1,1}, over={0,0,0,0.5}},
-				fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
-			}
-		)
+	DontHaveImage = display.newImageRect("Phuket/menu/donthave.png", 400/2.5, 50/2.5 )
+	DontHaveImage.x = display.contentCenterX - 50
+	DontHaveImage.y = display.contentCenterY + 140
+
+	SignUpImage = display.newImageRect("Phuket/menu/signup.png", 200/2.5, 60/2.5 )
+	SignUpImage.x = DontHaveImage.x + 130
+	SignUpImage.y = DontHaveImage.y 
+	SignUpImage.id = "SignUp"
+
+	SignUpImage:addEventListener( "touch", Check )
+
 		
 	elseif (phase == "did") then
 		print("Scene #Menu : show (did)")
@@ -200,9 +212,14 @@ function scene:hide(event)
 		RemoveAll(myText)
 		RemoveAll(LoginBtn)
 		RemoveAll(LoginWithFaceBookBtn)
-		RemoveAll(register)
+		RemoveAll(DontHaveImage)
 		RemoveAll(EmailTxf)
+		RemoveAll(SignUpImage)
+		RemoveAll(EmailImage)
+		RemoveAll(PasswordImage)
 		RemoveAll(PasswordTxf)
+		RemoveAll(TextFieldImage)
+
 		
 		print("Scene #Menu : hide (will)")
 	elseif (phase == "did") then

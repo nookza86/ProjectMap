@@ -6,7 +6,7 @@ require("valid-email")
 
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
-local Bg, CreateBtn, BackBtn
+local Bg, CreateBtn, BackBtn, BgPickerWheels
 local cx, cy
 local ImageGroup, txfGroup
 local ImageGroup = display.newGroup()
@@ -205,8 +205,10 @@ function scene:show(event)
     cw = display.contentWidth
     ch = display.contentHeight
 
-    Bg = display.newImage( "Phuket/CreateAccount/BG.png", cx , cy )
-    Bg:scale( 0.3, 0.3 )
+    Bg = display.newImageRect( "Phuket/CreateAccount/BG.png", cw , ch * 2 )
+    Bg.x = cx
+    Bg.y = cy + 150
+    --Bg:scale( 0.3, 0.3 )
 
     PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
     PicUser.x = cx - 200
@@ -283,10 +285,10 @@ function scene:show(event)
 
     CreateBtn = widget.newButton(
         {
-            width = 3000/30,
-            height = 1280/30,
-            defaultFile = "Phuket/Button/create.png",
-            overFile = "Phuket/Button/create.png",
+            width = 150/2,
+            height = 45/2,
+            defaultFile = "Phuket/Button/Button/create.png",
+            overFile = "Phuket/Button/ButtonPress/create.png",
             id = "CreateBtn",
             onEvent = CreateAccountListener
         }
@@ -297,10 +299,10 @@ function scene:show(event)
 
     BackBtn = widget.newButton(
         {
-            width = 43,
-            height = 43,
-            defaultFile = "Phuket/Button/back.png",
-            overFile = "Phuket/Button/back.png",
+            width = 70/2,
+            height = 70/2,
+            defaultFile = "Phuket/Button/Button/back.png",
+            overFile = "Phuket/Button/ButtonPress/back.png",
             id = "BackBtn",
             onEvent = Check
         }
@@ -325,6 +327,7 @@ function scene:show(event)
     ImageGroup:insert(PicCountry)
     ImageGroup:insert(CreateBtn)
     ImageGroup:insert(BackBtn)
+    
 
     txfGroup = display.newGroup()
     ----------------------------------- Group Button -----------------------------------------
@@ -409,6 +412,10 @@ function scene:show(event)
         fontSize = 14
     })  
 
+    BgPickerWheels = display.newImageRect( "Phuket/CreateAccount/BgPickerWheels.png", 500 , 160 )
+    BgPickerWheels.x = pickerWheel.x
+    BgPickerWheels.y = pickerWheel.y
+
     print( pickerWheel.x , pickerWheel.y )
 
  
@@ -432,8 +439,11 @@ function scene:show(event)
         horizontalScrollDisabled = true
         }
     )
+    ImageGroup:insert(pickerWheel)
+    ImageGroup:insert(BgPickerWheels)
     scrollView:insert( ImageGroup )
-    scrollView:insert( pickerWheel )
+    --scrollView:insert( pickerWheel )
+    
     
     --textField:setTextColor( 0.8, 0.8, 0.8 )
     --textField.hasBackground = false

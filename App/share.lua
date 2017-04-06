@@ -65,8 +65,8 @@ function scene:show(event)
     	{
 	        width = 43,
 	        height = 43,
-	        defaultFile = "Phuket/Button/back.png",
-	        overFile = "Phuket/Button/back.png",
+	        defaultFile = "Phuket/Button/Button/back.png",
+	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
 	        onEvent = Check
     	}
@@ -77,16 +77,16 @@ function scene:show(event)
 		
 		ShareBtn = widget.newButton(
     	{
-	        width = 300/3,
-	        height = 68/3,
-	        defaultFile = "Phuket/Button/share_w_fb.png",
-	        overFile = "Phuket/Button/share_w_fb.png",
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
+	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
 	        id = "ShareBtn",
 	        onEvent = Check
     	}
 			)
 		
-		ShareBtn.x = cx + 200
+		ShareBtn.x = cx + 180
 		ShareBtn.y = cy + 130
 
 	elseif (phase == "did") then

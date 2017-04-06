@@ -67,17 +67,17 @@ function scene:show(event)
 		--BgBtn = display.newImage("Phuket/Home/".. params.PlaceName .. "/box.png", cx + 170, cy )
 		--BgBtn:scale( 0.3, 0.33 )
 
-		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 100, cy - 100 )
+		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
 		TitleImage:scale( 0.1, 0.1 )
 
-		--InformationBtn = display.newImageRect( "Phuket/Button/information.png", 3000/30, 1280/30 )
+		--InformationBtn = display.newImageRect( "Phuket/Button/Button/information.png", 3000/30, 1280/30 )
 
 		InformationBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/information.png",
-	        overFile = "Phuket/Button/information.png",
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/information.png",
+	        overFile = "Phuket/Button/ButtonPress/information.png",
 	        id = "InformationBtn",
 	        onEvent = Check
     	}
@@ -87,10 +87,10 @@ function scene:show(event)
 
 		MapBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/map.png",
-	        overFile = "Phuket/Button/map.png",
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/map.png",
+	        overFile = "Phuket/Button/ButtonPress/map.png",
 	        id = "MapBtn",
 	        onEvent = Check
     	}
@@ -100,10 +100,10 @@ function scene:show(event)
 
 		ShareBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/share.png",
-	        overFile = "Phuket/Button/share.png",
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/share.png",
+	        overFile = "Phuket/Button/ButtonPress/share.png",
 	        id = "ShareBtn",
 	        onEvent = Check
     	}
@@ -113,10 +113,10 @@ function scene:show(event)
 
 		DiaryBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/diary.png",
-	        overFile = "Phuket/Button/diary.png",
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/diary.png",
+	        overFile = "Phuket/Button/ButtonPress/diary.png",
 	        id = "DiaryBtn",
 	        onEvent = Check
     	}
@@ -128,8 +128,8 @@ function scene:show(event)
     	{
 	        width = 43,
 	        height = 43,
-	        defaultFile = "Phuket/Button/back.png",
-	        overFile = "Phuket/Button/back.png",
+	        defaultFile = "Phuket/Button/Button/back.png",
+	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
 	        onEvent = Check
     	}

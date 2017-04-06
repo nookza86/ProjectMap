@@ -248,8 +248,8 @@ end
     	{
 	        width = 43,
 	        height = 43,
-	        defaultFile = "Phuket/Button/back.png",
-	        overFile = "Phuket/Button/back.png",
+	        defaultFile = "Phuket/Button/Button/back.png",
+	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
 	        onEvent = Check
     	}
@@ -261,10 +261,10 @@ end
 
 		SaveBtn = widget.newButton(
     	{
-	        width = 100,
-	        height = 43,
-	        defaultFile = "Phuket/Button/save.png",
-	        overFile = "Phuket/Button/save.png",
+	        width = 150/1.5,
+	        height = 45/1.5,
+	        defaultFile = "Phuket/Button/Button/save.png",
+	        overFile = "Phuket/Button/ButtonPress/save.png",
 	        id = "SaveBtn",
 	        onEvent = Check
     	}

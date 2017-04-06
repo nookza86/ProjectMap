@@ -197,10 +197,10 @@ function scene:show(event)
 
 		SettingBtn = widget.newButton(
     	{
-	        width = 1280/30,
-	        height = 1280/30,
-	        defaultFile = "Phuket/Button/setting.png",
-	        overFile = "Phuket/Button/setting.png",
+	        width = 70/1.5,
+	        height = 70/1.5,
+	        defaultFile = "Phuket/Button/Button/setting.png",
+	        overFile = "Phuket/Button/ButtonPress/setting.png",
 	        id = "setting",
 	        onEvent = Check
     	}
@@ -210,10 +210,10 @@ function scene:show(event)
 
 		OkBtn = widget.newButton(
     	{
-	        width = 190 / 3,
-	        height = 128 / 3,
-	        defaultFile = "Phuket/Button/ok.png",
-	        overFile = "Phuket/Button/ok.png",
+	        width = 100/1.5,
+	        height = 50/1.5,
+	        defaultFile = "Phuket/Button/Button/ok.png",
+	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "ok",
 	        onEvent = Check
     	}

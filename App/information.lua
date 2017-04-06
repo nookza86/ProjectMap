@@ -53,8 +53,8 @@ function scene:show(event)
     	{
 	        width = 43,
 	        height = 43,
-	        defaultFile = "Phuket/Button/back.png",
-	        overFile = "Phuket/Button/back.png",
+	        defaultFile = "Phuket/Button/Button/back.png",
+	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
 	        onEvent = Check
     	}
@@ -67,8 +67,8 @@ function scene:show(event)
     	{
 	        width = 3500/30,
 	        height = 1280/30,
-	        defaultFile = "Phuket/Recommend button/bangpaewaterfall.png",
-	        overFile = "Phuket/Recommend button/bangpaewaterfall.png",
+	        defaultFile = "Phuket/Button/RButton/bangpae.png",
+	        overFile = "Phuket/Button/RButtonPress/bangpae.png",
 	        id = "Recommend1",
 	        onEvent = Check
     	}
