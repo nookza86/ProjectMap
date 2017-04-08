@@ -52,7 +52,8 @@ include ("inc/navbar.php");?>
 				else{//if there's user search - then perform db search
 				//Create SQL query
 					$staffname=$_GET['staffname'];
-					$query="select * From users";
+					$query='select * From members where member_no = "'.$staffname.'"';
+
 					//Execute the query
 					$qr=mysqli_query($db,$query);
 					if($qr==false){
@@ -75,7 +76,7 @@ include ("inc/navbar.php");?>
 					<table width="90%" class="table table-hover">
 						<thead>
 							<tr >
-								<th>User no.</th>
+								<th>Member no.</th>
 								<th>Firstname</th>
 								<th>Lastname</th>
 								<th>Email</th>
@@ -89,11 +90,11 @@ include ("inc/navbar.php");?>
 					<tr>
 						<td>
 						<?php
-						$id=$rekod['id'];
+						$id=$rekod['member_no'];
 						echo $id;
 						$urlview="view-staff.php?id=$id";
 						?>
-						<a href="<?php echo $urlview?>" class="btn" title="View complete staff info" 
+						<a href="<?php echo $urlview?>" class="btn" title="View complete members info" 
 						data-toggle="tooltip" > 
 							<span class="fui-window"></span></a>
 						

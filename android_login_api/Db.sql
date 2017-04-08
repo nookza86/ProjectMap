@@ -1,8 +1,8 @@
---create database android_api /** Creating Database **/
+/*--create database android_api 
  
---use android_api /** Selecting Database **/
+--use android_api  Selecting Database
 --unique_id varchar(23) not null unique,
-/*
+
 create table users(
    id int(11) primary key auto_increment, 
    EMPNO varchar(6) NOT NULL default '',
@@ -37,6 +37,9 @@ CREATE TABLE `members`
      UNIQUE(`email`) 
   ) engine = innodb; 
 
+  INSERT INTO `members`(`member_no`, `fname`, `lname`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, `created_at`, `updated_at`) VALUES 
+  ('000001','nook','we','nook_we@hotmail.com','1Kobq3v8BFD6TDO9ITpQWz8Jt9I5MDQ2YTI3Mzkx','9046a27391','Male','1996-01-07','Thailand','0','Thailand',null);
+
 CREATE TABLE `attractions` ( 
    `att_no` VARCHAR(3) NOT NULL , 
    `att_name` VARCHAR(30) NOT NULL , 
@@ -44,6 +47,15 @@ CREATE TABLE `attractions` (
    `updated_at` DATETIME  DEFAULT NULL , 
    PRIMARY KEY (`att_no`)
 ) ENGINE = InnoDB;
+
+INSERT INTO `attractions`(`att_no`, `att_name`, `descriptions`, `updated_at`) VALUES 
+('001','Bang Pae Waterfall','des',null),
+('002','Big Buddaa','des',null),
+('003','Chalong Temple','des',null),
+('004','Kamala Beach','des',null),
+('005','Karon Beach','des',null),
+('006','Kata Beach','des',null),
+('007','Patong Beach','des',null);
 
 CREATE TABLE `diary` 
   ( 
