@@ -2,6 +2,7 @@ local composer = require( "composer" )
 local widget = require( "widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local mime = require( "mime" )
 require("valid-email")
 
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
@@ -29,7 +30,8 @@ end
 local function Check( event )
     print( event.phase )
     if(event.phase == "ended") then
-        composer.gotoScene( "menu" )
+        --composer.gotoScene( "menu" )
+
     end
 end
 
@@ -65,6 +67,54 @@ local function showAlertListener( event )
     if (event.action == "clicked") then
         composer.gotoScene("menu")
     end
+end
+
+local function uploadListener( event )
+   if ( event.isError ) then
+      print( "Network Error." )
+      print( "Status:", event.status )
+      print( "Response:", event.response )
+
+   else
+      if ( event.phase == "began" ) then
+         print( "Upload started" )
+      elseif ( event.phase == "progress" ) then
+         print( "Uploading... bytes transferred ", event.bytesTransferred )
+      elseif ( event.phase == "ended" ) then
+         print( "Upload ended..." )
+         print( "Status:", event.status )
+         print( "Response:", event.response )
+      end
+   end
+end
+
+local function UploadUserImage(  )
+    --https://coronalabs.com/blog/2014/02/25/tutorial-uploading-files-demystified/
+    --local url = "http://localhost/TESTUPLOAD/uploadd.php"
+   -- local url = "http://nookza86.freehost.in.th/android_upload_api/upload.php"
+    --local url = "https://mapofmem.000webhostapp.com/android_upload_api/upload.php"
+    local url = "http://mapofmem.esy.es/android_upload_api/upload.php"
+    local method = "PUT"
+     
+    local params = {
+       timeout = 60,
+       progress = true,
+       bodyType = "binary"
+    }
+
+    --mime.decode("base64")
+
+    local filename = "image.jpg"
+    local baseDirectory = system.ResourceDirectory
+   -- local baseDirectory = system.DocumentsDirectory 
+   -- local baseDirectory = system.TemporaryDirectory
+    local contentType = "image/jpge" 
+
+    local headers = {}
+    headers.filename = filename
+    params.headers = headers
+     
+    network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
 local function networkListener( event )
@@ -128,7 +178,7 @@ local function CreateAccountListener( event )
 
     local RegisterSend = json.encode( register )
 
-    print( "Register Data Sending To Web Server : " .. RegisterSend )
+    --print( "Register Data Sending To Web Server : " .. RegisterSend )
 
     local headers = {}
 
@@ -143,8 +193,11 @@ local function CreateAccountListener( event )
     params.headers = headers
     params.body = body
 
-    local url = "https://mapofmem.000webhostapp.com/android_login_api/register.php"
-
+    --local url = "https://mapofmem.000webhostapp.com/android_login_api/register.php"
+    local url = "http://mapofmem.esy.es/android_login_api/register.php"
+    
+   -- UploadUserImage(  )
+    print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
     network.request( url, "POST", networkListener, params )
     
 --[[

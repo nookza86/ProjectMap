@@ -71,7 +71,10 @@ local function LoginListener(  )
     params.headers = headers
     params.body = body
 
-    local url = "https://mapofmem.000webhostapp.com/android_login_api/login.php"
+    local url = "http://mapofmem.esy.es/android_login_api/login.php"
+    --local url = "https://mapofmem.000webhostapp.com/android_login_api/login.php"
+
+    print( "Login Data Sending To ".. url .." Web Server : " .. LoginSend )
 
     network.request( url, "POST", networkListener, params )
 end
