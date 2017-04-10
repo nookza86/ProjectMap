@@ -23,16 +23,16 @@ if (isset($_POST['LoginSend'])) {
     if ($user != false) {
         // use is found
         $response["error"] = FALSE;
-        $response["uid"] = $user["id"];
-        $response["user"]["fname"] = $user["fname"];
-        $response["user"]["lname"] = $user["lname"];
+        $response["member_no"] = $user["member_no"];
+        $response["user"]["first_name"] = $user["first_name"];
+        $response["user"]["last_name"] = $user["last_name"];
         $response["user"]["email"] = $user["email"];
         $response["user"]["gender"] = $user["gender"];
         $response["user"]["dob"] = $user["dob"];
         $response["user"]["Country"] = $user["country"];
         $response["user"]["UserFrom"] = $user["userfrom"];
-        $response["user"]["created_at"] = $user["created_at"];
-        $response["user"]["updated_at"] = $user["updated_at"];
+        $response["user"]["UserImage"] = $user["user_img"];
+        $response["user"]["LastUpdate"] = $user["last_update"];
         echo json_encode($response);
     } else {
         // user is not found with the credentials

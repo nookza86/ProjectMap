@@ -26,7 +26,7 @@ class DB_Functions {
      * Storing new user
      * returns user details
      */
-    public function storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom) {
+    public function storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom, $UserImage) {
         //$uuid = uniqid('', true);
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
@@ -34,14 +34,15 @@ class DB_Functions {
         $dob = "{$BirthYear}-{$BirthMonth}-{$BirthDay}";
         $inputdob = date("Y-m-d",strtotime($dob));
 
-        $stmt = $this->conn->prepare("INSERT INTO users(fname, lname, email, encrypted_password, salt, gender, dob, country, userfrom, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("sssssssss", $fname, $lname, $email, $encrypted_password, $salt, $gender, $inputdob, $Country, $UserFrom);
+        $stmt = $this->conn->prepare("INSERT INTO `members`(`first_name`, `last_name`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, `user_img`, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("ssssssssss", $fname, $lname, $email, $encrypted_password, $salt, $gender, $inputdob, $Country, $UserFrom, $UserImage);
+        //echo  $this->db->conn->error_list;
         $result = $stmt->execute();
         $stmt->close();
  
         // check for successful store
         if ($result) {
-            $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt = $this->conn->prepare("SELECT * FROM members WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $user = $stmt->get_result()->fetch_assoc();
@@ -58,7 +59,7 @@ class DB_Functions {
      */
     public function getUserByEmailAndPassword($email, $password) {
  
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt = $this->conn->prepare("SELECT * FROM members WHERE email = ?");
  
         $stmt->bind_param("s", $email);
  
@@ -84,7 +85,7 @@ class DB_Functions {
      * Check user is existed or not
      */
     public function isUserExisted($email) {
-        $stmt = $this->conn->prepare("SELECT email from users WHERE email = ?");
+        $stmt = $this->conn->prepare("SELECT email from members WHERE email = ?");
  
         $stmt->bind_param("s", $email);
  

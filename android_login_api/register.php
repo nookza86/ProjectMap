@@ -21,6 +21,7 @@ if (isset($_POST['RegisterSend'])) {
     $BirthYear = $RegisterData['BirthYear'];
     $Country = $RegisterData['Country'];
     $UserFrom = $RegisterData['UserFrom'];
+    $UserImage = $RegisterData['UserImage'];
 
     // check if user is already existed with the same email
     if ($db->isUserExisted($email)) {
@@ -30,20 +31,21 @@ if (isset($_POST['RegisterSend'])) {
         echo json_encode($response);
     } else {
         // create a new user
-        $user = $db->storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom);
+        $user = $db->storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom, $UserImage);
+       // echo $user;
         if ($user) {
             // user stored successfully
             $response["error"] = FALSE;
-            $response["uid"] = $user["id"];
-            $response["user"]["fname"] = $user["fname"];
-            $response["user"]["lname"] = $user["lname"];
+            $response["member_no"] = $user["member_no"];
+            $response["user"]["first_name"] = $user["first_name"];
+            $response["user"]["last_name"] = $user["last_name"];
             $response["user"]["email"] = $user["email"];
             $response["user"]["gender"] = $user["gender"];
             $response["user"]["dob"] = $user["dob"];
             $response["user"]["Country"] = $user["country"];
             $response["user"]["UserFrom"] = $user["userfrom"];
-            $response["user"]["created_at"] = $user["created_at"];
-            $response["user"]["updated_at"] = $user["updated_at"];
+            $response["user"]["UserImage"] = $user["user_img"];
+            $response["user"]["LastUpdate"] = $user["last_update"];
             echo json_encode($response);
         } else {
             // user failed to store
