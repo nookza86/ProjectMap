@@ -37,7 +37,7 @@ local function networkListener( event )
         	print( "Try again." )
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
-        	print( "Welcome " .. decodedData["user"]["fname"] )
+        	print( "Welcome " .. decodedData["user"]["first_name"] )
         	composer.gotoScene("overview")
 
     	end

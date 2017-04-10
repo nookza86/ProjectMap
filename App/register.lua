@@ -124,6 +124,7 @@ local function CreateAccountListener( event )
     register["BirthYear"] = BirthYearValue
     register["Country"] = CountryValue
     register["UserFrom"] = "0"
+    register["UserImage"] = "/img_path/user.jpg"
 
     local RegisterSend = json.encode( register )
 
