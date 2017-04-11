@@ -189,9 +189,9 @@ print( display.pixelHeight / display.actualContentHeight )
 	bangpae.y = island.y + 10
 	bangpae.name = "bangpae"
 
-	BangPaeLabel = display.newImageRect( "Phuket/label/bangpae.png", 899/7, 138/7)
+	BangPaeLabel = display.newImageRect( "Phuket/label/bangpae.png", 588/5, 83/5)
 	BangPaeLabel.x = bangpae.x
-	BangPaeLabel.y = bangpae.y + 60
+	BangPaeLabel.y = bangpae.y + 55
 	BangPaeLabel.name = "bangpae"
 
 	TribeBangpareImage = display.newImageRect( "Phuket/Overview/tribe.png", 302/8, 228/8)
@@ -203,7 +203,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	bigbuddha.y = island.y + 10
 	bigbuddha.name = "bigbuddha"
 
-	BigBuddhaLabel = display.newImageRect( "Phuket/label/bigbuddha.png", 533/6, 99/6 )
+	BigBuddhaLabel = display.newImageRect( "Phuket/label/bigbuddha.png", 393/5, 82/5 )
 	BigBuddhaLabel.x = bigbuddha.x 
 	BigBuddhaLabel.y = bigbuddha.y + 30
 	BigBuddhaLabel.name = "bigbuddha"
@@ -217,7 +217,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	kata.y = island.y - 10
 	kata.name = "kata"
 
-	KataLabel = display.newImageRect( "Phuket/label/kata.png", 515/7, 135/7 )
+	KataLabel = display.newImageRect( "Phuket/label/kata.png", 393/5, 82/5 )
 	KataLabel.x = kata.x 
 	KataLabel.y = kata.y + 20
 	KataLabel.name = "kata"
@@ -232,7 +232,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	kamala1.y = island.y - 130
 	kamala1.name = "kamala"
 
-	KamalaLabel = display.newImageRect( "Phuket/label/kamala.png", 638/9, 135/9 )
+	KamalaLabel = display.newImageRect( "Phuket/label/kamala.png", 414/6, 82/6 )
 	KamalaLabel.x = kamala1.x
 	KamalaLabel.y = kamala1.y + 20
 	KamalaLabel.name = "kamala"
@@ -254,7 +254,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	karon.xScale = -1
 	cocoKataImage.rotation = -5
 
-	KaronLabel = display.newImageRect( "Phuket/label/karon.png", 581/7, 135/7 )
+	KaronLabel = display.newImageRect( "Phuket/label/karon.png", 393/5.5, 82/5.5 )
 	KaronLabel.x = karon.x 
 	KaronLabel.y = karon.y + 20
 	KaronLabel.name = "karon"
@@ -264,7 +264,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	patong.y = island.y - 80
 	patong.name = "patong"
 
-	PatongLabel = display.newImageRect( "Phuket/label/patong.png", 613/8, 135/8 )
+	PatongLabel = display.newImageRect( "Phuket/label/patong.png", 418/5.5, 86/5.5 )
 	PatongLabel.x = patong.x + 10
 	PatongLabel.y = patong.y + 30
 	PatongLabel.name = "patong"

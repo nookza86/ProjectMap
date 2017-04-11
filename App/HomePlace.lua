@@ -68,7 +68,16 @@ function scene:show(event)
 		--BgBtn:scale( 0.3, 0.33 )
 
 		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
-		TitleImage:scale( 0.1, 0.1 )
+		
+		if(params.PlaceName == "BangPae") then
+			TitleImage:scale( 0.4, 0.4 )
+		elseif(params.PlaceName == "Kata Beach" or params.PlaceName == "Big buddha") then
+			TitleImage:scale( 0.6, 0.6 )
+		else
+			TitleImage:scale( 0.5, 0.5 )
+		end
+
+		
 
 		--InformationBtn = display.newImageRect( "Phuket/Button/Button/information.png", 3000/30, 1280/30 )
 
@@ -98,19 +107,6 @@ function scene:show(event)
 		MapBtn.x = InformationBtn.x
 		MapBtn.y = InformationBtn.y + 60
 
-		ShareBtn = widget.newButton(
-    	{
-	        width = 250/1.5,
-	        height = 60/1.5,
-	        defaultFile = "Phuket/Button/Button/share.png",
-	        overFile = "Phuket/Button/ButtonPress/share.png",
-	        id = "ShareBtn",
-	        onEvent = Check
-    	}
-			)
-		ShareBtn.x = MapBtn.x
-		ShareBtn.y = MapBtn.y + 60
-
 		DiaryBtn = widget.newButton(
     	{
 	        width = 250/1.5,
@@ -121,8 +117,23 @@ function scene:show(event)
 	        onEvent = Check
     	}
 			)
-		DiaryBtn.x = ShareBtn.x
-		DiaryBtn.y = ShareBtn.y + 60
+		DiaryBtn.x = MapBtn.x
+		DiaryBtn.y = MapBtn.y + 60
+
+		ShareBtn = widget.newButton(
+    	{
+	        width = 250/1.5,
+	        height = 60/1.5,
+	        defaultFile = "Phuket/Button/Button/share.png",
+	        overFile = "Phuket/Button/ButtonPress/share.png",
+	        id = "ShareBtn",
+	        onEvent = Check
+    	}
+			)
+		ShareBtn.x = DiaryBtn.x
+		ShareBtn.y = DiaryBtn.y + 60
+
+		
 
 		BackBtn = widget.newButton(
     	{

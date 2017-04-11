@@ -53,22 +53,16 @@ function scene:show(event)
 	if (phase == "will") then
 		print( params.PlaceName )
 
-		Bg = display.newImage("Phuket/Diary/bg.png", cx, cy )
-		Bg:scale( 0.9, 0.9 ) 
+		Bg = display.newImageRect("Phuket/Diary/bg.png", cw, ch )
+		Bg.x = cx 
+		Bg.y = cy
+		--Bg:scale( 0.9, 0.9 ) 
 
-		TitleImage = display.newImageRect( "Phuket/Diary/diary.png", 1683/12, 859/12 )
-		TitleImage.x = cx - 40
-		TitleImage.y = cy - 110
-
-		TitleBookImage = display.newImageRect( "Phuket/Diary/book.png", 1200/20, 1022/20 )
-		TitleBookImage.x = TitleImage.x + 110
-		TitleBookImage.y = TitleImage.y
-
-		BgText = display.newImageRect( "Phuket/Diary/bgtext.png", 1832/7, 814/5)
-		BgText.x = cx + 70
+		BgText = display.newImageRect( "Phuket/Diary/bgtext.png", 1000/3, 525/3)
+		BgText.x = cx + 100
 		BgText.y = cy - 70
 
-		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 1810/15, 894/15 )
+		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
 		ScoreImage.x = cx 
 		ScoreImage.y = cy + 70
 
@@ -78,7 +72,7 @@ function scene:show(event)
 		ImageUser1.name = "ImageUser1"
 
 		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
-		ImageUser2.x = cx - 240
+		ImageUser2.x = cx - 220
 		ImageUser2.y = cy - 20
 		ImageUser2.name = "ImageUser2"
 
@@ -92,20 +86,15 @@ function scene:show(event)
 		ImageUser4.y = ImageUser3.y 
 		ImageUser4.name = "ImageUser4"
 
-		ImageUser5 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
-		ImageUser5.x = ImageUser4.x + 50
-		ImageUser5.y = ImageUser4.y 
-		ImageUser5.name = "ImageUser5"
-
-		ImpressionImage = display.newImageRect( "Phuket/Diary/impression.png", 1800/15, 568/15 )
-		ImpressionImage.x = ImageUser4.x - 40
+		ImpressionImage = display.newImageRect( "Phuket/Diary/impression.png", 450/2.5, 80/2.5 )
+		ImpressionImage.x = ImageUser4.x - 20
 		ImpressionImage.y = cy + 130
 
-		BeautyImage = display.newImageRect( "Phuket/Diary/beauty.png", 1588/20, 861/20 )
+		BeautyImage = display.newImageRect( "Phuket/Diary/beauty.png", 300/3, 80/3 )
 		BeautyImage.x = ImpressionImage.x 
 		BeautyImage.y = ImpressionImage.y + 50
 
-		CleanImage = display.newImageRect( "Phuket/Diary/clean.png", 1622/23, 758/23 )
+		CleanImage = display.newImageRect( "Phuket/Diary/clean.png", 300/3, 80/3 )
 		CleanImage.x = BeautyImage.x
 		CleanImage.y = BeautyImage.y + 50
 	
@@ -279,12 +268,12 @@ end
 		ImageUser2:addEventListener( "touch", Check )
 		ImageUser3:addEventListener( "touch", Check )
 		ImageUser4:addEventListener( "touch", Check )
-		ImageUser5:addEventListener( "touch", Check )
+		
 
 
 		scrollView = widget.newScrollView(
     {
-        top = 90,
+        top = 70,
         left = 0,
         width = display.contentWidth,
         height = display.contentHeight,
@@ -309,7 +298,7 @@ end
 		DiaryGroup:insert( ImageUser2 )
 		DiaryGroup:insert( ImageUser3 )
 		DiaryGroup:insert( ImageUser4 )
-		DiaryGroup:insert( ImageUser5)
+
 		DiaryGroup:insert( ScoreImage )
 		DiaryGroup:insert( ImpressionImage )
 		DiaryGroup:insert( BeautyImage )
@@ -342,7 +331,7 @@ function scene:hide(event)
 		DiaryGroup:remove( ImageUser2 )
 		DiaryGroup:remove( ImageUser3 )
 		DiaryGroup:remove( ImageUser4 )
-		DiaryGroup:remove( ImageUser5)
+
 		DiaryGroup:remove( ScoreImage )
 		DiaryGroup:remove( ImpressionImage )
 		DiaryGroup:remove( BeautyImage )
@@ -362,8 +351,8 @@ function scene:hide(event)
 		RemoveAll( CleanImage )
 		RemoveAll( SaveBtn )
 		RemoveAll( BackBtn )
-		RemoveAll( TitleImage )
-		RemoveAll( TitleBookImage )
+		
+		
 
 		RemoveAll( DiaryGroup )
 		RemoveAll( scrollView )

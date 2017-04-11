@@ -85,8 +85,10 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
-		Bg = display.newImage("Phuket/Profile/bg1.png", cx, cy )
-		Bg:scale( 0.3, 0.3 ) 
+		Bg = display.newImageRect("Phuket/Profile/bg1.png", cw, ch )
+		Bg.x = cx 
+		Bg.y = cy 
+		--Bg:scale( 0.3, 0.3 ) 
 
 		TitleImage = display.newImageRect( "Phuket/Profile/profile.png", 369/2.5, 83/2.5 )
 		TitleImage.x = cx 
@@ -109,7 +111,7 @@ function scene:show(event)
 	        width = 532/3.5,
 	        height = 126/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/kata_0.png",
-	        overFile = "Phuket/Profile/NameActraction/kata_1.png",
+	        overFile = "Phuket/Profile/NameActractionPress/kata_0.png",
 	        id = "kata",
 	        onEvent = Check
     	}
@@ -122,7 +124,7 @@ function scene:show(event)
 	        width = 564/3.5,
 	        height = 126/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/kamala_0.png",
-	        overFile = "Phuket/Profile/NameActraction/kamala_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/kamala_0.png",
 	        id = "kamala",
 	        onEvent = Check
     	}
@@ -135,7 +137,7 @@ function scene:show(event)
 	        width = 621/3.5,
 	        height = 126/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/chalong_0.png",
-	        overFile = "Phuket/Profile/NameActraction/chalong_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/chalong_0.png",
 	        id = "watchalong",
 	        onEvent = Check
     	}
@@ -148,7 +150,7 @@ function scene:show(event)
 	        width = 532/3.5,
 	        height = 127/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/karon_0.png",
-	        overFile = "Phuket/Profile/NameActraction/karon_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/karon_0.png",
 	        id = "karon",
 	        onEvent = Check
     	}
@@ -161,7 +163,7 @@ function scene:show(event)
 	        width = 565/3.5,
 	        height = 127/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/patong_0.png",
-	        overFile = "Phuket/Profile/NameActraction/patong_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/patong_0.png",
 	        id = "patong",
 	        onEvent = Check
     	}
@@ -174,7 +176,7 @@ function scene:show(event)
 	        width = 556/3.5,
 	        height = 127/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_0.png",
-	        overFile = "Phuket/Profile/NameActraction/bigbuddha_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_0.png",
 	        id = "bigbuddha",
 	        onEvent = Check
     	}
@@ -187,7 +189,7 @@ function scene:show(event)
 	        width = 767/3.5,
 	        height = 126/3.5,
 	        defaultFile = "Phuket/Profile/NameActraction/bangpae_0.png",
-	        overFile = "Phuket/Profile/NameActraction/bangpae_0.png",
+	        overFile = "Phuket/Profile/NameActractionPress/bangpae_0.png",
 	        id = "bangpae",
 	        onEvent = Check
     	}

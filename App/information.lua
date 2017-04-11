@@ -42,8 +42,10 @@ function scene:show(event)
 	    cw = display.contentWidth
 	    ch = display.contentHeight
 
-	    Bg = display.newImage("Phuket/Information/bg.png", cx, cy )
-		Bg:scale( 0.3, 0.3 ) 
+	    Bg = display.newImageRect("Phuket/Information/bg.png", cw, ch )
+	    Bg.x = cx 
+		Bg.y = cy 
+		--Bg:scale( 0.3, 0.3 ) 
 
 		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/3.3, 637/3.3)
 		BgText.x = cx + 80
@@ -61,12 +63,12 @@ function scene:show(event)
 			)
 		
 		BackBtn.x = cx - 240
-		BackBtn.y = cy + 130
+		BackBtn.y = cy + 100
 
 		Recommend1 = widget.newButton(
     	{
-	        width = 3500/30,
-	        height = 1280/30,
+	        width = 300/2.5,
+	        height = 60/2.5,
 	        defaultFile = "Phuket/Button/RButton/bangpae.png",
 	        overFile = "Phuket/Button/RButtonPress/bangpae.png",
 	        id = "Recommend1",
