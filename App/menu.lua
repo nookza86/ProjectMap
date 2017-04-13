@@ -4,7 +4,7 @@ local json = require ("json")
 local facebook = require( "plugin.facebook.v4" )
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
-local DontHaveImage, SignUpImage, EmailImage, PasswordImage, TextFieldImage
+local ForgotImage, SignUpImage, EmailImage, PasswordImage, TextFieldImage
 local EmailTxf, PasswordTxf
 local myNewData 
 local decodedData 
@@ -121,6 +121,7 @@ function scene:show(event)
 		print("Scene #Menu : show (will)")
 		display.setStatusBar( display.HiddenStatusBar )
 
+		--[[
 		print( display.pixelWidth  )
 		print( display.pixelHeight  )
 		print(display.contentWidth)
@@ -130,12 +131,13 @@ function scene:show(event)
 		print( display.imageSuffix )
 		print( display.pixelWidth / display.actualContentWidth )
 		print( display.pixelHeight / display.actualContentHeight )
+		]]
 
 		myText = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
 		myText.x = display.contentCenterX 
 		myText.y = display.contentCenterY
 
-		EmailTxf = native.newTextField( cx , cy + 30, 200, 30 )
+		EmailTxf = native.newTextField( cx , cy + 40, 200, 25 )
 	    EmailTxf.inputType = "default"
 	    EmailTxf.text = ""
 	    EmailTxf.hasBackground = false
@@ -145,7 +147,7 @@ function scene:show(event)
 		EmailImage.x = EmailTxf.x
 		EmailImage.y = EmailTxf.y
 
-	    PasswordTxf = native.newTextField( cx , cy + 70, 200, 30 )
+	    PasswordTxf = native.newTextField( cx , cy + 80, 200, 25 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
 	    PasswordTxf.text = ""
@@ -155,16 +157,20 @@ function scene:show(event)
 	    PasswordImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
 		PasswordImage.x = PasswordTxf.x
 		PasswordImage.y = PasswordTxf.y
-
-		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 500/2, 380/2.5 )
+--[[
+		ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5)
+		ForgotImage.x = PasswordTxf.x - 50
+		ForgotImage.y = PasswordTxf.y + 25
+]]
+		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 480/2, 360/2.5 )
 		TextFieldImage.x = cx
-		TextFieldImage.y = cy + 40
+		TextFieldImage.y = cy + 75
 
 
 	 LoginBtn = widget.newButton(
     	{
-	        width = 150/1.5,
-	        height = 45/1.5,
+	        width = 150/2,
+	        height = 45/2,
 	        defaultFile = "Phuket/Button/Button/login.png",
 	        overFile = "Phuket/Button/ButtonPress/login.png",
 	        id = "login",
@@ -172,13 +178,13 @@ function scene:show(event)
     	}
 			)
 		
-		LoginBtn.x = cx 
-		LoginBtn.y = cy + 110
+		LoginBtn.x = cx - 55
+		LoginBtn.y = cy + 115
 
 	 LoginWithFaceBookBtn = widget.newButton(
     	{
-	        width = 250 / 2,
-	        height = 60/ 2,
+	        width = 250 / 2.5,
+	        height = 60/ 2.5,
 	        defaultFile = "Phuket/Button/Button/login_w_fb.png",
 	        overFile = "Phuket/Button/ButtonPress/login_w_fb.png",
 	        id = "LoginWithFaceBookBtn",
@@ -186,16 +192,16 @@ function scene:show(event)
     	}
 			)
 		
-		LoginWithFaceBookBtn.x = cx
-		LoginWithFaceBookBtn.y = cy - 10 
+		LoginWithFaceBookBtn.x = LoginBtn.x + 95
+		LoginWithFaceBookBtn.y = LoginBtn.y  
 
-	DontHaveImage = display.newImageRect("Phuket/menu/donthave.png", 400/2.5, 50/2.5 )
-	DontHaveImage.x = display.contentCenterX - 50
-	DontHaveImage.y = display.contentCenterY + 140
+	ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5 )
+	ForgotImage.x = display.contentCenterX - 40
+	ForgotImage.y = display.contentCenterY + 145
 
-	SignUpImage = display.newImageRect("Phuket/menu/signup.png", 200/2.5, 60/2.5 )
-	SignUpImage.x = DontHaveImage.x + 130
-	SignUpImage.y = DontHaveImage.y 
+	SignUpImage = display.newImageRect("Phuket/menu/signup.png", 200/3.5, 60/3.5 )
+	SignUpImage.x = ForgotImage.x + 90
+	SignUpImage.y = ForgotImage.y 
 	SignUpImage.id = "SignUp"
 
 	SignUpImage:addEventListener( "touch", Check )
@@ -215,7 +221,7 @@ function scene:hide(event)
 		RemoveAll(myText)
 		RemoveAll(LoginBtn)
 		RemoveAll(LoginWithFaceBookBtn)
-		RemoveAll(DontHaveImage)
+		RemoveAll(ForgotImage)
 		RemoveAll(EmailTxf)
 		RemoveAll(SignUpImage)
 		RemoveAll(EmailImage)
