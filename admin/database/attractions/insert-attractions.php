@@ -5,17 +5,13 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Members</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Attracktions</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/admin/css/bootstrap.min.css">
   <!-- Loading Flat UI Pro -->
     <link href="<?php $root ?>/admin/css/flat-ui-pro.css" rel="stylesheet">
     <link rel="shortcut icon" href="<?php $root ?>/admin/img/favicon.png">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
- 
   
 </head>
 <body>
@@ -34,51 +30,25 @@ include ("$root/admin/inc/navbar.php");?>
     <div class="col-md-9" name="maincontent" id="maincontent">
 		
 		<div id="exercise" name="exercise" class="panel panel-info">
-		<div class="panel-heading"><h5>Member</h5></div>
+		<div class="panel-heading"><h5>Add Attracktions</h5></div>
 			<div class="panel-body">
 			<!-- ***********Edit your content STARTS from here******** -->
+				
+				<form action="insert-attractions-2.php" method="post" enctype="multipart/form-data">
+					<div class="form-group">
+					  Name <input class="form-control" name="att_name" type="text" 
+					  value ="" >
+					  Descriptons <input class="form-control" name="descriptions" type="text" 
+					  value ="" >
+					  Image 				  
+					  <input type="file" name="fileToUpload" id="fileToUpload">  
+					  <br><input class="btn btn-embosed btn-primary" type="submit" value="Add" name="submit">
+					</div>
+				</form>
+				<hr>
+						
+				
 			
-			<div class="form-group">
-    <div class="input-group">
-     <span class="input-group-addon">Search</span>
-     <input type="text" name="search_text" id="search_text" placeholder="Search by Member Details" class="form-control" />
-    </div>
-   </div>
-   <br />
-   <div id="result"></div>
-				
-		<script>
-	$(document).ready(function(){
-
-	 load_data();
-
-	 function load_data(query)
-	 {
-	  $.ajax({
-	   url:"fetch.php",
-	   method:"POST",
-	   data:{query:query},
-	   success:function(data)
-	   {
-	    $('#result').html(data);
-	   }
-	  });
-	 }
-	 $('#search_text').keyup(function(){
-	  var search = $(this).val();
-	  if(search != '')
-	  {
-	   load_data(search);
-	  }
-	  else
-	  {
-	   load_data();
-	  }
-	 });
-	});
-</script>		
-				
-				
 			<!-- ***********Edit your content ENDS here******** -->	
 			</div> <!--body panel main -->
 		</div><!--toc -->

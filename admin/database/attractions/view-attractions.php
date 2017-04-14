@@ -5,17 +5,13 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Members</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Attractions</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/admin/css/bootstrap.min.css">
   <!-- Loading Flat UI Pro -->
     <link href="<?php $root ?>/admin/css/flat-ui-pro.css" rel="stylesheet">
     <link rel="shortcut icon" href="<?php $root ?>/admin/img/favicon.png">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
- 
   
 </head>
 <body>
@@ -34,51 +30,46 @@ include ("$root/admin/inc/navbar.php");?>
     <div class="col-md-9" name="maincontent" id="maincontent">
 		
 		<div id="exercise" name="exercise" class="panel panel-info">
-		<div class="panel-heading"><h5>Member</h5></div>
+		<div class="panel-heading"><h5>View Attracktions Info</h5></div>
 			<div class="panel-body">
 			<!-- ***********Edit your content STARTS from here******** -->
 			
-			<div class="form-group">
-    <div class="input-group">
-     <span class="input-group-addon">Search</span>
-     <input type="text" name="search_text" id="search_text" placeholder="Search by Member Details" class="form-control" />
-    </div>
-   </div>
-   <br />
-   <div id="result"></div>
-				
-		<script>
-	$(document).ready(function(){
+						
+				<?php
+				$id=$_GET['id'];
+				//Create SQL query
 
-	 load_data();
+				$query="select *
+				from attractions where att_no = '$id'";
+				//echo $query;
+				//Execute the query
+				$qr=mysqli_query($db,$query);
+				if($qr==false){
+					echo ("Query cannot be executed!<br>");
+					echo ("SQL Error : ".mysqli_error($db));
+				}
+				else{//no error in sql
+					$rec=mysqli_fetch_array($qr);
+				}
+						
+			?>
+				<form role="form" name="" action="" method="GET">
+				<div class="row">
+				  <div class="col-xs-9"></div>
+				  	<div class="col-xs-4"><img src="<?php echo $rec['att_img']; ?>" alt="..." class="img-rounded"></div>
+				  <div class="col-xs-6">
+				  	 No : <?php echo $rec['att_no']; ?> <br>
+					  Name : <?php echo $rec['att_name']; ?> <br>
+					  Descriptions : <?php echo $rec['descriptions']; ?> <br>
+					  Image path : <?php echo $rec['att_img']; ?> <br>
+					  Last Update : <?php echo $rec['last_update']; ?> <br>
+					  </div>
+				</div>
 
-	 function load_data(query)
-	 {
-	  $.ajax({
-	   url:"fetch.php",
-	   method:"POST",
-	   data:{query:query},
-	   success:function(data)
-	   {
-	    $('#result').html(data);
-	   }
-	  });
-	 }
-	 $('#search_text').keyup(function(){
-	  var search = $(this).val();
-	  if(search != '')
-	  {
-	   load_data(search);
-	  }
-	  else
-	  {
-	   load_data();
-	  }
-	 });
-	});
-</script>		
-				
-				
+
+				</form>
+				<hr>
+			
 			<!-- ***********Edit your content ENDS here******** -->	
 			</div> <!--body panel main -->
 		</div><!--toc -->

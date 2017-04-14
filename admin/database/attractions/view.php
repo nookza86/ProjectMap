@@ -5,7 +5,7 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Members</title>
+  <title>Attracktions</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/admin/css/bootstrap.min.css">
@@ -34,17 +34,18 @@ include ("$root/admin/inc/navbar.php");?>
     <div class="col-md-9" name="maincontent" id="maincontent">
 		
 		<div id="exercise" name="exercise" class="panel panel-info">
-		<div class="panel-heading"><h5>Member</h5></div>
+		<div class="panel-heading"><h5>Attracktions</h5></div>
 			<div class="panel-body">
 			<!-- ***********Edit your content STARTS from here******** -->
-			
+			<a href="insert-attractions.php" class="btn btn-primary btn-lg active" role="button">Add</a>
 			<div class="form-group">
+			
     <div class="input-group">
      <span class="input-group-addon">Search</span>
-     <input type="text" name="search_text" id="search_text" placeholder="Search by Member Details" class="form-control" />
+     <input type="text" name="search_text" id="search_text" placeholder="Search by Attracktions Details" class="form-control" />
     </div>
    </div>
-   <br />
+
    <div id="result"></div>
 				
 		<script>

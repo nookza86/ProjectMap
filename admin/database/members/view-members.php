@@ -55,6 +55,23 @@ include ("$root/admin/inc/navbar.php");?>
 			?>
 
 				<form role="form" name="" action="" method="GET">
+				<div class="row">
+				  <div class="col-xs-9"></div>
+				  	<div class="col-xs-4"><img src="..." alt="..." class="img-rounded"></div>
+				  <div class="col-xs-6">
+				  	  Member No : <?php echo $rec['member_no']; ?><br>
+				  	  FirstName : <?php echo $rec['first_name']; ?> <br>
+					  LastName : <?php echo $rec['last_name']; ?> <br>
+					  Email : <?php echo $rec['email']; ?> <br>
+					  Gender : <?php echo $rec['gender']; ?> <br>
+					  Date of Birth : <?php echo $rec['dob']; ?> <br>
+					  Country : <?php echo $rec['country']; ?> <br>
+					  User from : <?php echo $rec['userfrom']; ?> <br>
+					  User Image : <?php echo $rec['user_img']; ?> <br>
+					  Last Update : <?php echo $rec['last_update']; ?> <br>
+					  </div>
+				</div>
+<!--
 					<div class="form-group">
 					  Member No : <?php echo $rec['member_no']; ?> <br>
 					  FirstName : <?php echo $rec['first_name']; ?> <br>
@@ -67,6 +84,7 @@ include ("$root/admin/inc/navbar.php");?>
 					  User Image : <?php echo $rec['user_img']; ?> <br>
 					  Last Update : <?php echo $rec['last_update']; ?> <br>
 					</div>
+-->
 				</form>
 				<hr>
 			
