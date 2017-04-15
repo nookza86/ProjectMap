@@ -1,6 +1,7 @@
 <?php 
 //include the database connectivity setting
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
+include ("$root/admin/session.php");
 include ("$root/admin/inc/dbconn.php");
 include ("$root/admin/inc/smart_resize_image.function.php");
 ?>

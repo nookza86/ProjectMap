@@ -1,6 +1,7 @@
 <?php 
 //include the database connectivity setting
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
+include ("$root/admin/session.php");
 include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +52,7 @@ include ("$root/admin/inc/navbar.php");?>
 				}
 			?>
 				
-				<form role="form" name="" action="save-update.php" method="GET">
+				<form role="form" name="" action="save-update.php" method="post" enctype="multipart/form-data">
 					<div class="form-group">
 
 					  No <input class="form-control" name="att_no" 
@@ -62,13 +63,12 @@ include ("$root/admin/inc/navbar.php");?>
 					  Descriptons <input class="form-control" name="descriptions" type="text" 
 					  value ="<?php echo $rekod['descriptions']?>" >
 					  Image 
-					  <input class="form-control" name="att_img" type="text" 
-					  value ="<?php echo $rekod['att_img']?>" >
+					  <input type="file" name="fileToUpload" id="fileToUpload">  
 					  Last Update 
 					  <input class="form-control" name="last_update" type="text" 
 					  value ="<?php echo $rekod['last_update']?>" readonly>
 					  
-					  <br><input class="btn btn-embosed btn-primary" type="submit" value="Save" >
+					  <br><input class="btn btn-embosed btn-primary" type="submit" value="Update" name="submit">
 					</div>
 				</form>
 				<hr>

@@ -1,6 +1,7 @@
 <?php 
 //include the database connectivity setting
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
+include ("$root/admin/session.php");
 include ("$root/admin/inc/dbconn.php");?>
 
 <!DOCTYPE html>
@@ -27,14 +28,13 @@ if(isset($_POST["query"]))
  $query = "
   SELECT * FROM attractions 
   WHERE att_name LIKE '%".$search."%'
-  OR descriptions LIKE '%".$search."%' 
   OR att_no LIKE '%".$search."%' 
  ";
 }
 else
 {
  $query = "
-  SELECT * FROM attractions ORDER BY att_no
+  SELECT att_no, att_name, att_img FROM attractions ORDER BY att_no
  ";
 }
 $result = mysqli_query($db, $query);
@@ -46,9 +46,7 @@ if(mysqli_num_rows($result) > 0)
               <tr >
                 <th>No.</th>
                 <th>Name</th>
-                <th>Descriptions</th>
-                <th>Image path</th>
-                <th>Last Update</th>
+                <th>Image</th>          
               </tr>
             </thead>
  ';
@@ -61,13 +59,9 @@ if(mysqli_num_rows($result) > 0)
   $output .= '
    <tr>
     <td>'.$row["att_no"].'</td>
-    <td>'.$row["att_name"].'</td>
-    <td>'.$row["descriptions"].'</td>
-    <td>'.$row["att_img"].'</td>
-    <td>'.$row["last_update"].'</td>
-
-            
-
+    <td>'.$row["att_name"].'</td> 
+    <td><img src="'.$row["att_img"].'" class="img-responsive" alt="Responsive image"></td>
+    
     <td><a href="'.$urlview.'" class="btn btn-info" title="View complete attractions info" 
             data-toggle="tooltip" >
               <span class="fui-search"></span> 

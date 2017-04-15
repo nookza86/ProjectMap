@@ -1,6 +1,7 @@
 <?php 
 //include the database connectivity setting
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
+include ("$root/admin/session.php");
 include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,16 +60,26 @@ include ("$root/admin/inc/navbar.php");?>
 				  <div class="col-xs-9"></div>
 				  	<div class="col-xs-4"><img src="..." alt="..." class="img-rounded"></div>
 				  <div class="col-xs-6">
-				  	  Member No : <?php echo $rec['member_no']; ?><br>
-				  	  FirstName : <?php echo $rec['first_name']; ?> <br>
-					  LastName : <?php echo $rec['last_name']; ?> <br>
-					  Email : <?php echo $rec['email']; ?> <br>
-					  Gender : <?php echo $rec['gender']; ?> <br>
-					  Date of Birth : <?php echo $rec['dob']; ?> <br>
-					  Country : <?php echo $rec['country']; ?> <br>
-					  User from : <?php echo $rec['userfrom']; ?> <br>
-					  User Image : <?php echo $rec['user_img']; ?> <br>
-					  Last Update : <?php echo $rec['last_update']; ?> <br>
+				  	  Member No  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['member_no']; ?>" ">
+				  	  
+				  	  FirstName  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['first_name']; ?>" ">
+				
+					  LastName  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['last_name']; ?>" ">
+					  
+					  Email  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['email']; ?>" ">
+					
+					  Gender  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['gender']; ?>" ">
+					  
+					  Date of Birth  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['dob']; ?>" ">
+				
+					  Country  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['country']; ?>" ">
+					  
+					  User from  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['userfrom']; ?>" ">
+					
+					  User Image  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['user_img']; ?>" ">
+					 
+					  Last Update  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['last_update']; ?>" ">
+					 
 					  </div>
 				</div>
 <!--

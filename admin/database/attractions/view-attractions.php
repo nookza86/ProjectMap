@@ -1,6 +1,7 @@
 <?php 
 //include the database connectivity setting
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
+include ("$root/admin/session.php");
 include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,11 +59,11 @@ include ("$root/admin/inc/navbar.php");?>
 				  <div class="col-xs-9"></div>
 				  	<div class="col-xs-4"><img src="<?php echo $rec['att_img']; ?>" alt="..." class="img-rounded"></div>
 				  <div class="col-xs-6">
-				  	 No : <?php echo $rec['att_no']; ?> <br>
-					  Name : <?php echo $rec['att_name']; ?> <br>
-					  Descriptions : <?php echo $rec['descriptions']; ?> <br>
-					  Image path : <?php echo $rec['att_img']; ?> <br>
-					  Last Update : <?php echo $rec['last_update']; ?> <br>
+				  	 No <input class="form-control" name="staffname" type="text" value="<?php echo $rec['att_no']; ?>" ">
+					  Name  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['att_name']; ?>" "> 
+					  Descriptions  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['descriptions']; ?>" "> 
+					  Image path <input class="form-control" name="staffname" type="text" value="<?php echo $rec['att_img']; ?>" "> 
+					  Last Update  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['last_update']; ?>" "> 
 					  </div>
 				</div>
 
