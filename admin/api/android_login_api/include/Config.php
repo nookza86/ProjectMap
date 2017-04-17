@@ -2,8 +2,8 @@
 /**
  * Database config variables
  */
-define("DB_HOST", "localhost");
-define("DB_USER", "id1128718_dbadmin");
-define("DB_PASSWORD", "123456789");
-define("DB_DATABASE", "id1128718_mapofmem");
+define("DB_HOST", "mysql.hostinger.in.th");
+define("DB_USER", "u890498555_admin");
+define("DB_PASSWORD", "095863270");
+define("DB_DATABASE", "u890498555_map");
 ?>

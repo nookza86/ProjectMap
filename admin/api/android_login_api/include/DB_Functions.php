@@ -36,7 +36,6 @@ class DB_Functions {
 
         $stmt = $this->conn->prepare("INSERT INTO `members`(`first_name`, `last_name`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, `user_img`, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         $stmt->bind_param("ssssssssss", $fname, $lname, $email, $encrypted_password, $salt, $gender, $inputdob, $Country, $UserFrom, $UserImage);
-        //echo  $this->db->conn->error_list;
         $result = $stmt->execute();
         $stmt->close();
  
@@ -45,7 +44,32 @@ class DB_Functions {
             $stmt = $this->conn->prepare("SELECT * FROM members WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
+            
+            //$user = $stmt->get_result()->fetch_assoc();
+
+            $user = array();
+
+           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+
+            while ($stmt->fetch()) {
+                //printf ("%s %s %s %s %s %s %s %s %s %s %s %s\n", $member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+                echo "";
+
+             }
+
+                $user["member_no"] = $member_no;
+                $user["first_name"] = $first_name;
+                $user["last_name"] = $last_name;
+                $user["email"] = $email;
+                $user["encrypted_password"] = $encrypted_password;
+                $user["salt"]= $salt;
+                $user["gender"] = $gender;
+                $user["dob"] = $dob;
+                $user["country"] = $country;
+                $user["userfrom"] = $userfrom;
+                $user["user_img"] = $user_img;
+                $user["last_update"] = $last_update;
+
             $stmt->close();
  
             return $user;
@@ -64,7 +88,31 @@ class DB_Functions {
         $stmt->bind_param("s", $email);
  
         if ($stmt->execute()) {
-            $user = $stmt->get_result()->fetch_assoc();
+           // $user = $stmt->get_result()->fetch_assoc();
+
+           $user = array();
+
+           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+
+            while ($stmt->fetch()) {
+                //printf ("%s %s %s %s %s %s %s %s %s %s %s %s\n", $member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+                echo "";
+
+             }
+
+                $user["member_no"] = $member_no;
+                $user["first_name"] = $first_name;
+                $user["last_name"] = $last_name;
+                $user["email"] = $email;
+                $user["encrypted_password"] = $encrypted_password;
+                $user["salt"]= $salt;
+                $user["gender"] = $gender;
+                $user["dob"] = $dob;
+                $user["country"] = $country;
+                $user["userfrom"] = $userfrom;
+                $user["user_img"] = $user_img;
+                $user["last_update"] = $last_update;
+
             $stmt->close();
  
             // verifying user password

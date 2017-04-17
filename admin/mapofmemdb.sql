@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2017 at 09:57 AM
--- Server version: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: Apr 17, 2017 at 03:29 PM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -30,14 +30,16 @@ CREATE TABLE `admin` (
   `id` int(11) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `admin`
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'nook', '095863270');
+(1, 'nook_we@hotmail.com', '095863270'),
+(2, 'cnviisz@gmail.com', '0827303767'),
+(3, 'prae1125@gmail.com', '0836390932');
 
 -- --------------------------------------------------------
 
@@ -58,13 +60,13 @@ CREATE TABLE `attractions` (
 --
 
 INSERT INTO `attractions` (`att_no`, `att_name`, `descriptions`, `att_img`, `last_update`) VALUES
-(1, 'Bang Pae Waterfall', 'des', 'uploads/attractions/Bang Pae Waterfall/favicon.png', '2017-04-14 15:06:54'),
-(2, 'Big Buddaa', 'des', '', '2017-04-14 06:48:29'),
-(3, 'Chalong Temple', 'des', '', '2017-04-10 08:37:53'),
-(4, 'Kamala Beach', 'des', '', '2017-04-10 08:37:53'),
-(5, 'Karon Beach', 'des', '', '2017-04-10 08:37:53'),
-(6, 'Kata Beach', 'des', '', '2017-04-10 08:37:53'),
-(7, 'Patong Beach', 'des', '', '2017-04-10 08:37:53');
+(1, 'Bang Pae Waterfall', 'des', 'uploads/attractions/Bang Pae Waterfall/favicon.png', '2017-04-14 08:06:54'),
+(2, 'Big Buddaa', 'des', '', '2017-04-13 23:48:29'),
+(3, 'Chalong Temple', 'des', '', '2017-04-10 01:37:53'),
+(4, 'Kamala Beach', 'des', '', '2017-04-10 01:37:53'),
+(5, 'Karon Beach', 'des', '', '2017-04-10 01:37:53'),
+(6, 'Kata Beach', 'des', '', '2017-04-10 01:37:53'),
+(7, 'Patong Beach', 'des', '', '2017-04-10 01:37:53');
 
 -- --------------------------------------------------------
 
@@ -112,13 +114,13 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`member_no`, `first_name`, `last_name`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, `user_img`, `last_update`) VALUES
-(1, 'nook', 'wee', 'nook_we@hotmail.com', '1Kobq3v8BFD6TDO9ITpQWz8Jt9I5MDQ2YTI3Mzkx', '9046a27391', 'Male', '1996-01-07', 'Thailand', '0', 'path/', '2017-04-12 06:41:30'),
-(2, 'qq', 'qq', 'qq@dd.cc', '0V9pS1LPgTV8HZYAp+BkTewRcY43NzIzODViZTNi', '772385be3b', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 09:01:03'),
-(3, 'qwe', 'qwe', 'qwe@ee.cc', 'Qy0AY4wIgbyPJT8Dpr+Xm7rlDi8yMjZmM2UyMTI4', '226f3e2128', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 09:10:29'),
-(4, 'cccc', 'cc', 'cc@cc.cc', 'OClRM5dxwPU2yiWsQKQt21z/cD5kY2NhNzkzYThk', 'dcca793a8d', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 10:33:05'),
-(5, 'cccc', 'cc', 'cccc@cc.cc', 'Kef4Y9uPJuXcpHXxe6ZdkK71wME4ZDcxZmU3ZTgy', '8d71fe7e82', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 10:34:27'),
-(6, 'cccc', 'cc', 'ccccc@cc.cc', 'IcPJLIzUkFIYL1k6/AAEWpbLr01mYmY5ZmNmYzQ1', 'fbf9fcfc45', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 10:36:08'),
-(7, 'cccc', 'cc', 'cccccc@cc.cc', 'InrBm8wHwyCy+BgQDopORLsDHEBmNjM0ZjViNGNj', 'f634f5b4cc', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 10:37:54');
+(1, 'nook', 'wee', 'nook_we@hotmail.com', '1Kobq3v8BFD6TDO9ITpQWz8Jt9I5MDQ2YTI3Mzkx', '9046a27391', 'Male', '1996-01-07', 'Thailand', '0', 'path/', '2017-04-11 23:41:30'),
+(2, 'qq', 'qq', 'qq@dd.cc', '0V9pS1LPgTV8HZYAp+BkTewRcY43NzIzODViZTNi', '772385be3b', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 02:01:03'),
+(3, 'qwe', 'qwe', 'qwe@ee.cc', 'Qy0AY4wIgbyPJT8Dpr+Xm7rlDi8yMjZmM2UyMTI4', '226f3e2128', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 02:10:29'),
+(4, 'cccc', 'cc', 'cc@cc.cc', 'OClRM5dxwPU2yiWsQKQt21z/cD5kY2NhNzkzYThk', 'dcca793a8d', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 03:33:05'),
+(5, 'cccc', 'cc', 'cccc@cc.cc', 'Kef4Y9uPJuXcpHXxe6ZdkK71wME4ZDcxZmU3ZTgy', '8d71fe7e82', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 03:34:27'),
+(6, 'cccc', 'cc', 'ccccc@cc.cc', 'IcPJLIzUkFIYL1k6/AAEWpbLr01mYmY5ZmNmYzQ1', 'fbf9fcfc45', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 03:36:08'),
+(7, 'cccc', 'cc', 'cccccc@cc.cc', 'InrBm8wHwyCy+BgQDopORLsDHEBmNjM0ZjViNGNj', 'f634f5b4cc', 'Male', '1991-05-18', 'Bolivia', '0', '/img_path/user.jpg', '2017-04-10 03:37:54');
 
 -- --------------------------------------------------------
 
@@ -138,7 +140,7 @@ CREATE TABLE `unattractions` (
 --
 
 INSERT INTO `unattractions` (`un_id`, `member_no`, `att_no`, `last_update`) VALUES
-(1, 1, 1, '2017-04-10 08:37:53');
+(1, 1, 1, '2017-04-10 01:37:53');
 
 --
 -- Indexes for dumped tables
@@ -161,8 +163,8 @@ ALTER TABLE `attractions`
 --
 ALTER TABLE `diary`
   ADD PRIMARY KEY (`diary_id`),
-  ADD KEY `fk_diary_member_no` (`member_no`),
-  ADD KEY `fk_diary_att_no` (`att_no`);
+  ADD KEY `member_no` (`member_no`),
+  ADD KEY `att_no` (`att_no`);
 
 --
 -- Indexes for table `members`
@@ -176,8 +178,8 @@ ALTER TABLE `members`
 --
 ALTER TABLE `unattractions`
   ADD PRIMARY KEY (`un_id`),
-  ADD KEY `fk_unatt_member_no` (`member_no`),
-  ADD KEY `fk_unatt_att_no` (`att_no`);
+  ADD KEY `member_no` (`member_no`),
+  ADD KEY `att_no` (`att_no`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -187,7 +189,7 @@ ALTER TABLE `unattractions`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `attractions`
 --
