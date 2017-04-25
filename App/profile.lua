@@ -23,7 +23,20 @@ local function Check( event )
 	if(event.phase == "ended") then
 		if(obj == "ok") then
 			composer.gotoScene("overview")
-			
+
+		elseif(obj == "setting") then
+--[[
+			local myRoundedRect = display.newRoundedRect( cx, cy, cw, ch, 1 )
+			myRoundedRect:setFillColor( 1,0,1 )
+			myRoundedRect.alpha = 0.1
+
+			local options = {
+			    isModal = true,
+			    effect = "fade",
+			    time = 400,
+			}
+ 			composer.showOverlay( "setting", options )
+			]]
 		elseif(obj == "watchalong") then
 			
 			local options = {params = {PlaceName = "Chalong Temple"}}

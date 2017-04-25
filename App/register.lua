@@ -7,6 +7,7 @@ require("valid-email")
 
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
+local PictxfFirstName, PictxfLastName, PictxfPassword, PictxfConfirmPassword, PictxfEmail
 local Bg, CreateBtn, BackBtn, BgPickerWheels
 local cx, cy
 local ImageGroup, txfGroup
@@ -30,7 +31,7 @@ end
 local function Check( event )
     print( event.phase )
     if(event.phase == "ended") then
-        --composer.gotoScene( "menu" )
+        composer.gotoScene( "menu" )
 
     end
 end
@@ -93,7 +94,8 @@ local function UploadUserImage(  )
     --local url = "http://localhost/TESTUPLOAD/uploadd.php"
    -- local url = "http://nookza86.freehost.in.th/android_upload_api/upload.php"
     --local url = "https://mapofmem.000webhostapp.com/android_upload_api/upload.php"
-    local url = "http://mapofmem.esy.es/android_upload_api/upload.php"
+    local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload.php"
+  
     local method = "PUT"
      
     local params = {
@@ -194,7 +196,7 @@ local function CreateAccountListener( event )
     params.body = body
 
     --local url = "https://mapofmem.000webhostapp.com/android_login_api/register.php"
-    local url = "http://mapofmem.esy.es/android_login_api/register.php"
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/register.php"
     
    -- UploadUserImage(  )
     print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
@@ -259,88 +261,88 @@ function scene:show(event)
     cw = display.contentWidth
     ch = display.contentHeight
 
-    Bg = display.newImageRect( "Phuket/CreateAccount/BG.png", cw , ch * 2 )
+    Bg = display.newImageRect( "Phuket/CreateAccount/bg.png", cw , ch  )
     Bg.x = cx
-    Bg.y = cy + 150
+    Bg.y = cy 
     --Bg:scale( 0.3, 0.3 )
 
     PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
-    PicUser.x = cx - 200
+    PicUser.x = cx - 190
     PicUser.y = cy - 20
 
-    PicTitle = display.newImageRect( "Phuket/CreateAccount/Title.png", 991/3.5, 83/3.5 )
+    PicTitle = display.newImageRect( "Phuket/CreateAccount/title.png", 801/3.5, 120/3.5 )
     PicTitle.x = cx + 20
     PicTitle.y = cy - 140
 
-    PicFirstName = display.newImageRect( "Phuket/CreateAccount/firstname.png", 367/2.8, 80/2.8 )
-    PicFirstName.x = cx - 70
+    PicFirstName = display.newImageRect( "Phuket/CreateAccount/firstname.png", 366/2.8, 95/2.8 )
+    PicFirstName.x = cx - 50
     PicFirstName.y = cy - 80
 
-    PicLastName = display.newImageRect( "Phuket/CreateAccount/lastname.png", 331/2.8, 80/2.8 )
-    PicLastName.x = cx - 70
+    PicLastName = display.newImageRect( "Phuket/CreateAccount/lastname.png", 359/2.8, 96/2.8 )
+    PicLastName.x = cx - 50
     PicLastName.y = cy - 40
 
-    PicPassword = display.newImageRect( "Phuket/CreateAccount/pass.png", 279/2.8, 55/2.8 )
-    PicPassword.x = cx - 80
+    PicPassword = display.newImageRect( "Phuket/CreateAccount/pass.png", 296/2.8, 94/2.8 )
+    PicPassword.x = cx - 60
     PicPassword.y = cy
 
-    PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/confirm.png", 279/2.8, 112/2.8 )
-    PicConfirmPassword.x = cx - 80
-    PicConfirmPassword.y = cy + 40
+    PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/confirm.png", 247/2.8, 152/2.8 )
+    PicConfirmPassword.x = cx - 70
+    PicConfirmPassword.y = cy + 45
 
-    PicEmail = display.newImageRect( "Phuket/CreateAccount/email.png", 210/2.8, 55/2.8 )
-    PicEmail.x = cx - 90
-    PicEmail.y = cy + 80
+    PicEmail = display.newImageRect( "Phuket/CreateAccount/email.png", 209/2.8, 95/2.8 )
+    PicEmail.x = cx - 80
+    PicEmail.y = cy + 90
 
-    PicBirthDay = display.newImageRect( "Phuket/CreateAccount/birth.png", 314/2.8, 55/2.8 )
+    PicBirthDay = display.newImageRect( "Phuket/CreateAccount/birth.png", 298/2.8, 94/2.8 )
     PicBirthDay.x = cx - 60
     PicBirthDay.y = cy + 140
 
-    PicGender = display.newImageRect( "Phuket/CreateAccount/gender.png", 211/2.8, 55/2.8 )
+    PicGender = display.newImageRect( "Phuket/CreateAccount/gender.png", 229/2.8, 94/2.8 )
     PicGender.x = cx - 210
     PicGender.y = cy + 140
 
-    PicCountry = display.newImageRect( "Phuket/CreateAccount/country.png", 245/2.8, 55/2.8 )
+    PicCountry = display.newImageRect( "Phuket/CreateAccount/country.png", 255/2.8, 94/2.8 )
     PicCountry.x = cx + 120
     PicCountry.y = cy + 140
 
     txfFirstName = native.newTextField( PicFirstName.x + 180, PicFirstName.y, 250, 30 )
     txfFirstName.inputType = "default"
     txfFirstName.text = ""
-    txfFirstName.hasBackground = false
+    --txfFirstName.hasBackground = false
 
     txfLastName = native.newTextField( PicLastName.x + 180, PicLastName.y, 250, 30 )
     txfLastName.inputType = "default"
     txfLastName.text = ""
-    txfLastName.hasBackground = false
+    --txfLastName.hasBackground = false
 
     txfPassword = native.newTextField( PicPassword.x + 190, PicPassword.y, 250, 30 )
     txfPassword.inputType = "default"
     txfPassword.isSecure = true
     txfPassword.text = ""
-    txfPassword.hasBackground = false
+    --txfPassword.hasBackground = false
 
-    txfConfirmPassword = native.newTextField( PicConfirmPassword.x + 190, PicConfirmPassword.y, 250, 30 )
+    txfConfirmPassword = native.newTextField( PicConfirmPassword.x + 200, PicConfirmPassword.y, 250, 30 )
     txfConfirmPassword.inputType = "default"
     txfConfirmPassword.text = ""
     txfConfirmPassword.isSecure = true
-    txfConfirmPassword.hasBackground = false
+   -- txfConfirmPassword.hasBackground = false
     txfConfirmPassword.name = "txfConfirmPassword"
 
     txfConfirmPassword:addEventListener("userInput", textFieldHandler)
 
-    txfEmail = native.newTextField( PicEmail.x + 200, PicEmail.y, 250, 30 )
+    txfEmail = native.newTextField( PicEmail.x + 210, PicEmail.y, 250, 30 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
-    txfEmail.hasBackground = false
+    --txfEmail.hasBackground = false
     txfEmail.name = "txfEmail"
 
     txfEmail:addEventListener("userInput", textFieldHandler)
 
     CreateBtn = widget.newButton(
         {
-            width = 150/2,
-            height = 45/2,
+            width = 150/1.5,
+            height = 45/1.5,
             defaultFile = "Phuket/Button/Button/create.png",
             overFile = "Phuket/Button/ButtonPress/create.png",
             id = "CreateBtn",
@@ -368,7 +370,7 @@ function scene:show(event)
 
     --ImageGroup = display.newGroup()
     ---------------------------------- Group Place -----------------------------------------
-    ImageGroup:insert(Bg)
+    --ImageGroup:insert(Bg)
     ImageGroup:insert(PicUser)
     ImageGroup:insert(PicTitle)
     ImageGroup:insert(PicFirstName)
@@ -425,7 +427,7 @@ function scene:show(event)
         },
         {
             align = "center",
-            width = 215,
+            width = 240,
             startIndex = 21,
             labels = {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia",
                 "Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
@@ -466,11 +468,11 @@ function scene:show(event)
         fontSize = 14
     })  
 
-    BgPickerWheels = display.newImageRect( "Phuket/CreateAccount/BgPickerWheels.png", 500 , 160 )
+    BgPickerWheels = display.newImageRect( "Phuket/CreateAccount/select.png", 500 , 160 )
     BgPickerWheels.x = pickerWheel.x
     BgPickerWheels.y = pickerWheel.y
 
-    print( pickerWheel.x , pickerWheel.y )
+    print( pickerWheel.x , pickerWheel.y, pickerWheel.height, pickerWheel.width )
 
  
 -- Get the table of current values for all columns
@@ -487,7 +489,7 @@ function scene:show(event)
         scrollHeight = ch,
         topPadding = 20,
         bottomPadding = 30,
-        --hideBackground = true,
+        hideBackground = true,
        -- hideScrollBar = true,
        -- isBounceEnabled = false,
         horizontalScrollDisabled = true

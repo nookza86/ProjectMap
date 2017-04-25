@@ -31,10 +31,16 @@ local function networkListener( event )
         native.setActivityIndicator( false )
 
         ErrorCheck = decodedData["error"]
+        ActiveCheck = decodedData["user"]["active"]
 
     	if( ErrorCheck == true) then
     		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
+
+        elseif ( ActiveCheck == 'no') then
+        	local alert = native.showAlert( "Error", "Please Activate.", { "OK" })
+        	print( "Need Activate." )
+
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["first_name"] )
@@ -71,7 +77,7 @@ local function LoginListener(  )
     params.headers = headers
     params.body = body
 
-    local url = "http://mapofmem.esy.es/android_login_api/login.php"
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/login.php"
     --local url = "https://mapofmem.000webhostapp.com/android_login_api/login.php"
 
     print( "Login Data Sending To ".. url .." Web Server : " .. LoginSend )
@@ -86,6 +92,10 @@ end
 
 local function Check( event )
 	print( event.target.id )
+
+	if(event.target.id == "LoginWithFaceBookBtn") then
+		composer.gotoScene( "overview" )
+	end
 
 	if(event.phase == "ended") then
 		if(event.target.id == "login") then
@@ -228,6 +238,7 @@ function scene:hide(event)
 		RemoveAll(PasswordImage)
 		RemoveAll(PasswordTxf)
 		RemoveAll(TextFieldImage)
+		SignUpImage:removeEventListener( "touch", Check )
 
 		
 		print("Scene #Menu : hide (will)")

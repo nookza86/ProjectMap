@@ -21,21 +21,38 @@ class DB_Functions {
     function __destruct() {
          
     }
+
+
+    public function SendEmailActivation($email, $uuid, $member_no)
+    {
+        $strTo = $email;
+        $strSubject = "Activate Member Account";
+        $strHeader = "Content-type: text/html; charset=windows-874\n"; // or UTF-8 //
+        $strHeader .= "From: admin@map.com\nReply-To: admin@map.com";
+        $strMessage = "";
+        $strMessage .= "Welcome : <br>";
+        $strMessage .= "=================================<br>";
+        $strMessage .= "Activate account click here.<br>";
+        $strMessage .= "mapofmem.esy.es/admin/activate/activate.php?sid=".$uuid."&uid=".$member_no."<br>";
+        $strMessage .= "=================================<br>";
+
+        $flgSend = mail($strTo,$strSubject,$strMessage,$strHeader);   
+    }
  
     /**
      * Storing new user
      * returns user details
      */
     public function storeUser($fname, $lname, $email, $password, $gender, $BirthMonth, $BirthDay, $BirthYear, $Country, $UserFrom, $UserImage) {
-        //$uuid = uniqid('', true);
+        $uuid = uniqid('', true);
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
         $dob = "{$BirthYear}-{$BirthMonth}-{$BirthDay}";
         $inputdob = date("Y-m-d",strtotime($dob));
 
-        $stmt = $this->conn->prepare("INSERT INTO `members`(`first_name`, `last_name`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, `user_img`, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("ssssssssss", $fname, $lname, $email, $encrypted_password, $salt, $gender, $inputdob, $Country, $UserFrom, $UserImage);
+        $stmt = $this->conn->prepare("INSERT INTO `members`(`first_name`, `last_name`, `email`, `encrypted_password`, `salt`, `gender`, `dob`, `country`, `userfrom`, uniqid, `user_img`, last_update) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("sssssssssss", $fname, $lname, $email, $encrypted_password, $salt, $gender, $inputdob, $Country, $UserFrom, $uuid, $UserImage);
         $result = $stmt->execute();
         $stmt->close();
  
@@ -49,7 +66,7 @@ class DB_Functions {
 
             $user = array();
 
-           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $uuid, $active, $user_img, $last_update);
 
             while ($stmt->fetch()) {
                 //printf ("%s %s %s %s %s %s %s %s %s %s %s %s\n", $member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
@@ -67,8 +84,12 @@ class DB_Functions {
                 $user["dob"] = $dob;
                 $user["country"] = $country;
                 $user["userfrom"] = $userfrom;
+                $user["uuid"] = $uuid;
+                $user["active"] = $active;
                 $user["user_img"] = $user_img;
                 $user["last_update"] = $last_update;
+
+                 $this->SendEmailActivation($email, $uuid, $member_no);
 
             $stmt->close();
  
@@ -92,7 +113,7 @@ class DB_Functions {
 
            $user = array();
 
-           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
+           $stmt->bind_result($member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $uuid, $active, $user_img, $last_update);
 
             while ($stmt->fetch()) {
                 //printf ("%s %s %s %s %s %s %s %s %s %s %s %s\n", $member_no, $first_name, $last_name, $email, $encrypted_password, $salt, $gender, $dob, $country, $userfrom, $user_img, $last_update);
@@ -110,6 +131,8 @@ class DB_Functions {
                 $user["dob"] = $dob;
                 $user["country"] = $country;
                 $user["userfrom"] = $userfrom;
+                $user["uuid"] = $uuid;
+                $user["active"] = $active;
                 $user["user_img"] = $user_img;
                 $user["last_update"] = $last_update;
 

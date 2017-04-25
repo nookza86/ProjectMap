@@ -31,6 +31,7 @@ if (isset($_POST['LoginSend'])) {
         $response["user"]["dob"] = $user["dob"];
         $response["user"]["Country"] = $user["country"];
         $response["user"]["UserFrom"] = $user["userfrom"];
+        $response["user"]["active"] = $user["active"];
         $response["user"]["UserImage"] = $user["user_img"];
         $response["user"]["LastUpdate"] = $user["last_update"];
         echo json_encode($response);

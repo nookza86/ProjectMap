@@ -164,7 +164,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	island.y = cy
 
 	ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
-	ProfileImage.x = cx - 200
+	ProfileImage.x = cx - 250
 	ProfileImage.y = cy - 130
 	ProfileImage.name = "profile"
 
