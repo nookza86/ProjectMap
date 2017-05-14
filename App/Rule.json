@@ -1,0 +1,65 @@
+{
+  "rule": [
+    {
+      "no": 1,
+      "nationality": "Canada",
+      "recommend": [ "Karon Beach", "Patong Beach", "Kata Beach" ]
+    },
+    {
+      "no": 2,
+      "nationality": "Australia",
+      "recommend": [ "Karon Beach", "Kata Beach", "Patong Beach", "Bang Pae Waterfall", "Chalong Temple", "Big Buddha" ]
+    },
+    {
+      "no": 3,
+      "nationality": "United Kingdom",
+      "recommend": [ "Patong Beach", "Kata Beach", "Karon Beach" ]
+    },
+    {
+      "no": 4,
+      "nationality": "India",
+      "recommend": [ "Patong Beach" ]
+    },
+    {
+      "no": 5,
+      "nationality": "Other",
+      "recommend": [
+        {
+          "no": 1,
+          "name": "Karon Beach",
+          "recommend": [ "Kata Beach", "Kamala Beach", "Patong Beach" ]
+        },
+        {
+          "no": 2,
+          "name": "Kata Beach",
+          "recommend": [ "Karon Beach", "Patong Beach", "Kamala Beach" ]
+        },
+        {
+          "no": 3,
+          "name": "Patong Beach",
+          "recommend": [ "Kata Beach", "Kamala Beach", "Karon Beach" ]
+        },
+        {
+          "no": 4,
+          "name": "Kamala Beach",
+          "recommend": [ "Kata Beach", "Karon Beach", "Patong Beach" ]
+        },
+        {
+          "no": 5,
+          "name": "Big Buddha",
+          "recommend": [ "Bang Pae Waterfall", "Chalong Temple" ]
+        },
+        {
+          "no": 6,
+          "name": "Chalong Temple",
+          "recommend": [ "Bang Pae Waterfall", "Big Buddha" ]
+        },
+        {
+          "no": 7,
+          "name": "Bang Pae Waterfall",
+          "recommend": [ "Chalong Temple", "Big Buddha" ]
+        }
+      ]
+    }
+  ]
+}

@@ -31,13 +31,13 @@ local function networkListener( event )
         native.setActivityIndicator( false )
 
         ErrorCheck = decodedData["error"]
-        ActiveCheck = decodedData["user"]["active"]
+       -- ActiveCheck = decodedData["user"]["active"]
 
     	if( ErrorCheck == true) then
     		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
 
-        elseif ( ActiveCheck == 'no') then
+        elseif ( decodedData["user"]["active"] == 'no') then
         	local alert = native.showAlert( "Error", "Please Activate.", { "OK" })
         	print( "Need Activate." )
 

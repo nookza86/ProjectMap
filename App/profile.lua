@@ -44,12 +44,12 @@ local function Check( event )
 
 		elseif(obj == "bangpae") then
 		
-			local options = {params = {PlaceName = "BangPae"}}
+			local options = {params = {PlaceName = "Bang Pae Waterfall"}}
 			composer.gotoScene("HomePlace", options)
 
 		elseif(obj == "bigbuddha") then
 			
-			local options = {params = {PlaceName = "Big buddha"}}
+			local options = {params = {PlaceName = "Big Buddha"}}
 			composer.gotoScene("HomePlace", options)
 
 		elseif(obj == "kata") then

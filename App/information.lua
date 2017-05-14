@@ -1,9 +1,11 @@
 local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
+local json = require ("json")
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
-local Recommend1, Recommend2
+local Recommend
+local NumberOfRecPlace = {}
 
 local function RemoveAll( event )
 	if(event) then
@@ -21,15 +23,57 @@ end
 
 local function Check( event )
 	print( event.target.id )
-	local options = {params = {PlaceName = params.PlaceName}}
+	
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
+			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("HomePlace",options)
-		elseif (event.target.id == "register") then
-			composer.gotoScene("register")
+		else
+			local options = {params = {PlaceName = event.target.id}}
+			composer.gotoScene("HomePlace",options)
 		end
 	end
+end
+
+local function RecommendPlace( PlaceNamee )
+	local filename = system.pathForFile( "Rule.json", system.ResourceDirectory )
+		local decoded, pos, msg = json.decodeFile( filename )
+		local RuleOtherNo = 0
+		local nationality = "Other"
+		local CountRec = {}
+		if not decoded then
+		    print( "Decode failed at "..tostring(pos)..": "..tostring(msg) )
+		else
+		    print( "File successfully decoded!" )
+--------------------check where is number of other rule ------------------------------
+		    for idx, val in ipairs(decoded.rule) do
+		    	if (nationality == val.nationality) then
+		    		RuleOtherNo = val.no
+		    		print( "Rule No. " .. RuleOtherNo )
+		    		print( "Rule nationality is " .. val.nationality)
+		    		print( "-------------------------------------------------" )
+		    		break
+		    	end-- if nation
+			end--for 1
+----------------------------------check where is attractions name------------------
+			for idx, val in ipairs(decoded["rule"][RuleOtherNo]["recommend"]) do
+				 if (decoded["rule"][RuleOtherNo]["recommend"][idx]["name"] == PlaceNamee) then
+				 	RuleOtherAttractionNo = idx
+				  	print( "Attraction name : " .. decoded["rule"][RuleOtherNo]["recommend"][idx]["name"])
+				  	print( "No. " .. RuleOtherAttractionNo )
+				  	print( "-------------------------------------------------" )
+				  	break
+				 end 
+			end
+---------------------------list reccommend place----------------------------------
+			for j,v in ipairs(decoded["rule"][RuleOtherNo]["recommend"][RuleOtherAttractionNo]["recommend"]) do
+				CountRec[j] = v
+				print( "Recommend no : " .. j,v ) 
+			end
+			print( "-------------------------------------------------" )
+	end -- decode
+	return CountRec
 end
 
 function scene:show(event)
@@ -65,19 +109,36 @@ function scene:show(event)
 		BackBtn.x = cx - 240
 		BackBtn.y = cy + 100
 
-		Recommend1 = widget.newButton(
-    	{
-	        width = 300/2.5,
-	        height = 60/2.5,
-	        defaultFile = "Phuket/Button/RButton/bangpae.png",
-	        overFile = "Phuket/Button/RButtonPress/bangpae.png",
-	        id = "Recommend1",
-	        onEvent = Check
-    	}
-			)
+		NumberOfRecPlace = RecommendPlace(params.PlaceName)
 		
-		Recommend1.x = cx + 100
-		Recommend1.y = cy + 100
+		--print( NumberOfRecPlace )
+		local PositionX = cx + 60
+		local PositionY = cy + 90
+		Recommend = {}
+		for i=1, #NumberOfRecPlace do
+				Recommend[i] = widget.newButton(
+	    	{
+		       -- width = 300/2.5,
+		       -- height = 60/2.5,
+		        defaultFile = "Phuket/Button/RButton/".. NumberOfRecPlace[i] ..".png",
+		        overFile = "Phuket/Button/RButtonPress/".. NumberOfRecPlace[i] ..".png",
+		        id = NumberOfRecPlace[i],
+		        onEvent = Check
+	    	}
+				)
+			if (i == 3) then
+				PositionX = cx + 60
+				PositionY = cy + 130
+				print( "if 3" )
+			end
+
+			Recommend[i].x = PositionX 
+			Recommend[i].y = PositionY 
+			Recommend[i]:scale(0.5,0.5)
+			PositionX = PositionX + 150
+			
+		end
+
 
 
 	elseif (phase == "did") then
@@ -94,7 +155,8 @@ function scene:hide(event)
 		RemoveAll(Bg)
 		RemoveAll(BgText)
 		RemoveAll(BackBtn)
-		RemoveAll(Recommend1)
+		--RemoveAll(NumberOfRecPlace)
+		
 		print("Scene #informatiom : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #informatiom : hide (did)")
