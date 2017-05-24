@@ -1,10 +1,13 @@
 local composer = require("composer")
 local widget = require("widget" )
+local sqlite = require("sqlite3")
 local scene = composer.newScene()
 local Bg, cx, cy, cw, ch
 local TitleImage, UsernameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
+local TextName, TextCountry
+local path, db, sql
 --local params
 
 local function RemoveAll( event )
@@ -118,6 +121,22 @@ function scene:show(event)
 		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 486/3, 55/3 )
 		CountryImage.x = UsernameImage.x
 		CountryImage.y = UsernameImage.y + 40
+
+		local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+		local db = sqlite.open(path)
+
+		TextName = display.newText( "", UserImage.x + 350, UserImage.y - 30, native.systemFont, 16 )
+		TextName:setFillColor( 1, 0, 0 )
+
+		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, native.systemFont, 16 )
+		TextCountry:setFillColor( 1, 0, 0 )
+
+		for row in db:nrows("SELECT fname, lname, country FROM personel;") do
+			TextName.text = row.fname .. " " .. row.lname  
+			TextCountry.text = row.country                          
+		end
+
+		
 
 		KataImage = widget.newButton(
     	{

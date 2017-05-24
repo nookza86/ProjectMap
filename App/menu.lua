@@ -1,6 +1,7 @@
 local composer = require("composer")
 local widget = require("widget" )
 local json = require ("json")
+local sqlite = require("sqlite3")
 local facebook = require( "plugin.facebook.v4" )
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
@@ -17,6 +18,67 @@ local function RemoveAll( event )
 		event = nil
 		
 	end
+end
+
+local function InsertData(  )
+
+	local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+	local db = sqlite.open(path)
+	local tablesetup = [[CREATE TABLE IF NOT EXISTS personel (
+							`id`	INTEGER,
+							`fname`	TEXT,
+							`lname`	TEXT,
+							`email`	TEXT,
+							`gender`	TEXT,
+							`dob`	TEXT,
+							`country`	TEXT,
+							`userfrom`	TEXT,
+							`img`	TEXT,
+							PRIMARY KEY(`id`));
+
+						CREATE TABLE IF NOT EXISTS `attractions` (
+							`att_no`	INTEGER,
+							`att_name`	TEXT,
+							`descriptions`	TEXT,
+							`att_img`	TEXT,
+							PRIMARY KEY(`att_no`));
+
+							CREATE TABLE IF NOT EXISTS `diary` (
+								`diary_id`	INTEGER,
+								`member_no`	INTEGER,
+								`att_no`	INTEGER,
+								`impression`	INTEGER,
+								`beauty`	INTEGER,
+								`clean`	INTEGER,
+								`diary_pic1`	TEXT,
+								`diary_pic2`	TEXT,
+								`diary_pic3`	TEXT,
+								`diary_pic4`	TEXT,
+								PRIMARY KEY(`diary_id`));
+
+							CREATE TABLE IF NOT EXISTS `unattractions` (
+								`un_id`	INTEGER,
+								`member_no`	INTEGER,
+								`att_no`	INTEGER,
+								PRIMARY KEY(`un_id`));
+						]]
+
+	db:exec(tablesetup)
+
+	local insertQuery = "INSERT INTO personel VALUES (" ..
+			decodedData["member_no"] .. ",'" ..
+			decodedData["user"]["first_name"] .. "','" ..
+			decodedData["user"]["last_name"].. "','" .. 
+			decodedData["user"]["email"].. "','" ..
+			decodedData["user"]["gender"].. "','" ..
+			decodedData["user"]["dob"].. "','" ..
+			decodedData["user"]["Country"].. "','" ..
+			decodedData["user"]["UserFrom"].. "','" ..
+			decodedData["user"]["UserImage"] .. "');"
+
+	db:exec( insertQuery )
+	print(insertQuery)
+
 end
 
 local function networkListener( event )
@@ -44,6 +106,9 @@ local function networkListener( event )
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["first_name"] )
+
+        	InsertData(  )
+
         	composer.gotoScene("overview")
 
     	end
@@ -149,7 +214,7 @@ function scene:show(event)
 
 		EmailTxf = native.newTextField( cx , cy + 40, 200, 25 )
 	    EmailTxf.inputType = "default"
-	    EmailTxf.text = ""
+	    EmailTxf.text = "nook_we@hotmail.com"
 	    EmailTxf.hasBackground = false
 	    EmailTxf.placeholder = "E-mail"
 
@@ -160,7 +225,7 @@ function scene:show(event)
 	    PasswordTxf = native.newTextField( cx , cy + 80, 200, 25 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
-	    PasswordTxf.text = ""
+	    PasswordTxf.text = "123456789"
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 
