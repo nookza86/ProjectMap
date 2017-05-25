@@ -5,10 +5,13 @@ local json = require ("json")
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
 local Recommend, TextDesField
+local AttImg
 local NumberOfRecPlace = {}
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
+display.setStatusBar(display.HiddenStatusBar)
+local slideView = require("Zunware_SlideView")
 
 local function RemoveAll( event )
 	if(event) then
@@ -26,12 +29,18 @@ end
 
 local function Check( event )
 	print( event.target.id )
-	
+	print( event.phase )
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("HomePlace",options)
+
+		elseif(event.target.id == "img") then
+			local options = {params = {PlaceName = params.PlaceName}}
+			print( "Go to scene #HomePlace " .. params.PlaceName )
+			composer.gotoScene("informationImg",options)
+
 		else
 			local options = {params = {PlaceName = event.target.id}}
 			composer.gotoScene("HomePlace",options)
@@ -93,16 +102,16 @@ function scene:show(event)
 	    Bg.x = cx 
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
-
+		
 		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/3.3, 637/3.3)
 		BgText.x = cx + 80
 		BgText.y = cy - 30
+		
 
 		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width, BgText.height, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
-	    --TextDesField.size = 16
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
 		local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
@@ -158,9 +167,14 @@ function scene:show(event)
 			
 		end
 
+		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
+		AttImg.x = cx - 200
+		AttImg.y = cy 
+		AttImg:scale( 0.2, 0.2 ) 
+		AttImg:addEventListener("touch", Check)
+		AttImg.id = "img"
 
-
-	elseif (phase == "did") then
+		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
 
 		
@@ -175,6 +189,12 @@ function scene:hide(event)
 		RemoveAll(BgText)
 		RemoveAll(BackBtn)
 		RemoveAll(TextDesField)
+		RemoveAll(AttImg)
+
+	for i=1, #NumberOfRecPlace do
+		Recommend[i]:removeSelf( )
+		Recommend[i] = nil
+	end
 		
 		print("Scene #informatiom : hide (will)")
 	elseif (phase == "did") then

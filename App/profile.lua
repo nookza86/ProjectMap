@@ -282,6 +282,8 @@ function scene:hide(event)
 		RemoveAll(BangpaeImage)
 		RemoveAll(SettingBtn)
 		RemoveAll(OkBtn)
+		RemoveAll(TextName)
+		RemoveAll(TextCountry)
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		
