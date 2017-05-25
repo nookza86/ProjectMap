@@ -4,12 +4,15 @@ local scene = composer.newScene()
 local json = require ("json")
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
-local Recommend
+local Recommend, TextDesField
 local NumberOfRecPlace = {}
+local sqlite = require("sqlite3")
+local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+local db = sqlite.open(path)
 
 local function RemoveAll( event )
 	if(event) then
-		print( "deletePic in scene #Information " .. params.PlaceName  )
+		--print( "deletePic in scene #Information " .. params.PlaceName  )
 		event:removeSelf( )
 		event = nil
 		
@@ -95,6 +98,22 @@ function scene:show(event)
 		BgText.x = cx + 80
 		BgText.y = cy - 30
 
+		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width, BgText.height, 100 )
+	    TextDesField.text = ""
+	    TextDesField.hasBackground = false
+	    TextDesField.isEditable = false
+	    --TextDesField.size = 16
+	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
+
+		local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+	--	print(sql)
+		for row in db:nrows(sql) do
+			TextDesField.text = row.descriptions
+			--print(row.descriptions )
+		end
+
+		--TextDesField.isFontSizeScaled = true
+
 		BackBtn = widget.newButton(
     	{
 	        width = 43,
@@ -143,7 +162,7 @@ function scene:show(event)
 
 	elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
-		--timer.performWithDelay(3000, showScene)
+
 		
 	end
 end
@@ -155,7 +174,7 @@ function scene:hide(event)
 		RemoveAll(Bg)
 		RemoveAll(BgText)
 		RemoveAll(BackBtn)
-		--RemoveAll(NumberOfRecPlace)
+		RemoveAll(TextDesField)
 		
 		print("Scene #informatiom : hide (will)")
 	elseif (phase == "did") then

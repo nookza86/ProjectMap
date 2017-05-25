@@ -21,53 +21,6 @@ class DB_Functions {
     function __destruct() {
          
     }
-    public function getData($TableName)
-    {
-        $table = array();
-        switch ($TableName) {
-            case 'attractions':
-                $stmt = $this->conn->prepare("SELECT * FROM attractions");
-                $stmt->execute();
-                $stmt->bind_result($att_no, $att_name, $descriptions, $att_img, $last_update);
-
-                while ($stmt->fetch()) {
-                    printf ("%s %s %s %s %s \n", $att_no, $att_name, $descriptions, $att_img, $last_update);
-                    echo "";
-
-                 }
-                break;
-
-                case 'diary':
-                $stmt = $this->conn->prepare("SELECT * FROM diary");
-                $stmt->execute();
-                $stmt->bind_result($diary_id, $member_no, $att_no, $impression, $beauty, $clean, $diary_pic1, $diary_pic2, $diary_pic3, $diary_pic4, $last_update);
-
-                while ($stmt->fetch()) {
-                    printf ("%s %s %s %s %s %s %s %s %s %s %s\n", $diary_id, $member_no, $att_no, $impression, $beauty, $clean, $diary_pic1, $diary_pic2, $diary_pic3, $diary_pic4, $last_update);
-                    echo "";
-
-                 }
-                break;
-
-                case 'members':
-                $stmt = $this->conn->prepare("SELECT * FROM members");
-                break;
-
-                case 'unattractions':
-                $stmt = $this->conn->prepare("SELECT * FROM unattractions");
-                $stmt->execute();
-                $stmt->bind_result($un_id, $member_no, $att_no, $last_update);
-
-                while ($stmt->fetch()) {
-                    printf ("%s %s %s %s", $un_id, $member_no, $att_no, $last_update);
-                    echo "";
-
-                 }
-                break;
-
-        }
-                   
-    }
 
     public function SendEmailActivation($email, $uuid, $member_no)
     {
