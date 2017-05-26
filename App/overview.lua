@@ -223,7 +223,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	KataLabel.name = "kata"
 
 	cocoKataImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
-	cocoKataImage.x = kata.x - 25
+	cocoKataImage.x = kata.x - 15
 	cocoKataImage.y = kata.y - 20
 	cocoKataImage.rotation = -15
 
@@ -272,12 +272,12 @@ print( display.pixelHeight / display.actualContentHeight )
 	cocokaronImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocokaronImage.x = karon.x + 5
 	cocokaronImage.y = karon.y - 20
-
+--[[
 	ChairPatong = display.newImageRect( "Phuket/Overview/chair.png", 323/13, 548/13 )
 	ChairPatong.x = island.x - 75
 	ChairPatong.y = island.y - 60
 	ChairPatong.xScale = -1
-
+]]
 	TreeImage = display.newImageRect( "Phuket/Overview/tree.png", 291/6, 161/6 )
 	TreeImage.x = island.x - 20
 	TreeImage.y = island.y - 120
@@ -388,7 +388,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(karon)
 	PlaceGroup:insert(KaronLabel)
 	PlaceGroup:insert(cocoKataImage)
-	PlaceGroup:insert(ChairPatong)
+	--PlaceGroup:insert(ChairPatong)
 	PlaceGroup:insert(patong)
 	PlaceGroup:insert(PatongLabel)
 	PlaceGroup:insert(kamala1)
@@ -452,7 +452,7 @@ function scene:hide(event)
 	PlaceGroup:remove(karon)
 	PlaceGroup:remove(KaronLabel)
 	PlaceGroup:remove(cocoKataImage)
-	PlaceGroup:remove(ChairPatong)
+	--PlaceGroup:remove(ChairPatong)
 	PlaceGroup:remove(patong)
 	PlaceGroup:remove(PatongLabel)
 	PlaceGroup:remove(TreeImage)
@@ -481,7 +481,7 @@ function scene:hide(event)
 	RemoveAll(cocokaronImage)
 	RemoveAll(karon)
 	RemoveAll(cocoKataImage)
-	RemoveAll(ChairPatong)
+	--RemoveAll(ChairPatong)
 	RemoveAll(TreeImage)
 	RemoveAll(CloudTree)
 	RemoveAll(LagoonImage)

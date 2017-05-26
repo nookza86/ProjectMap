@@ -69,7 +69,7 @@ function scene:show(event)
 
 		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
 		
-		if(params.PlaceName == "BangPae") then
+		if(params.PlaceName == "Bang Pae Waterfall") then
 			TitleImage:scale( 0.4, 0.4 )
 		elseif(params.PlaceName == "Kata Beach" or params.PlaceName == "Big buddha") then
 			TitleImage:scale( 0.6, 0.6 )

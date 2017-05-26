@@ -11,7 +11,22 @@ local ImpressionRadioButton
 local BeautyRadioButton
 local CleanRadioButton
 local DiaryGroup
+local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
+			myText:setFillColor( 1, 0, 0 )
 
+-----------------PPhoto Picker----------------------------------------
+--https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
+local centerX = display.contentCenterX
+local centerY = display.contentCenterY
+local _W = display.contentWidth
+local _H = display.contentHeight
+
+display.setStatusBar( display.HiddenStatusBar ) 
+
+local photo		-- holds the photo object
+local PhotoName
+local PHOTO_FUNCTION = media.PhotoLibrary 		-- or media.SavedPhotosAlbum
+-----------------------------------------------------------------------------
 local function RemoveAll( event )
 	if(event) then
 		print( "deletePic in scene #Diary " .. params.PlaceName  )
@@ -39,6 +54,49 @@ end
 local function onSwitchPress( event )
     local switch = event.target
     print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+end
+
+-- Media listener
+-- Executes after the user picks a photo (or cancels)
+--
+local sessionComplete = function(event)
+	photo = event.target
+	
+	if photo then
+
+		if photo.width > photo.height then
+			photo:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = _W / photo.contentWidth
+		local yScale = _H / photo.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		photo:scale( scale, scale )
+		photo.x = centerX
+		photo.y = centerY
+		
+		print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
+
+		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
+   		local t2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, 0, 0, true )
+   		t2:scale(0.1,0.1)
+   		myText.text = PhotoName..".jpg"
+   		display.remove( photo )
+		
+	else
+		myText.text = "No Image Selected"
+		myText.x = display.contentCenterX
+		myText.y = display.contentCenterY
+		print( "No Image Selected" )
+	end
+end
+
+local function AddImgListener( event )
+	PhotoName = event.target.name
+	print( PhotoName )
+	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
 end
 
 function scene:show(event)
@@ -70,21 +128,25 @@ function scene:show(event)
 		ImageUser1.x = cx - 170
 		ImageUser1.y = cy - 100
 		ImageUser1.name = "ImageUser1"
+		ImageUser1:addEventListener( "touch", AddImgListener )
 
 		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser2.x = cx - 220
 		ImageUser2.y = cy - 20
 		ImageUser2.name = "ImageUser2"
+		ImageUser2:addEventListener( "touch", AddImgListener )
 
 		ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser3.x = ImageUser2.x + 50
 		ImageUser3.y = ImageUser2.y 
 		ImageUser3.name = "ImageUser3"
+		ImageUser3:addEventListener( "touch", AddImgListener )
 
 		ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser4.x = ImageUser3.x + 50
 		ImageUser4.y = ImageUser3.y 
 		ImageUser4.name = "ImageUser4"
+		ImageUser4:addEventListener( "touch", AddImgListener )
 
 		ImpressionImage = display.newImageRect( "Phuket/Diary/impression.png", 450/2.5, 80/2.5 )
 		ImpressionImage.x = ImageUser4.x - 20
@@ -298,7 +360,7 @@ end
 		DiaryGroup:insert( ImageUser2 )
 		DiaryGroup:insert( ImageUser3 )
 		DiaryGroup:insert( ImageUser4 )
-
+		DiaryGroup:insert(myText)
 		DiaryGroup:insert( ScoreImage )
 		DiaryGroup:insert( ImpressionImage )
 		DiaryGroup:insert( BeautyImage )

@@ -108,7 +108,7 @@ function scene:show(event)
 		BgText.y = cy - 30
 		
 
-		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width, BgText.height, 100 )
+		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
