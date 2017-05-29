@@ -1,6 +1,9 @@
 local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
+local sqlite = require("sqlite3")
+local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn, SaveBtn
 local ImageUser1, ImageUser2, ImageUser3, ImageUser4, ImageUser5
@@ -10,9 +13,13 @@ local ImpressionRadioGroup, BeautyRadioGroup, CleanRadioGroup
 local ImpressionRadioButton
 local BeautyRadioButton
 local CleanRadioButton
+local PhotoPickerCheck1, PhotoPickerCheck2, PhotoPickerCheck3, PhotoPickerCheck4
 local DiaryGroup
+local TextDesField
+local AddImgListener
 local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
 			myText:setFillColor( 1, 0, 0 )
+
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -41,12 +48,77 @@ function scene:create(event)
 	print("Scene #Diary : create")
 end
 
+local function uploadListener( event )
+   if ( event.isError ) then
+      print( "Network Error." )
+      print( "Status:", event.status )
+      print( "Response:", event.response )
+      TextDesField.text = event.status .. event.response
+
+   else
+      if ( event.phase == "began" ) then
+         print( "Upload started" )
+      elseif ( event.phase == "progress" ) then
+         print( "Uploading... bytes transferred ", event.bytesTransferred )
+      elseif ( event.phase == "ended" ) then
+         print( "Upload ended..." )
+         print( "Status:", event.status )
+         print( "Response:", event.response )
+         TextDesField .text = event.status ..event.response 
+      end
+   end
+end
+
+local function UploadUserImage( fileName )
+
+    local url = "http://mapofmem.esy.es/admin/api/android_upload_api/diary_upload.php"
+  
+    local method = "PUT"
+     
+    local params = {
+       timeout = 60,
+       progress = true,
+       bodyType = "binary"
+    }
+
+    local filename = fileName .. ".jpg"
+    local baseDirectory = system.DocumentsDirectory
+   -- local baseDirectory = system.DocumentsDirectory 
+   -- local baseDirectory = system.TemporaryDirectory
+    local contentType = "image/jpge" 
+
+    local headers = {}
+    headers.filename = filename
+    params.headers = headers
+     
+    network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
+end
+
 local function Check( event )
 
 	local options = {params = {PlaceName = params.PlaceName}}
+
 	if(event.phase == "ended") then
-		print( "Go to scene #HomePlace " .. params.PlaceName )
-		composer.gotoScene("HomePlace", options)
+		if (event.target.name == "BackBtn") then
+			composer.gotoScene("HomePlace", options)
+		end
+		
+		if (PhotoPickerCheck1 )then
+			UploadUserImage("ImageUser1")
+		end
+
+		if (PhotoPickerCheck2 )then
+			UploadUserImage("ImageUser2")
+		end
+
+		if (PhotoPickerCheck3 )then
+			UploadUserImage("ImageUser3")
+		end
+
+		if (PhotoPickerCheck4 )then
+			UploadUserImage("ImageUser4")
+		end
+		
 	end
 
 end
@@ -54,6 +126,17 @@ end
 local function onSwitchPress( event )
     local switch = event.target
     print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+
+    if (switch.id == "ImpressionRadioButton1" or switch.id == "ImpressionRadioButton2" or switch.id == "ImpressionRadioButton3" or switch.id == "ImpressionRadioButton4" or switch.id == "ImpressionRadioButton5") then
+    	print( "1" )
+
+    elseif (switch == "BeautyRadioButton1" or switch.id == "BeautyRadioButton2" or switch.id == "BeautyRadioButton3" or switch.id == "BeautyRadioButton4" or switch.id == "BeautyRadioButton5") then
+    	print( "2" )
+
+    else
+    	print( "3" )
+    end
+
 end
 
 -- Media listener
@@ -73,27 +156,91 @@ local sessionComplete = function(event)
 		local xScale = _W / photo.contentWidth
 		local yScale = _H / photo.contentHeight
 		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 1280
+		local maxHeight = 720
+
 		photo:scale( scale, scale )
 		photo.x = centerX
 		photo.y = centerY
 		
 		print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 
+
+
+		--rescale width
+		if ( photo.width > maxWidth ) then
+		   local ratio = maxWidth / photo.width
+		   photo.width = maxWidth
+		   photo.height = photo.height * ratio
+		end
+		 
+		--rescale height
+		if ( photo.height > maxHeight ) then
+		   local ratio = maxHeight / photo.height
+		   photo.height = maxHeight
+		   photo.width = photo.width * ratio
+		end
+
 		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-   		local t2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, 0, 0, true )
-   		t2:scale(0.1,0.1)
-   		myText.text = PhotoName..".jpg"
+   		if (PhotoName == "ImageUser1") then
+   			PhotoPickerCheck1 = true
+   			ImageUser1:removeEventListener( "touch", AddImgListener )
+   			RemoveAll(ImageUser1)
+   			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 170, cy - 100, true )
+   			ImageUser1:scale(scale , scale )
+   			ImageUser1.name = "ImageUser1"
+   			ImageUser1:addEventListener( "touch", AddImgListener )
+
+   		elseif (PhotoName == "ImageUser2") then
+   			PhotoPickerCheck2 = true
+   			ImageUser2:removeEventListener( "touch", AddImgListener )
+   			RemoveAll(ImageUser2)
+   			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 220, cy - 20, true )
+   			ImageUser2:scale(scale / 2, scale / 2 )
+   			ImageUser2.name = "ImageUser2"
+   			ImageUser2:addEventListener( "touch", AddImgListener )
+
+   		elseif (PhotoName == "ImageUser3") then
+   			PhotoPickerCheck3 = true
+   			ImageUser3:removeEventListener( "touch", AddImgListener )
+   			RemoveAll(ImageUser3)
+   			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImageUser2.x + 50, ImageUser2.y, true )
+   			ImageUser3:scale(scale / 2, scale / 2 )
+   			ImageUser3.name = "ImageUser3"
+   			ImageUser3:addEventListener( "touch", AddImgListener )
+
+   		else
+   			PhotoPickerCheck4 = true
+   			ImageUser4:removeEventListener( "touch", AddImgListener )
+   			RemoveAll(ImageUser4)
+   			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImageUser3.x + 50, ImageUser3.y, true )
+   			ImageUser4:scale(scale / 2, scale / 2 )
+   			ImageUser4.name = "ImageUser4"
+   			ImageUser4:addEventListener( "touch", AddImgListener )
+
+   		end
+
+   		
+   		myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
    		display.remove( photo )
 		
 	else
+		if (PhotoName == "ImageUser1") then
+   			PhotoPickerCheck1 = false
+   		elseif (PhotoName == "ImageUser2") then
+   			PhotoPickerCheck2 = false
+   		elseif (PhotoName == "ImageUser3") then
+   			PhotoPickerCheck3 = false
+   		elseif (PhotoName == "ImageUser4") then
+   			PhotoPickerCheck4 = false
+   		end
 		myText.text = "No Image Selected"
-		myText.x = display.contentCenterX
-		myText.y = display.contentCenterY
-		print( "No Image Selected" )
+
 	end
 end
 
-local function AddImgListener( event )
+function AddImgListener( event )
 	PhotoName = event.target.name
 	print( PhotoName )
 	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
@@ -114,11 +261,16 @@ function scene:show(event)
 		Bg = display.newImageRect("Phuket/Diary/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy
-		--Bg:scale( 0.9, 0.9 ) 
 
 		BgText = display.newImageRect( "Phuket/Diary/bgtext.png", 1000/3, 525/3)
 		BgText.x = cx + 100
 		BgText.y = cy - 70
+
+		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
+	    TextDesField.text = ""
+	    TextDesField.hasBackground = false
+	    TextDesField.isEditable = false
+	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
 		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
 		ScoreImage.x = cx 
@@ -129,24 +281,28 @@ function scene:show(event)
 		ImageUser1.y = cy - 100
 		ImageUser1.name = "ImageUser1"
 		ImageUser1:addEventListener( "touch", AddImgListener )
+		PhotoPickerCheck1 = false
 
 		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser2.x = cx - 220
 		ImageUser2.y = cy - 20
 		ImageUser2.name = "ImageUser2"
 		ImageUser2:addEventListener( "touch", AddImgListener )
+		PhotoPickerCheck2 = false
 
 		ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser3.x = ImageUser2.x + 50
 		ImageUser3.y = ImageUser2.y 
 		ImageUser3.name = "ImageUser3"
 		ImageUser3:addEventListener( "touch", AddImgListener )
+		PhotoPickerCheck3 = false
 
 		ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser4.x = ImageUser3.x + 50
 		ImageUser4.y = ImageUser3.y 
 		ImageUser4.name = "ImageUser4"
 		ImageUser4:addEventListener( "touch", AddImgListener )
+		PhotoPickerCheck4 = false
 
 		ImpressionImage = display.newImageRect( "Phuket/Diary/impression.png", 450/2.5, 80/2.5 )
 		ImpressionImage.x = ImageUser4.x - 20
@@ -225,69 +381,7 @@ function scene:show(event)
 		initialSwitch = false
 		position = position + 50
 	end
---[[
-	ImpressionRadioButton1 = widget.newSwitch(
-    {
-        left = 150,
-        top = 200,
-        x = cx - 50,
-        y = cy + 100,
-        style = "radio",
-        id = "RadioButton1",
-        initialSwitchState = true,
-        onPress = onSwitchPress
-    }
-	)
-	
-	 
-	local ImpressionRadioButton2 = widget.newSwitch(
-	    {
-	        left = 250,
-	        top = 200,
-	        x = ImpressionRadioButton1.x + 40,
-       		y = ImpressionRadioButton1.y,
-	        style = "radio",
-	        id = "RadioButton2",
-	        onPress = onSwitchPress
-	    }
-	)
 
-	local ImpressionRadioButton3 = widget.newSwitch(
-	    {
-	        left = 250,
-	        top = 200,
-	        x = ImpressionRadioButton2.x + 40,
-       		y = ImpressionRadioButton2.y,
-	        style = "radio",
-	        id = "RadioButton3",
-	        onPress = onSwitchPress
-	    }
-	)
-
-	local ImpressionRadioButton4 = widget.newSwitch(
-	    {
-	        left = 250,
-	        top = 200,
-	        x = ImpressionRadioButton3.x + 40,
-       		y = ImpressionRadioButton3.y,
-	        style = "radio",
-	        id = "RadioButton4",
-	        onPress = onSwitchPress
-	    }
-	)
-
-	local ImpressionRadioButton5 = widget.newSwitch(
-	    {
-	        left = 250,
-	        top = 200,
-	        x = ImpressionRadioButton4.x + 40,
-       		y = ImpressionRadioButton4.y,
-	        style = "radio",
-	        id = "RadioButton5",
-	        onPress = onSwitchPress
-	    }
-	)
-	]]
 	for i=1,5 do
 	ImpressionRadioGroup:insert( ImpressionRadioButton[i] )	
 	BeautyRadioGroup:insert( BeautyRadioButton[i] )	
@@ -352,9 +446,6 @@ end
 
 		DiaryGroup = display.newGroup()
 
-		--DiaryGroup:insert( Bg )
-		--DiaryGroup:insert( TitleImage )
-		--DiaryGroup:insert( TitleBookImage )
 		DiaryGroup:insert( BgText )
 		DiaryGroup:insert( ImageUser1 )
 		DiaryGroup:insert( ImageUser2 )
@@ -366,6 +457,7 @@ end
 		DiaryGroup:insert( BeautyImage )
 		DiaryGroup:insert( CleanImage )
 		DiaryGroup:insert( SaveBtn )
+		DiaryGroup:insert(TextDesField)
 
     scrollView:insert( DiaryGroup )
     scrollView:insert( ImpressionRadioGroup )
@@ -374,7 +466,7 @@ end
 
 	elseif (phase == "did") then
 		print("Scene #Diary : show (did)")
-		--timer.performWithDelay(3000, showScene)
+
 		
 	end
 end
