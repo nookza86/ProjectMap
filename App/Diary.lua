@@ -1,6 +1,9 @@
 local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
+local json = require ("json")
+require("createAcc")
+require("get-data")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -13,13 +16,14 @@ local ImpressionRadioGroup, BeautyRadioGroup, CleanRadioGroup
 local ImpressionRadioButton
 local BeautyRadioButton
 local CleanRadioButton
+local ImpressionScore, BeautyScore, CleanScore
 local PhotoPickerCheck1, PhotoPickerCheck2, PhotoPickerCheck3, PhotoPickerCheck4
 local DiaryGroup
 local TextDesField
 local AddImgListener
+local NoMember
 local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
-			myText:setFillColor( 1, 0, 0 )
-
+			myText:setFillColor( 1, 0, 0 ) 
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -53,7 +57,6 @@ local function uploadListener( event )
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
-      TextDesField.text = event.status .. event.response
 
    else
       if ( event.phase == "began" ) then
@@ -64,7 +67,7 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         TextDesField .text = event.status ..event.response 
+
       end
    end
 end
@@ -94,6 +97,47 @@ local function UploadUserImage( fileName )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
+local function DiaryListener(  )
+ 
+    if(TextDesField.text == "" ) then
+        print( "TextDesField null" )
+        return
+    end
+    local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+	local att_no = 0
+		for row in db:nrows(sql) do
+			att_no = row.att_no
+		end
+
+	local member_no = 0	
+	local sql2 = "SELECT id FROM personel;"
+		for row in db:nrows(sql2) do
+			member_no = row.id
+		end
+
+        local diary = {}
+
+        diary["member_no"] = member_no
+        diary["att_no"] = att_no
+        diary["diary_note"] = TextDesField.text
+        diary["impression"] = ImpressionScore
+        diary["beauty"] = BeautyScore
+        diary["clean"] = CleanScore
+        diary["diary_pic1"] = NoMember .. "_1.jpg"
+        diary["diary_pic2"] = NoMember .. "_2.jpg"
+        diary["diary_pic3"] = NoMember .. "_3.jpg"
+        diary["diary_pic4"] = NoMember .. "_4.jpg"
+
+
+        local DiarySendData = json.encode( diary )
+       -- print( DiarySendData )
+       --native.setActivityIndicator( true )
+       myText.text = DiarySendData
+        DiarySend(DiarySendData)
+        GetData(2 , member_no)
+end
+
+
 local function Check( event )
 
 	local options = {params = {PlaceName = params.PlaceName}}
@@ -104,22 +148,76 @@ local function Check( event )
 		end
 		
 		if (PhotoPickerCheck1 )then
-			UploadUserImage("ImageUser1")
+			UploadUserImage(NoMember .. "_1")
 		end
 
 		if (PhotoPickerCheck2 )then
-			UploadUserImage("ImageUser2")
+			UploadUserImage(NoMember .. "_2")
 		end
 
 		if (PhotoPickerCheck3 )then
-			UploadUserImage("ImageUser3")
+			UploadUserImage(NoMember .. "_3")
 		end
 
 		if (PhotoPickerCheck4 )then
-			UploadUserImage("ImageUser4")
+			UploadUserImage(NoMember .. "_4")
 		end
-		
+		DiaryListener(  )
 	end
+
+end
+
+local function onSwitchPress( event )
+    local switch = event.target
+    ImpressionScore = 1
+    BeautyScore = 1
+    CleanScore = 1
+    print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+
+    if (switch.id == "ImpressionRadioButton1" or switch.id == "ImpressionRadioButton2" or switch.id == "ImpressionRadioButton3" or switch.id == "ImpressionRadioButton4" or switch.id == "ImpressionRadioButton5") then
+    	print( "1" )
+    	if (switch.id == "ImpressionRadioButton1") then
+    		ImpressionScore = 1
+    	elseif (switch.id == "ImpressionRadioButton2") then
+    		ImpressionScore = 2
+    	elseif (switch.id == "ImpressionRadioButton3") then
+    		ImpressionScore = 3
+    	elseif (switch.id == "ImpressionRadioButton4") then
+    		ImpressionScore = 4
+    	else
+    		ImpressionScore = 5
+    	end
+
+    elseif (switch == "BeautyRadioButton1" or switch.id == "BeautyRadioButton2" or switch.id == "BeautyRadioButton3" or switch.id == "BeautyRadioButton4" or switch.id == "BeautyRadioButton5") then
+    	print( "2" )
+    	if (switch.id == "BeautyRadioButton1") then
+    		BeautyScore = 1
+    	elseif (switch.id == "BeautyRadioButton2") then
+    		BeautyScore = 2
+    	elseif (switch.id == "BeautyRadioButton3") then
+    		BeautyScore = 3
+    	elseif (switch.id == "BeautyRadioButton4") then
+    		BeautyScore = 4
+    	else
+    		BeautyScore = 5
+    	end
+
+    else
+    	print( "3" )
+    	if (switch.id == "CleanRadioButton1") then
+    		CleanScore = 1
+    	elseif (switch.id == "CleanRadioButton2") then
+    		CleanScore = 2
+    	elseif (switch.id == "CleanRadioButton3") then
+    		CleanScore = 3
+    	elseif (switch.id == "CleanRadioButton4") then
+    		CleanScore = 4
+    	else
+    		CleanScore = 5
+    	end
+    end
+
+    print( ImpressionScore, BeautyScore, CleanScore )
 
 end
 
@@ -129,15 +227,52 @@ local function onSwitchPress( event )
 
     if (switch.id == "ImpressionRadioButton1" or switch.id == "ImpressionRadioButton2" or switch.id == "ImpressionRadioButton3" or switch.id == "ImpressionRadioButton4" or switch.id == "ImpressionRadioButton5") then
     	print( "1" )
+    	if (switch.id == "ImpressionRadioButton1") then
+    		ImpressionScore = 1
+    	elseif (switch.id == "ImpressionRadioButton2") then
+    		ImpressionScore = 2
+    	elseif (switch.id == "ImpressionRadioButton3") then
+    		ImpressionScore = 3
+    	elseif (switch.id == "ImpressionRadioButton4") then
+    		ImpressionScore = 4
+    	else
+    		ImpressionScore = 5
+    	end
 
     elseif (switch == "BeautyRadioButton1" or switch.id == "BeautyRadioButton2" or switch.id == "BeautyRadioButton3" or switch.id == "BeautyRadioButton4" or switch.id == "BeautyRadioButton5") then
     	print( "2" )
+    	if (switch.id == "BeautyRadioButton1") then
+    		BeautyScore = 1
+    	elseif (switch.id == "BeautyRadioButton2") then
+    		BeautyScore = 2
+    	elseif (switch.id == "BeautyRadioButton3") then
+    		BeautyScore = 3
+    	elseif (switch.id == "BeautyRadioButton4") then
+    		BeautyScore = 4
+    	else
+    		BeautyScore = 5
+    	end
 
     else
     	print( "3" )
+    	if (switch.id == "CleanRadioButton1") then
+    		CleanScore = 1
+    	elseif (switch.id == "CleanRadioButton2") then
+    		CleanScore = 2
+    	elseif (switch.id == "CleanRadioButton3") then
+    		CleanScore = 3
+    	elseif (switch.id == "CleanRadioButton4") then
+    		CleanScore = 4
+    	else
+    		CleanScore = 5
+    	end
     end
 
+    print( ImpressionScore, BeautyScore, CleanScore )
+
 end
+
+
 
 -- Media listener
 -- Executes after the user picks a photo (or cancels)
@@ -183,31 +318,31 @@ local sessionComplete = function(event)
 		end
 
 		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-   		if (PhotoName == "ImageUser1") then
+   		if (PhotoName == NoMember .. "_1") then
    			PhotoPickerCheck1 = true
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
    			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 170, cy - 100, true )
    			ImageUser1:scale(scale , scale )
-   			ImageUser1.name = "ImageUser1"
+   			ImageUser1.name = NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
 
-   		elseif (PhotoName == "ImageUser2") then
+   		elseif (PhotoName == NoMember .. "_2") then
    			PhotoPickerCheck2 = true
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
    			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 220, cy - 20, true )
    			ImageUser2:scale(scale / 2, scale / 2 )
-   			ImageUser2.name = "ImageUser2"
+   			ImageUser2.name = NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
 
-   		elseif (PhotoName == "ImageUser3") then
+   		elseif (PhotoName == NoMember .. "_3") then
    			PhotoPickerCheck3 = true
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
    			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImageUser2.x + 50, ImageUser2.y, true )
    			ImageUser3:scale(scale / 2, scale / 2 )
-   			ImageUser3.name = "ImageUser3"
+   			ImageUser3.name = NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
 
    		else
@@ -216,7 +351,7 @@ local sessionComplete = function(event)
    			RemoveAll(ImageUser4)
    			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImageUser3.x + 50, ImageUser3.y, true )
    			ImageUser4:scale(scale / 2, scale / 2 )
-   			ImageUser4.name = "ImageUser4"
+   			ImageUser4.name = NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
 
    		end
@@ -226,13 +361,13 @@ local sessionComplete = function(event)
    		display.remove( photo )
 		
 	else
-		if (PhotoName == "ImageUser1") then
+		if (PhotoName == NoMember .. "_1") then
    			PhotoPickerCheck1 = false
-   		elseif (PhotoName == "ImageUser2") then
+   		elseif (PhotoName == NoMember .. "_2") then
    			PhotoPickerCheck2 = false
-   		elseif (PhotoName == "ImageUser3") then
+   		elseif (PhotoName == NoMember .. "_3") then
    			PhotoPickerCheck3 = false
-   		elseif (PhotoName == "ImageUser4") then
+   		elseif (PhotoName == NoMember .. "_4") then
    			PhotoPickerCheck4 = false
    		end
 		myText.text = "No Image Selected"
@@ -269,38 +404,44 @@ function scene:show(event)
 		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
-	    TextDesField.isEditable = false
+	    TextDesField.isEditable = true
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
 		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
 		ScoreImage.x = cx 
 		ScoreImage.y = cy + 70
 
+		local sql = "SELECT id FROM personel;"
+		NoMember = ""
+		for row in db:nrows(sql) do
+			NoMember = row.id
+		end
+
 		ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/12, 1280/12 )
 		ImageUser1.x = cx - 170
 		ImageUser1.y = cy - 100
-		ImageUser1.name = "ImageUser1"
+		ImageUser1.name = NoMember .. "_1"
 		ImageUser1:addEventListener( "touch", AddImgListener )
 		PhotoPickerCheck1 = false
 
 		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser2.x = cx - 220
 		ImageUser2.y = cy - 20
-		ImageUser2.name = "ImageUser2"
+		ImageUser2.name = NoMember .. "_2"
 		ImageUser2:addEventListener( "touch", AddImgListener )
 		PhotoPickerCheck2 = false
 
 		ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser3.x = ImageUser2.x + 50
 		ImageUser3.y = ImageUser2.y 
-		ImageUser3.name = "ImageUser3"
+		ImageUser3.name = NoMember .. "_3"
 		ImageUser3:addEventListener( "touch", AddImgListener )
 		PhotoPickerCheck3 = false
 
 		ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser4.x = ImageUser3.x + 50
 		ImageUser4.y = ImageUser3.y 
-		ImageUser4.name = "ImageUser4"
+		ImageUser4.name = NoMember .. "_4"
 		ImageUser4:addEventListener( "touch", AddImgListener )
 		PhotoPickerCheck4 = false
 
@@ -387,6 +528,10 @@ function scene:show(event)
 	BeautyRadioGroup:insert( BeautyRadioButton[i] )	
 	CleanRadioGroup:insert( CleanRadioButton[i] )
 end
+
+ ImpressionScore = 1
+    BeautyScore = 1
+    CleanScore = 1
 	
 
 		BackBtn = widget.newButton(
@@ -452,6 +597,7 @@ end
 		DiaryGroup:insert( ImageUser3 )
 		DiaryGroup:insert( ImageUser4 )
 		DiaryGroup:insert(myText)
+
 		DiaryGroup:insert( ScoreImage )
 		DiaryGroup:insert( ImpressionImage )
 		DiaryGroup:insert( BeautyImage )

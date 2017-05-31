@@ -3,8 +3,7 @@ local widget = require( "widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local mime = require( "mime" )
-require("valid-email")
-
+require("createAcc")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
 local PictxfFirstName, PictxfLastName, PictxfPassword, PictxfConfirmPassword, PictxfEmail
@@ -63,13 +62,6 @@ local function textFieldHandler( event )
     end
 end
 
-local function showAlertListener( event )
-    print( event.action )
-    if (event.action == "clicked") then
-        composer.gotoScene("menu")
-    end
-end
-
 local function uploadListener( event )
    if ( event.isError ) then
       print( "Network Error." )
@@ -119,31 +111,6 @@ local function UploadUserImage(  )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
-local function networkListener( event )
-    if ( event.isError ) then
-        print( "Network error!" )
-
-    else
-        myNewData = event.response
-        print( "RESPONSE: " .. event.response )
-        decodedData = (json.decode( myNewData ))
-
-        native.setActivityIndicator( false )
-
-        ErrorCheck = decodedData["error"]
-        ErrorMessage = decodedData["error_msg"]
-
-        if( ErrorCheck == true) then
-            local alert = native.showAlert( "Error", ErrorMessage, { "OK" })
-            print( "Try again." )
-        else
-            local alert = native.showAlert( "Welcome", "Sucessfuly", { "OK" },showAlertListener)
-            print( "Sucessfuly " )
-
-        end
-    end
-end
-
 local function CreateAccountListener( event )
     print( event.phase )
 
@@ -155,95 +122,30 @@ local function CreateAccountListener( event )
     if(event.phase == "began" and CheckPasswordMatch == true and CheckEmail == true) then
         local values = pickerWheel:getValues()
  
-    -- Get the value for each column in the wheel, by column index
-    local GenderValue = values[1].value
-    local BirthMonthValue = values[2].index
-    local BirthDayValue = values[3].value
-    local BirthYearValue = values[4].value
-    local CountryValue = values[5].value
-     
-   -- print( GenderValue, BirthMonthValue, BirthDayValue, BirthYearValue, CountryValue )
-    --print( txfFirstName.text, txfPassword.text, txfEmail.text )
+        local GenderValue = values[1].value
+        local BirthMonthValue = values[2].index
+        local BirthDayValue = values[3].value
+        local BirthYearValue = values[4].value
+        local CountryValue = values[5].value
 
-    local register = {}
-    register["fname"] = txfFirstName.text
-    register["lname"] = txfLastName.text
-    register["email"] = txfEmail.text
-    register["password"] = txfPassword.text
-    register["gender"] = GenderValue
-    register["BirthMonth"] = BirthMonthValue
-    register["BirthDay"] = BirthDayValue
-    register["BirthYear"] = BirthYearValue
-    register["Country"] = CountryValue
-    register["UserFrom"] = "0"
-    register["UserImage"] = "/img_path/user.jpg"
+        local register = {}
+        register["fname"] = txfFirstName.text
+        register["lname"] = txfLastName.text
+        register["email"] = txfEmail.text
+        register["password"] = txfPassword.text
+        register["gender"] = GenderValue
+        register["BirthMonth"] = BirthMonthValue
+        register["BirthDay"] = BirthDayValue
+        register["BirthYear"] = BirthYearValue
+        register["Country"] = CountryValue
+        register["UserFrom"] = "0"
+        register["UserImage"] = "/img_path/user.jpg"
 
-    local RegisterSend = json.encode( register )
+        local RegisterSend = json.encode( register )
 
-    --print( "Register Data Sending To Web Server : " .. RegisterSend )
+        CreateAccountSendListener(RegisterSend)
 
-    local headers = {}
-
-    headers["Content-Type"] = "application/x-www-form-urlencoded"
-    headers["Accept-Language"] = "en-US"
-
-    --local body = "fname=".. txfFirstName.text .."&lname=we" .. "&password=".. txfPassword.text .."&email=" .. txfEmail.text .. "&gender=".. GenderValue .. "&BirthMonth=".. BirthMonthValue .. "&BirthDay=".. BirthDayValue .. "&BirthYear=".. BirthYearValue .. "&Country=".. CountryValue .. "&UserFrom=0"
-
-    local body = "RegisterSend=" .. RegisterSend
-
-    local params = {}
-    params.headers = headers
-    params.body = body
-
-    --local url = "https://mapofmem.000webhostapp.com/android_login_api/register.php"
-    local url = "http://mapofmem.esy.es/admin/api/android_login_api/register.php"
-    
-   -- UploadUserImage(  )
-    print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
-    network.request( url, "POST", networkListener, params )
-    
---[[
-    local headers = {}
-
-    headers["Content-Type"] = "application/x-www-form-urlencoded"
-    headers["Accept-Language"] = "en-US"
-
-    local body = "username=".. txfFirstName.text .."&password=".. txfPassword.text .."&email=" .. txfEmail.text
-
-    local params = {}
-    params.headers = headers
-    params.body = body
-
-    network.request( "https://mapofmem.000webhostapp.com/string_get.php", "POST", networkListener, params )
-    
-]]
-
-    --[[
-    local json = require( "json" )
- 
-    local t = {
-        ["username"] = "admin",
-        ["password"] = "1234",
-    }
-     
-    local encoded = json.encode( t )
-    print( encoded )  --> {"name1":"value1","name3":null,"name2":[1,false,true,23.54,"a \u0015 string"]}
-     
-    --local encoded = json.encode( t, { indent=true } )
-    --print( encoded )
-
-    local headers = {}
-        headers["Content-Tpe"] = "application/json"
-        headers["Accept-Language"] = "en-US"
-    
-    local params = {}
-    params.headers = headers
-    params.body = encoded
-
-    network.request( "https://mapofmem.000webhostapp.com/jsontest.php", "POST", networkListener, params)
-    ]]
- 
-
+       
     end
 end
 

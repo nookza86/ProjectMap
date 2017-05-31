@@ -50,11 +50,13 @@ local function GetDataListener( event )
 	    elseif(CountGetDatabase == 2) then
 	       for idx2, val2 in ipairs(decodedDatabase) do
 	       		local insertQuery = "INSERT INTO diary VALUES (" ..
-				val2.member_no .. ",'" ..
-				val2.att_no .. "','" ..
-				val2.impression.. "','" .. 
-				val2.beauty.. "','" ..
-				val2.clean.. "','" ..
+				val2.diary_id .. "," ..
+				val2.member_no .. "," ..
+				val2.att_no .. ",'" ..
+				val2.diary_note.. "'," .. 
+				val2.impression.. "," .. 
+				val2.beauty.. "," ..
+				val2.clean.. ",'" ..
 				val2.diary_pic1.. "','" ..
 				val2.diary_pic2.. "','" ..
 				val2.diary_pic3.. "','" ..
@@ -131,6 +133,7 @@ local function InsertData(  )
 								`diary_id`	INTEGER,
 								`member_no`	INTEGER,
 								`att_no`	INTEGER,
+								`diary_note`	TEXT,
 								`impression`	INTEGER,
 								`beauty`	INTEGER,
 								`clean`	INTEGER,
