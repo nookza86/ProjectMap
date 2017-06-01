@@ -42,8 +42,8 @@ local function GetDataListener( event )
 				val2.diary_pic4 .. "');"
 
 				db:exec( insertQuery )
-				print(insertQuery)
-				print( "round : " .. idx2 )
+				--print(insertQuery)
+				--print( "round : " .. idx2 )
 	       end
 
 	    elseif(CountGetDatabase == 3) then

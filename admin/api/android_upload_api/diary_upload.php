@@ -53,7 +53,7 @@ if ((isset($_SERVER["HTTP_FILENAME"])) && (isset($_SERVER["CONTENT_TYPE"])) && (
     //
     $filename = basename($_SERVER["HTTP_FILENAME"]);
     $filetype = $_SERVER["CONTENT_TYPE"];
-
+    $att_no = substr($filename,0,1);
     //
     // enforce the arbirary file size limits here
     // 
@@ -99,13 +99,14 @@ if ((isset($_SERVER["HTTP_FILENAME"])) && (isset($_SERVER["CONTENT_TYPE"])) && (
             /* Close the streams */
             fclose($fp);
             fclose($putdata);
-            $result = rename($tmpfname, "upload/diary/" . $filename);  
+            $result = rename($tmpfname, "upload/diary/$att_no/" . $filename);  
+            chmod("upload/diary/$att_no/" . $filename, 0777);
             if ($result) {
                 http_response_code(201);
                 echo("File Created " . $filename);
             } else {
                 http_response_code(403);
-                echo("Renaming file to upload/diary/" . $filename . " failed.");
+                echo("Renaming file to upload/diary/$att_no/" . $filename . " failed.");
             }          
         } else {
             http_response_code(403);

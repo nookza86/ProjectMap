@@ -87,8 +87,15 @@ end
 function GetData( i )
 	CountGetDatabase = i
 	local GetDatabase = {}
+
+	local NOOOO = 0	
+	local sql2 = "SELECT id FROM personel;"
+		for row in db:nrows(sql2) do
+			NOOOO = row.id
+		end
+		
     GetDatabase["no"] = i
-    GetDatabase["mem_no"] = 1
+    GetDatabase["mem_no"] = NOOOO
 
     local GetDatabaseSend = json.encode( GetDatabase )
 
@@ -109,6 +116,14 @@ function GetData( i )
 end
 
 local function InsertData(  )
+	local TRU = "DROP TABLE IF EXISTS `personel`;"
+	db:exec(TRU)
+	TRU = "DROP TABLE IF EXISTS `diary`;"
+	db:exec(TRU)
+	TRU = "DROP TABLE IF EXISTS `attractions`;"
+	db:exec(TRU)
+	TRU = "DROP TABLE IF EXISTS `unattractions`;"
+	db:exec(TRU)
 
 	local tablesetup = [[CREATE TABLE IF NOT EXISTS personel (
 							`id`	INTEGER,
@@ -151,6 +166,7 @@ local function InsertData(  )
 						]]
 
 	db:exec(tablesetup)
+	
 
 	local insertQuery = "INSERT INTO personel VALUES (" ..
 			decodedData["member_no"] .. ",'" ..

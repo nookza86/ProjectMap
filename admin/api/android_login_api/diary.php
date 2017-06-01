@@ -12,13 +12,13 @@ if (isset($_POST['DiarySend'])) {
   $diary_note = $DiaryData['diary_note'];
   $impression = $DiaryData['impression'];
   $beauty = $DiaryData['beauty'];
-  $att_no = $DiaryData['clean'];
+  $clean = $DiaryData['clean'];
   $diary_pic1 = $DiaryData['diary_pic1'];
   $diary_pic2 = $DiaryData['diary_pic2'];
   $diary_pic3 = $DiaryData['diary_pic3'];
   $diary_pic4 = $DiaryData['diary_pic4'];
 
-  $sql = "INSERT INTO `diary`(`member_no`, `att_no`, `diary_note`, `impression`, `beauty`, `clean`, `diary_pic1`, `diary_pic2`, `diary_pic3`, `diary_pic4`, `last_update`) VALUES ('$member_no','$att_no', '$diary_note','$impression','$beauty','$att_no','$diary_pic1','$diary_pic2','$diary_pic3','$diary_pic4',NOW());";
+  $sql = "INSERT INTO `diary`(`member_no`, `att_no`, `diary_note`, `impression`, `beauty`, `clean`, `diary_pic1`, `diary_pic2`, `diary_pic3`, `diary_pic4`, `last_update`) VALUES ('$member_no','$att_no', '$diary_note','$impression','$beauty','$clean','$diary_pic1','$diary_pic2','$diary_pic3','$diary_pic4',NOW());";
   //echo($sql);
     $result = mysqli_query($db, $sql) or die("Error " . mysqli_error($db));
 
@@ -28,6 +28,7 @@ if (isset($_POST['DiarySend'])) {
           }
           else{//insert successfull
             echo "finish";
+           // echo $sql;
           }
           /*
     $emparray = array();
