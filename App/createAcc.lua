@@ -1,4 +1,5 @@
 local json = require ("json")
+local myNewData, decodedData
 
 local function showAlertListener( event )
     print( event.action )
@@ -6,8 +7,9 @@ local function showAlertListener( event )
         return true
     end
 end
-
+--[[
 local function networkListener( event )
+    
     if ( event.isError ) then
         print( "Network error!" )
 
@@ -15,8 +17,13 @@ local function networkListener( event )
         print( "RESPONSE: " .. event.response )
         native.setActivityIndicator( false )
 
-        if (event.response == "finish") then
-            print( "..." )
+        myNewData = event.response
+        decodedData = (json.decode( myNewData ))
+     --   print( decodedData["error"] )
+        if (decodedData["error"] == false) then
+
+            return decodedData["member_no"]
+
         end
     end
 end
@@ -55,7 +62,7 @@ local function DiarySendListener( event )
        
     end
 end
-
+]]
 function DiarySend( DiarySend )
 
     local headers = {}

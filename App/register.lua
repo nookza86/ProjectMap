@@ -3,6 +3,7 @@ local widget = require( "widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local mime = require( "mime" )
+local lfs = require( "lfs" )
 require("createAcc")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
@@ -14,6 +15,24 @@ local ImageGroup = display.newGroup()
 local pickerWheel
 local CheckPasswordMatch, CheckEmail
 local myNewData, decodedData
+local PhotoName, PhotoPickerCheck
+local SelectImg
+local myText = display.newText( "5555555555", display.contentCenterY, display.contentCenterY + 330, native.systemFont, 16 )
+            myText:setFillColor( 1, 0, 0 ) 
+
+-----------------PPhoto Picker----------------------------------------
+--https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
+local centerX = display.contentCenterX
+local centerY = display.contentCenterY
+local _W = display.contentWidth
+local _H = display.contentHeight
+
+display.setStatusBar( display.HiddenStatusBar ) 
+
+local photo     -- holds the photo object
+local PhotoName
+local PHOTO_FUNCTION = media.PhotoLibrary       -- or media.SavedPhotosAlbum
+-----------------------------------------------------------------------------            
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -63,10 +82,12 @@ local function textFieldHandler( event )
 end
 
 local function uploadListener( event )
+    print( "uploaddddL:is" )
    if ( event.isError ) then
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
+       myText.text = "Status:" .. event.status .. " Response: " .. event.response
 
    else
       if ( event.phase == "began" ) then
@@ -77,16 +98,14 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
+         myText.text = event.status .. " " .. event.response
       end
    end
 end
 
-local function UploadUserImage(  )
-    --https://coronalabs.com/blog/2014/02/25/tutorial-uploading-files-demystified/
-    --local url = "http://localhost/TESTUPLOAD/uploadd.php"
-   -- local url = "http://nookza86.freehost.in.th/android_upload_api/upload.php"
-    --local url = "https://mapofmem.000webhostapp.com/android_upload_api/upload.php"
-    local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload.php"
+local function UploadUserImage( MemNo )
+   
+    local url = "http://mapofmem.esy.es/admin/api/android_upload_api/register_upload.php"
   
     local method = "PUT"
      
@@ -96,20 +115,88 @@ local function UploadUserImage(  )
        bodyType = "binary"
     }
 
-    --mime.decode("base64")
-
-    local filename = "image.jpg"
-    local baseDirectory = system.ResourceDirectory
-   -- local baseDirectory = system.DocumentsDirectory 
+    local filename = "".. MemNo ..".jpg"
+    --local baseDirectory = system.ResourceDirectory
+    local baseDirectory = system.DocumentsDirectory 
    -- local baseDirectory = system.TemporaryDirectory
     local contentType = "image/jpge" 
 
     local headers = {}
     headers.filename = filename
     params.headers = headers
-     
+     myText.text = "with file name " .. filename
+     print( "Upload User Image To " .. url .." with file name " .. filename )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
+
+local function reNameImg( member_no )
+    -- Get raw path to the app documents directory
+    local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+    local destDir = system.DocumentsDirectory
+    myText.text = "reNameImg"
+    for file in lfs.dir( doc_path ) do
+        -- "file" is the current file or directory name
+        print( "Found file: " .. file )
+
+        if (file == "PIC.jpg") then
+            local result, reason = os.rename(
+                system.pathForFile( "PIC.jpg", destDir ),
+                system.pathForFile( "" .. member_no .. ".jpg", destDir )
+            )
+
+            if result then
+                myText.text = "File renamed"
+                print( "File renamed" )
+                UploadUserImage( member_no )
+            else
+                myText.text = "File not renamed re: " .. reason 
+                print( "File not renamed", reason )  --> File not renamed    orange.txt: No such file or directory
+            end
+            break
+        end
+    end
+
+
+end
+
+local function networkListener( event )
+    
+    if ( event.isError ) then
+        print( "Network error!" )
+
+    else
+        print( "RESPONSE: " .. event.response )
+        native.setActivityIndicator( false )
+
+        myNewData = event.response
+        decodedData = (json.decode( myNewData ))
+
+        if (decodedData["error"] == false) then
+            myText.text = decodedData["member_no"] 
+             print( decodedData["member_no"] )
+             reNameImg( decodedData["member_no"] )
+        end
+    end
+end
+
+function CreateAccountSendListener( RegisterSend )
+    local headers = {}
+
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "RegisterSend=" .. RegisterSend
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/register.php"
+    
+    print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
+    network.request( url, "POST", networkListener, params )
+end
+
 
 local function CreateAccountListener( event )
     print( event.phase )
@@ -142,11 +229,79 @@ local function CreateAccountListener( event )
         register["UserImage"] = "/img_path/user.jpg"
 
         local RegisterSend = json.encode( register )
-
+        
         CreateAccountSendListener(RegisterSend)
 
-       
     end
+end
+
+local sessionComplete = function(event)
+    photo = event.target
+    
+    if photo then
+
+        if photo.width > photo.height then
+            photo:rotate( -90 )         -- rotate for landscape
+            print( "Rotated" )
+        end
+        
+        -- Scale image to fit content scaled screen
+        local xScale = _W / photo.contentWidth
+        local yScale = _H / photo.contentHeight
+        local scale = math.max( xScale, yScale ) * .75
+        
+        local maxWidth = 1280
+        local maxHeight = 720
+
+        photo:scale( scale, scale )
+        photo.x = centerX
+        photo.y = centerY
+       -- myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
+        print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
+
+
+
+        --rescale width
+        if ( photo.width > maxWidth ) then
+           local ratio = maxWidth / photo.width
+           photo.width = maxWidth
+           photo.height = photo.height * ratio
+        end
+         
+        --rescale height
+        if ( photo.height > maxHeight ) then
+           local ratio = maxHeight / photo.height
+           photo.height = maxHeight
+           photo.width = photo.width * ratio
+        end
+
+        display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
+           
+            PhotoPickerCheck1 = true
+            PicUser:removeEventListener( "touch", SelectImg )
+            ImageGroup:remove( PicUser )
+            RemoveAll(PicUser)
+
+            PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, centerX - 190, centerY - 20, true )
+            PicUser:scale(scale , scale )
+            PicUser.name = "PIC"
+            PicUser:addEventListener( "touch", SelectImg )
+
+            ImageGroup:insert(PicUser)
+
+        myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
+        display.remove( photo )
+        
+    else
+        PhotoPickerCheck = false
+        myText.text = "No Image Selected"
+
+    end
+end
+
+function SelectImg( event )
+     PhotoName = event.target.name
+     media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })   
 end
 
 function scene:create(event)
@@ -171,6 +326,9 @@ function scene:show(event)
     PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
     PicUser.x = cx - 190
     PicUser.y = cy - 20
+    PicUser:addEventListener( "touch", SelectImg )
+    PicUser.name = "PIC"
+    PhotoPickerCheck = false
 
     PicTitle = display.newImageRect( "Phuket/CreateAccount/title.png", 801/3.5, 120/3.5 )
     PicTitle.x = cx + 20
@@ -294,6 +452,7 @@ function scene:show(event)
     ImageGroup:insert(txfPassword)
     ImageGroup:insert(txfConfirmPassword)
     ImageGroup:insert(txfEmail)
+    ImageGroup:insert(myText)
 
     local days = {}
     local years = {}
