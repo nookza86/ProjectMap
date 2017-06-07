@@ -99,6 +99,16 @@ local function uploadListener( event )
          print( "Status:", event.status )
          print( "Response:", event.response )
          myText.text = event.status .. " " .. event.response
+--[[
+         if (event.status == "201") then
+            local UpImg = {}
+
+            UpImg["member_no"] = member_no
+            UpImg["att_no"] = NoAtt
+
+             UpdateImg
+         end
+         ]]
       end
    end
 end

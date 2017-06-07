@@ -1,14 +1,17 @@
 local composer = require("composer")
 local widget = require("widget" )
-local sqlite = require("sqlite3")
 local scene = composer.newScene()
+local json = require ("json")
+require("createAcc")
+require("get-data")
+local sqlite = require("sqlite3")
+local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+local db = sqlite.open(path)
 local Bg, cx, cy, cw, ch
 local TitleImage, UsernameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
 local TextName, TextCountry
-local path, db, sql
---local params
 
 local function RemoveAll( event )
 	if(event) then
@@ -87,6 +90,36 @@ local function Check( event )
 		end
 	end
 end
+
+local function loadImageListener( event )
+	if(not event.isError) then
+		print( event.response.filename, event.response.baseDirectory )
+
+			UserImage1 = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx - 200,
+							cy + 40 
+							)
+			UserImage1:scale( 0.2, 0.2 )
+	
+	end
+	native.setActivityIndicator( false )
+end
+
+local function LoadUserImg( no )
+	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. no 
+	print( url )
+network.download( url , 
+	"GET", 
+	loadImageListener,
+	{},
+	no,
+	system.DocumentsDirectory
+	)
+
+end
+
 function scene:create(event)
 	local sceneGroup = self.view
 	print("Scene #Profile : create")
@@ -101,6 +134,7 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
+		native.setActivityIndicator( true )
 		Bg = display.newImageRect("Phuket/Profile/bg1.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
@@ -122,18 +156,23 @@ function scene:show(event)
 		CountryImage.x = UsernameImage.x
 		CountryImage.y = UsernameImage.y + 40
 
-		local path = system.pathForFile( "data.db", system.DocumentsDirectory )
-		local db = sqlite.open(path)
-
 		TextName = display.newText( "", UserImage.x + 350, UserImage.y - 30, native.systemFont, 16 )
 		TextName:setFillColor( 1, 0, 0 )
 
 		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, native.systemFont, 16 )
 		TextCountry:setFillColor( 1, 0, 0 )
 
-		for row in db:nrows("SELECT fname, lname, country FROM personel;") do
+		for row in db:nrows("SELECT img, fname, lname, country FROM personel;") do
 			TextName.text = row.fname .. " " .. row.lname  
-			TextCountry.text = row.country                          
+			TextCountry.text = row.country   
+
+			if (row.img == "") then
+			    UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
+				UserImage.x = cx - 180
+				UserImage.y = cy - 55           
+			else  
+				LoadUserImg(row.img)
+			end                       
 		end
 
 		

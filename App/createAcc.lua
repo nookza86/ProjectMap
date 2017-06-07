@@ -49,7 +49,7 @@ function CreateAccountSendListener( RegisterSend )
     print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
     network.request( url, "POST", networkListener, params )
 end
-
+]]
 local function DiarySendListener( event )
     if ( event.isError ) then
         print( "Network error!" )
@@ -62,7 +62,7 @@ local function DiarySendListener( event )
        
     end
 end
-]]
+
 function DiarySend( DiarySend )
 
     local headers = {}

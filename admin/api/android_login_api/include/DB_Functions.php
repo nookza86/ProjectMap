@@ -72,6 +72,11 @@ class DB_Functions {
                 echo "";
 
              }
+            $ImgPath = $member_no.".jpg";
+
+            $stmt = $this->conn->prepare("UPDATE members SET user_img = ? WHERE member_no = ?");
+            $stmt->bind_param("ss", $ImgPath, $member_no );
+            $stmt->execute();
 
                 $user["member_no"] = $member_no;
                 $user["first_name"] = $first_name;

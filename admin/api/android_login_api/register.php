@@ -47,6 +47,7 @@ if (isset($_POST['RegisterSend'])) {
             $response["user"]["UserImage"] = $user["user_img"];
             $response["user"]["LastUpdate"] = $user["last_update"];
             echo json_encode($response);
+            
         } else {
             // user failed to store
             $response["error"] = TRUE;
