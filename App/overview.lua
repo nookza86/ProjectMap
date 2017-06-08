@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+require ("cal")
 local scrollView, island
 local screenW, screenH
 local PlaceGroup, ButtonGroup, TextGroup
@@ -122,7 +123,7 @@ local mapAddressHandler = function( event )
 	end
 end
 
-local function CheckLocation( event )
+local function CheckLocation1( event )
  
     -- Fetch the user's current location
 	-- Note: in Xcode Simulator, the current location defaults to Apple headquarters in Cupertino, CA
@@ -143,6 +144,36 @@ local function CheckLocation( event )
 		-- Look up nearest address to this location (this is returned as a "mapAddress" event, handled above)
 		myMap:nearestAddress( currentLatitude, currentLongitude, mapAddressHandler )
 	end
+end
+--
+local function locationHandler( event )
+ 
+    if ( event.isError ) then
+        print( "Map Error: " .. event.errorMessage )
+        native.showAlert( "Error", event.errorMessage, { "OK" } )
+    else
+        print( "The specified string is at: " .. event.latitude .. "," .. event.longitude )
+        --native.showAlert( "Error", event.latitude .." long :" .. event.longitude, { "OK" } )
+        --myMap:setCenter( event.latitude, event.longitude )
+        myMap:nearestAddress( event.latitude, event.longitude, mapAddressHandler )
+    end
+ 
+end
+
+local function CheckLocation( event )
+ 	
+ 	local point1 = {}
+ 	local point2 = {}
+ 	point1.latitude = 7.827657
+ 	point1.longitude = 98.312738
+
+	point2.latitude = 7.827357
+ 	point2.longitude = 98.312627
+
+ 	local d = sphericalDistanceBetween( point1, point2 )
+ 	print( d )
+  -- myMap:requestLocation( "วัดไชยธาราราม", locationHandler )
+
 end
 
 function scene:create(event)
