@@ -1,4 +1,13 @@
 
+function round(val, n)
+	--https://forums.coronalabs.com/topic/33756-how-do-i-round-a-number/
+  if (n) then
+    return math.floor( (val * 10^n) + 0.5) / (10^n)
+  else
+    return math.floor(val+0.5)
+  end
+end
+
 function deg2rad( deg )
 	return deg * (math.pi/180)
 end
@@ -24,8 +33,13 @@ function sphericalDistanceBetween( point1, point2 )
 ]]
     local c = 2 * atan2( sqrt( a ), sqrt( 1-a ) )
     local d = R * c
- 
-    return d * math.pi / 180
+ 	local result = d * math.pi / 180
+
+ 	local RoundResult = round(result , 4)
+ 	return RoundResult
+
+    --return d * math.pi / 180
+    --return d
 end
 
 --flat

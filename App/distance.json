@@ -1,0 +1,158 @@
+{
+  "rule": [
+    {
+      "no": 1,
+      "name": "Bang Pae Waterfall",
+      "information": [ 
+        {
+          "latitude1": 8.039301,
+          "longitude1": 98.391280,
+          "latitude2": 8.041956,
+          "longitude2": 98.393812,
+          "distance" : 0.4060
+        } 
+          ]
+    },
+    {
+      "no": 2,
+      "name": "Big Buddha",
+      "information": [ 
+        {
+          "latitude1": 7.827657,
+          "longitude1": 98.312738,
+          "latitude2": 7.827357,
+          "longitude2": 98.312627,
+          "distance" : 	0.03553
+        } 
+          ]
+    },
+    {
+      "no": 3,
+      "name": "Chalong Temple",
+      "information": [ 
+        {
+          "latitude1": 7.846880,
+          "longitude1": 98.336915,
+          "latitude2": 7.846411,
+          "longitude2": 98.337869,
+          "distance" :  0.1173
+        } 
+          ]
+    },
+    {
+      "no": 4,
+      "name": "Kamala Beach",
+     "information": [ 
+        {
+          "latitude1": 7.960474,
+          "longitude1": 98.280831,
+          "latitude2": 7.960432,
+          "longitude2":  98.284650,
+          "distance" : 0.4206
+        } ,
+        {
+          "latitude1": 7.956310,
+          "longitude1": 98.280175,
+          "latitude2": 7.956128,
+          "longitude2": 98.283953,
+          "distance" : 0.4162
+        } ,
+        {
+          "latitude1": 7.952086,
+          "longitude1": 98.278202,
+          "latitude2": 7.951540,
+          "longitude2": 98.282193,
+          "distance" : 0.4437 
+        } 
+          ]
+    },
+    {
+      "no": 5,
+      "name": "Karon Beach",
+      "information": [ 
+        {
+          "latitude1": 7.850062,
+          "longitude1": 98.284692,
+          "latitude2": 7.850651,
+          "longitude2": 98.294719,
+          "distance" : 1.106
+        } ,
+        {
+          "latitude1": 7.842530, 
+          "longitude1": 98.286709, 
+          "latitude2": 7.842780, 
+          "longitude2": 98.295550, 
+          "distance" : 0.9743
+        } ,
+         {
+          "latitude1": 7.835666 ,
+          "longitude1": 98.286709 ,
+          "latitude2": 7.835630 ,
+          "longitude2": 98.296019 ,
+          "distance" : 1.026
+        } 
+          ]
+    },
+    {
+      "no": 6,
+      "name": "Kata Beach",
+      "information": [ 
+        {
+          "latitude1": 7.821980,
+          "longitude1": 98.294231,
+          "latitude2": 7.822214, 
+          "longitude2": 98.297149,
+          "distance" : 0.3225
+        } ,
+        {
+          "latitude1": 7.819238,
+          "longitude1": 98.295658, 
+          "latitude2": 7.819472,
+          "longitude2": 98.298812, 
+          "distance" : 0.3484
+        } ,
+        {
+          "latitude1": 7.816315,
+          "longitude1": 98.297374,
+          "latitude2": 7.816294,
+          "longitude2": 98.299853,
+          "distance" : 0.2731
+        } 
+          ]
+    },
+    {
+      "no": 7,
+      "name": "Patong Beach",
+      "information": [ 
+        {
+          "latitude1": 7.904886,
+          "longitude1": 98.291686,
+          "latitude2": 7.904652, 
+          "longitude2": 98.297866,
+          "distance" : 0.6812
+        } ,
+        {
+          "latitude1": 7.899403,
+          "longitude1": 98.288296,
+          "latitude2": 7.899169, 
+          "longitude2": 98.297201,
+          "distance" : 0.9811
+        } ,
+        {
+          "latitude1": 7.892835, 
+          "longitude1": 98.289927, 
+          "latitude2": 7.893048,
+          "longitude2": 98.294733, 
+          "distance" :  0.5299
+        } ,
+        {
+          "latitude1": 7.889689,
+          "longitude1": 98.288210 ,
+          "latitude2": 7.886799,
+          "longitude2": 98.291450,
+          "distance" : 0.4802
+        } 
+          ]
+    }
+  ]
+}
