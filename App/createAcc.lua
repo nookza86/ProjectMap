@@ -81,3 +81,22 @@ function DiarySend( DiarySend )
     print( "Diary Data Sending To ".. url .." Web Server : " .. DiarySend )
     network.request( url, "POST", DiarySendListener, params )
 end
+
+function UnAttSend( unattractionsSendData )
+
+    local headers = {}
+
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "unattractionsSendData=" .. unattractionsSendData
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/unattractions.php"
+
+    print( "Diary Data Sending To ".. url .." Web Server : " .. unattractionsSendData )
+    network.request( url, "POST", DiarySendListener, params )
+end

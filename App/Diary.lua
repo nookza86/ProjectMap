@@ -97,25 +97,15 @@ local function UploadUserImage( fileName )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
-local function DropTableData(  )
-	local NOOOO = 0	
-	local sql2 = "SELECT id FROM personel;"
-		for row in db:nrows(sql2) do
-			NOOOO = row.id
-		end
-		
-	local tablesetup = "DELETE FROM `diary`;"
-	db:exec(tablesetup)
-
-	 GetData(2 , NOOOO)
-native.setActivityIndicator( false )
- end
-
 local function GoS(  )
 
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("HomePlace", options)
 			native.setActivityIndicator( false )
+end
+
+local function CallDrop(  )
+	DropTableData( 2 )
 end
 
 local function DiaryListener(  )
@@ -175,8 +165,8 @@ local function DiaryListener(  )
 
        --myText.text = DiarySendData
         DiarySend(DiarySendData)
-native.setActivityIndicator( true )
-	timer.performWithDelay( 5000, DropTableData )
+		native.setActivityIndicator( true )
+		timer.performWithDelay( 5000, CallDrop )
         timer.performWithDelay( 5000, GoS )
 
         
@@ -374,20 +364,6 @@ function AddImgListener( event )
 	print( PhotoName )
 	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
 end
-
-local function DropTableData(  )
-	local NOOOO = 0	
-	local sql2 = "SELECT id FROM personel;"
-		for row in db:nrows(sql2) do
-			NOOOO = row.id
-		end
-
-	local tablesetup = "TRUNCATE TABLE `diary`;"
-	db:exec(tablesetup)
-
-	 GetData(2 , NOOOO)
-
- end
 
 function scene:show(event)
 	local sceneGroup = self.view

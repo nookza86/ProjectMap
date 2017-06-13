@@ -1,3 +1,3 @@
 local composer = require("composer")
 
-composer.gotoScene("distance")
+composer.gotoScene("overview")

@@ -86,3 +86,27 @@ function GetData( i , member_no)
      print( CountGetDatabase.." : Login Data Sending To ".. url .." : " .. GetDatabaseSend )
     network.request( url, "POST", GetDataListener, params )
 end
+
+function DropTableData( Table )
+	local NOOOO = 0	
+	local tablesetup = ""
+	local sql2 = "SELECT id FROM personel;"
+		for row in db:nrows(sql2) do
+			NOOOO = row.id
+		end
+	
+	if (Table == 1) then
+		tablesetup = "DELETE FROM `attractions`;"
+
+	elseif (Table == 2) then
+		tablesetup = "DELETE FROM `diary`;"
+
+	elseif (Table == 3) then
+		tablesetup = "DELETE FROM `unattractions`;"
+		
+	end
+	
+	db:exec(tablesetup)
+	GetData(Table , NOOOO)
+
+ end
