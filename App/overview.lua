@@ -21,6 +21,11 @@ local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local myMap = native.newMapView( 20, 20, 1, 1 )
 
+------------------------------------------
+local UnlockBangPaeLabel, UnlockBigBuddhaLabel, UnlockChalongLabel, UnlockKamalaLabel, UnlockKaronLabel, UnlockKataLabel, UnlockPatongLabel
+local CheckUnlockBangPaeLabel, CheckUnlockBigBuddhaLabel, CheckUnlockChalongLabel, CheckUnlockKamalaLabel, CheckUnlockKaronLabel, CheckUnlockKataLabel, CheckUnlockPatongLabel
+
+PlaceGroup = display.newGroup()
 -------- ----
 local filename = system.pathForFile( "Rule.json", system.ResourceDirectory )
 local decoded, pos, msg = json.decodeFile( filename )
@@ -259,7 +264,7 @@ local function RecommendPlace(  )
 		for row in db:nrows(sql) do
 			nationality = row.country
 		end
-		nationality = "Australia"
+		--nationality = "Australia"
 		--nationality = "Canada"
 		print( nationality )
 		if not decoded then
@@ -330,7 +335,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	local phase = event.phase
 	if (phase == "will") then
 		print("Scene #Overview : show (will)")
-		
+
 	YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
@@ -352,6 +357,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	ChalongLabel.y = watchalong.y + 30
 	ChalongLabel.name = "Chalong Temple"
 
+	UnlockChalongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockChalongLabel.x = watchalong.x
+	UnlockChalongLabel.y = watchalong.y - 5
+
 	--CloudWatChalong = display.newImageRect( "Phuket/Overview/cloud.png", 338/10, 135/10 )
 	--CloudWatChalong.x = watchalong.x - 35
 	--CloudWatChalong.y = watchalong.y - 10
@@ -366,6 +375,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	BangPaeLabel.y = bangpae.y + 55
 	BangPaeLabel.name = "Bang Pae Waterfall"
 
+	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/8, 514/8)
+	UnlockBangPaeLabel.x = bangpae.x
+	UnlockBangPaeLabel.y = bangpae.y + 15
+	
 	TribeBangpareImage = display.newImageRect( "Phuket/Overview/tribe.png", 302/8, 228/8)
 	TribeBangpareImage.x = bangpae.x + 50
 	TribeBangpareImage.y = bangpae.y + 30
@@ -379,6 +392,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	BigBuddhaLabel.x = bigbuddha.x 
 	BigBuddhaLabel.y = bigbuddha.y + 30
 	BigBuddhaLabel.name = "Big Buddha"
+
+	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockBigBuddhaLabel.x = bigbuddha.x
+	UnlockBigBuddhaLabel.y = bigbuddha.y - 5
 
 	CloudBigBudda = display.newImageRect( "Phuket/Overview/cloud.png", 338/12, 135/12 )
 	CloudBigBudda.x = bigbuddha.x - 20
@@ -394,6 +411,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	KataLabel.y = kata.y + 20
 	KataLabel.name = "Kata Beach"
 
+	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKataLabel.x = kata.x
+	UnlockKataLabel.y = kata.y - 15
+
 	cocoKataImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocoKataImage.x = kata.x - 15
 	cocoKataImage.y = kata.y - 20
@@ -408,6 +429,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	KamalaLabel.x = kamala1.x
 	KamalaLabel.y = kamala1.y + 20
 	KamalaLabel.name = "Kamala Beach"
+
+	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKamalaLabel.x = kamala1.x
+	UnlockKamalaLabel.y = kamala1.y - 10
 
 	kamala2 = display.newImageRect( "Phuket/Overview/kamala_2.png", 213/17, 89/17 )
 	kamala2.x = kamala1.x - 20
@@ -431,6 +456,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	KaronLabel.y = karon.y + 20
 	KaronLabel.name = "Karon Beach"
 
+	UnlockKaronLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKaronLabel.x = karon.x
+	UnlockKaronLabel.y = karon.y - 15
+
 	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/10, 258/10 )
 	patong.x = island.x - 50
 	patong.y = island.y - 80
@@ -440,6 +469,10 @@ print( display.pixelHeight / display.actualContentHeight )
 	PatongLabel.x = patong.x + 10
 	PatongLabel.y = patong.y + 30
 	PatongLabel.name = "Patong Beach"
+
+	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockPatongLabel.x = patong.x
+	UnlockPatongLabel.y = patong.y - 5
 
 	cocokaronImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocokaronImage.x = karon.x + 5
@@ -534,7 +567,7 @@ print( display.pixelHeight / display.actualContentHeight )
 		}
 	)
 ]]
-	PlaceGroup = display.newGroup()
+	
 	---------------------------------- Group Place -----------------------------------------
 	PlaceGroup:insert(island)
 	PlaceGroup:insert(watchalong)
@@ -593,7 +626,46 @@ print( display.pixelHeight / display.actualContentHeight )
 	--y = -((island.height / 2) - (screenH/ 2)),
 	--time = 500
 	--}
-		
+
+	local sqlUnlock = "SELECT att_no FROM unattractions;"
+	--local sqlUnlock = "SELECT count(att_no) as Catt_no FROM unattractions;"
+	local CountAtt = 0
+		for row in db:nrows(sqlUnlock) do
+			if (row.att_no == 1) then
+				RemoveAll(UnlockBangPaeLabel)
+				CheckUnlockBangPaeLabel = false
+			elseif (row.att_no == 2) then
+				RemoveAll(UnlockBigBuddhaLabel)
+				CheckUnlockBangPaeLabel = false
+			elseif (row.att_no == 3) then
+				RemoveAll(UnlockChalongLabel)
+				CheckUnlockChalongLabel = false
+			elseif (row.att_no == 4) then
+				RemoveAll(UnlockKamalaLabel)
+				CheckUnlockKamalaLabel = false
+			elseif (row.att_no == 5) then
+				RemoveAll(UnlockKaronLabel)
+				CheckUnlockKaronLabel = false
+			elseif (row.att_no == 6) then
+				RemoveAll(UnlockKataLabel)
+				CheckUnlockKataLabel = false
+			elseif (row.att_no == 7) then
+				RemoveAll(UnlockPatongLabel)
+				CheckUnlockPatongLabel = false
+			end
+		end
+
+
+--[[
+		if (row.att_no == 1) then
+				print( "no 1" )
+			else
+				UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/8, 514/8)
+				UnlockPatongLabel.x = bangpae.x
+				UnlockPatongLabel.y = bangpae.y
+				PlaceGroup:insert(UnlockPatongLabel)
+			end
+]]
 	elseif (phase == "did") then
 		print("Scene Overview : show (did)")
 		--timer.performWithDelay(3000, showScene)
@@ -693,6 +765,34 @@ composer.removeScene( "overview" )
 	RemoveAll(BangPaeLabel)
 	RemoveAll(PatongLabel)
 
+
+	if (CheckUnlockBangPaeLabel) then
+		RemoveAll(UnlockBangPaeLabel)
+	end
+
+	if (CheckUnlockBigBuddhaLabel) then
+		RemoveAll(UnlockBigBuddhaLabel)
+	end
+
+	if (CheckUnlockChalongLabel) then
+		RemoveAll(UnlockChalongLabel)
+	end
+
+	if (CheckUnlockKamalaLabel) then
+		RemoveAll(UnlockKamalaLabel)
+	end
+
+	if (CheckUnlockKaronLabel) then
+		RemoveAll(UnlockKaronLabel)
+	end
+
+	if (CheckUnlockKataLabel) then
+		RemoveAll(UnlockKataLabel)
+	end
+
+	if (CheckUnlockPatongLabel) then
+		RemoveAll(UnlockPatongLabel)
+	end
 
 	--scrollView:remove(PlaceGroup)
 	--scrollView:remove(ButtonGroup)

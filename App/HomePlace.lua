@@ -254,7 +254,12 @@ function scene:show(event)
 			TitleImage:scale( 0.5, 0.5 )
 		end
 
-		LocationBtn = widget.newButton(
+		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		print( sqlUnlock )
+	
+		for row in db:nrows(sqlUnlock) do
+			if (row.Catt_no == 0) then
+				LocationBtn = widget.newButton(
 			{
 				left = cx - 120,
 				top = cy,
@@ -267,6 +272,9 @@ function scene:show(event)
 				fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
 			}
 		)
+			end
+		
+		end
 
 		InformationBtn = widget.newButton(
     	{
