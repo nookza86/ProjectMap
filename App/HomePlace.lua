@@ -5,6 +5,7 @@ local json = require ("json")
 require ("cal")
 require("createAcc")
 require("get-data")
+require ("Network-Check")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -170,6 +171,12 @@ end
 
 local function CheckLocation( event )
  	-- Do not continue if a MapView has not been created.
+
+ 	if isRechable() == false then 
+ 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		return
+	end
+
  	if myMap == nil then
 		return
 	end

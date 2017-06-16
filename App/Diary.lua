@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 require("createAcc")
 require("get-data")
+require ("Network-Check")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -196,6 +197,10 @@ local function Check( event )
 
 			if (PhotoPickerCheck4 )then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
+			end
+			if isRechable() == false then 
+ 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				return
 			end
 			DiaryListener(  )
 		end

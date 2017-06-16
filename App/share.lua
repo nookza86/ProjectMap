@@ -4,6 +4,9 @@ local scene = composer.newScene()
 local json = require ("json")
 require("createAcc")
 require("get-data")
+require ("Network-Check")
+require ("facebook.face")
+--local facebook = require( "plugin.facebook.v4" )
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -101,7 +104,7 @@ local function Check( event )
 			composer.gotoScene("HomePlace",options)
 		elseif (event.target.id == "ShareBtn") then
 			print( "Share with facebook button" )
-
+			buttonOnRelease("sharePhotoDialog")
 		else
 			composer.gotoScene("share",options)
 		end
@@ -235,20 +238,6 @@ function scene:show(event)
 			)
 		
 		ShareBtn.x = cx + 180
-		ShareBtn.y = cy + 130
-
-		ShareBtn = widget.newButton(
-    	{
-	        width = 250/1.5,
-	        height = 60/1.5,
-	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
-	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
-	        id = "re",
-	        onEvent = Check
-    	}
-			)
-		
-		ShareBtn.x = cx 
 		ShareBtn.y = cy + 130
 
 	elseif (phase == "did") then

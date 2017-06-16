@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 require ("cal")
+require ("Network-Check")
 local scrollView, island
 local screenW, screenH
 local PlaceGroup, ButtonGroup, TextGroup
