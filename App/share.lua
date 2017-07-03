@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local mui = require( "materialui.mui" )
 require("createAcc")
 require("get-data")
 require ("Network-Check")
@@ -13,7 +14,7 @@ local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, UserImage1, UserImage2, UserImage3, UserImage4
 local BackBtn, ShareBtn
-local FileName, member_no, NoAtt
+local FileName, member_no, NoAtt, DiaryNote
 local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 
 local function RemoveAll( event )
@@ -104,7 +105,13 @@ local function Check( event )
 			composer.gotoScene("HomePlace",options)
 		elseif (event.target.id == "ShareBtn") then
 			print( "Share with facebook button" )
-			buttonOnRelease("sharePhotoDialog")
+			--buttonOnRelease("sharePhotoDialog")
+			local command = "postPhoto"
+			local caption = DiaryNote
+			local AttNo = NoAtt
+			local memNo = member_no
+			local filename = "1_1_1.jpg"
+			buttonOnRelease(command, caption, AttNo, memNo, filename)
 		else
 			composer.gotoScene("share",options)
 		end
@@ -146,6 +153,12 @@ function scene:show(event)
 		NoAtt = 0
 		for row in db:nrows(sql) do
 			NoAtt = row.att_no
+		end
+
+		local sql3 = "SELECT diary_note FROM diary WHERE att_no IN(SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."');"
+
+		for row in db:nrows(sql3) do
+			DiaryNote = row.diary_note
 		end
 
 		local sql = "SELECT member_no, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE att_no IN (SELECT att_no FROM attractions WHERE att_name = '" .. params.PlaceName .. "' );"

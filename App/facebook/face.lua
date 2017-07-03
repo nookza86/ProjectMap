@@ -83,7 +83,7 @@ end
 
 
 -- Runs the desired Facebook command
-local function processFBCommand()
+local function processFBCommand(ccaption, AttNo, memNo, filename)
 
 	local response = {}
 
@@ -112,8 +112,8 @@ local function processFBCommand()
 	-- This code posts a photo from the Internet to your Facebook wall
 	elseif requestedFBCommand == POST_PHOTO then
 		local attachment = {
-			caption = "Photo Caption",
-			url = "http://www.coronalabs.com/links/demo/Corona90x90.png",
+			caption = ccaption,
+			url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."",
 		}
 		response = facebook.request( "me/photos", "POST", attachment )		-- posting the photo
 
@@ -140,8 +140,8 @@ local function processFBCommand()
 		-- Create table with photo data to share
 		local photoData = {
 			photos = {
-				{ url = "https://coronalabs.com/wp-content/uploads/2014/11/Corona-Icon.png", },
-				{ url = "https://www.coronalabs.com/links/demo/Corona90x90.png", },
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/1/1_1_1.jpg", },
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/1/1_1_1.jpg", },
 			},
 		}
 		response = facebook.showDialog( "photo", photoData )		
@@ -166,7 +166,7 @@ local function needPublishActionsPermission()
 end
 
 
-local function enforceFacebookLoginAndPermissions()
+local function enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	if facebook.isActive then
 		local accessToken = facebook.getCurrentAccessToken()
 		if accessToken == nil then
@@ -181,7 +181,7 @@ local function enforceFacebookLoginAndPermissions()
 			print( "Already logged in with necessary permissions" )
 			printTable( accessToken )
 			statusMessage.text = "Logged in"
-			processFBCommand()
+			processFBCommand(caption, AttNo, memNo, filename)
 		end
 	else
 		print( "Please wait for facebook to finish initializing before checking the current access token" );
@@ -279,9 +279,9 @@ end
 facebook.setFBConnectListener( listener )
 
 
-function buttonOnRelease( event )
+function buttonOnRelease( command, caption, AttNo, memNo, filename )
 
-	local id = event
+	local id = command
 	print( id )
 
 	if id == "login" then
@@ -295,7 +295,7 @@ function buttonOnRelease( event )
 		enforceFacebookLoginAndPermissions()
 	elseif id == "postPhoto" then
 		requestedFBCommand = POST_PHOTO
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "showRequestDialog" then
 		requestedFBCommand = SHOW_REQUEST_DIALOG
 		enforceFacebookLoginAndPermissions()
@@ -514,7 +514,7 @@ local isFacebookAppEnabledButton = widget.newButton(
 mainGroup:insert( isFacebookAppEnabledButton )
 
 -- Log out button
-local logoutButton = widget.newButton(
+local logoutButton = widget.newButton( 
 	{
 		label = "Log out",
 		id = "logout",
