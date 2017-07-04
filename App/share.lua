@@ -14,7 +14,7 @@ local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, UserImage1, UserImage2, UserImage3, UserImage4
 local BackBtn, ShareBtn
-local FileName, member_no, NoAtt, DiaryNote
+local FileName, member_no, NoAtt, DiaryNote, SelecFileImg
 local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 
 local function RemoveAll( event )
@@ -31,6 +31,59 @@ function scene:create(event)
 	print("Scene #share : create")
 end
 
+local function SelectImg( event )
+	SelecFileImg = event.target.id
+	print( SelecFileImg )
+	local backgroundALpha
+	local RecWidth = 0
+	local RecHeight = 0
+	local PositionX = 0
+	local PositionY = 0
+
+	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
+	backgroundALpha:setFillColor( black )
+	backgroundALpha:scale( 0.2, 0.2 )
+	backgroundALpha.alpha = 0.5
+
+
+	if (SelecFileImg == NoAtt .. "_" .. member_no .. "_1.jpg") then
+		RecWidth = UserImage1.width
+		RecHeight = UserImage1.height
+		PositionX = UserImage1.x
+		PositionY = UserImage1.y
+
+	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_2.jpg") then
+		RecWidth = UserImage2.width
+		RecHeight = UserImage2.height
+		PositionX = UserImage2.x
+		PositionY = UserImage2.y
+
+	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_3.jpg") then
+		RecWidth = UserImage3.width
+		RecHeight = UserImage3.height
+		PositionX = UserImage3.x
+		PositionY = UserImage3.y
+
+	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_4.jpg") then
+		RecWidth = UserImage4.width
+		RecHeight = UserImage4.height
+		PositionX = UserImage4.x
+		PositionY = UserImage4.y
+	end	
+
+	if (backgroundALpha) then
+		RemoveAll(backgroundALpha)
+		
+	end
+
+	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
+	backgroundALpha:setFillColor( black )
+	backgroundALpha:scale( 0.2, 0.2 )
+	backgroundALpha.alpha = 0.5
+
+
+end
+
 local function loadImageListener( event )
 	if(not event.isError) then
 		print( event.response.filename, event.response.baseDirectory )
@@ -43,6 +96,8 @@ local function loadImageListener( event )
 							cy + 40 
 							)
 			UserImage1:scale( 0.2, 0.2 )
+			UserImage1.id = event.response.filename
+			UserImage1:addEventListener( "touch", SelectImg )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_2.jpg") then
@@ -54,6 +109,8 @@ local function loadImageListener( event )
 							cy + 40 
 							)
 			UserImage2:scale( 0.2, 0.2 )
+			UserImage2.id = event.response.filename
+			UserImage2:addEventListener( "touch", SelectImg )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -65,6 +122,8 @@ local function loadImageListener( event )
 							cy + 40 
 							)
 			UserImage3:scale( 0.2, 0.2 )
+			UserImage3.id = event.response.filename
+			UserImage3:addEventListener( "touch", SelectImg )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -76,6 +135,8 @@ local function loadImageListener( event )
 							cy + 40 
 							)
 			UserImage4:scale( 0.2, 0.2 )
+			UserImage4.id = event.response.filename
+			UserImage4:addEventListener( "touch", SelectImg )
 		end
 	
 	end
@@ -110,8 +171,14 @@ local function Check( event )
 			local caption = DiaryNote
 			local AttNo = NoAtt
 			local memNo = member_no
-			local filename = "1_1_1.jpg"
-			buttonOnRelease(command, caption, AttNo, memNo, filename)
+			local filename = SelecFileImg
+
+			if (filename == nil or filename == "") then
+				return
+			else
+				buttonOnRelease(command, caption, AttNo, memNo, filename)
+			end
+
 		else
 			composer.gotoScene("share",options)
 		end
