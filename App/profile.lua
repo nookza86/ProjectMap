@@ -115,7 +115,7 @@ network.download( url ,
 	loadImageListener,
 	{},
 	no,
-	system.DocumentsDirectory
+	system.ApplicationSupportDirectory
 	)
 
 end

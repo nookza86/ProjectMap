@@ -16,6 +16,9 @@ local Bg, UserImage1, UserImage2, UserImage3, UserImage4
 local BackBtn, ShareBtn
 local FileName, member_no, NoAtt, DiaryNote, SelecFileImg
 local CheckImg1, CheckImg2, CheckImg3, CheckImg4
+local backgroundALpha
+local CheckSelectImg = false
+local myText
 
 local function RemoveAll( event )
 	if(event) then
@@ -34,53 +37,63 @@ end
 local function SelectImg( event )
 	SelecFileImg = event.target.id
 	print( SelecFileImg )
-	local backgroundALpha
+	
 	local RecWidth = 0
 	local RecHeight = 0
 	local PositionX = 0
 	local PositionY = 0
-
+	
+--[[
 	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
 	backgroundALpha:setFillColor( black )
 	backgroundALpha:scale( 0.2, 0.2 )
 	backgroundALpha.alpha = 0.5
-
+]]
+	if (CheckSelectImg == true) then
+		--RemoveAll(backgroundALpha)
+		backgroundALpha:removeSelf( )
+		backgroundALpha = nil
+	end
 
 	if (SelecFileImg == NoAtt .. "_" .. member_no .. "_1.jpg") then
 		RecWidth = UserImage1.width
 		RecHeight = UserImage1.height
 		PositionX = UserImage1.x
 		PositionY = UserImage1.y
+		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_2.jpg") then
 		RecWidth = UserImage2.width
 		RecHeight = UserImage2.height
 		PositionX = UserImage2.x
 		PositionY = UserImage2.y
+		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_3.jpg") then
 		RecWidth = UserImage3.width
 		RecHeight = UserImage3.height
 		PositionX = UserImage3.x
 		PositionY = UserImage3.y
+		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_4.jpg") then
 		RecWidth = UserImage4.width
 		RecHeight = UserImage4.height
 		PositionX = UserImage4.x
 		PositionY = UserImage4.y
+		CheckSelectImg = true
 	end	
 
-	if (backgroundALpha) then
-		RemoveAll(backgroundALpha)
-		
-	end
-
+	backgroundALpha = display.newImageRect( "check.png", RecWidth / 6, RecHeight / 6)
+	backgroundALpha.x = PositionX
+	backgroundALpha.y = PositionY
+	
+--[[
 	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
 	backgroundALpha:setFillColor( black )
 	backgroundALpha:scale( 0.2, 0.2 )
 	backgroundALpha.alpha = 0.5
-
+]]
 
 end
 
@@ -168,10 +181,15 @@ local function Check( event )
 			print( "Share with facebook button" )
 			--buttonOnRelease("sharePhotoDialog")
 			local command = "postPhoto"
+			--local command = "sharePhotoDialog"
+			--local command = "postLink"
+			--local command = "postMessage"
 			local caption = DiaryNote
 			local AttNo = NoAtt
 			local memNo = member_no
 			local filename = SelecFileImg
+
+			myText.text = "n : " .. filename
 
 			if (filename == nil or filename == "") then
 				return
@@ -319,6 +337,9 @@ function scene:show(event)
 		
 		ShareBtn.x = cx + 180
 		ShareBtn.y = cy + 130
+
+			 myText = display.newText( "fileeeeeeeeeeeeeeee" , ShareBtn.x - 180, ShareBtn.y , native.systemFont, 40 )
+            myText:setFillColor( 1, 0, 0 ) 
 
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")

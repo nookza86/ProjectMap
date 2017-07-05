@@ -32,3 +32,19 @@ function isRechable()
     return isNetworkAvailable -- 7
   end
 end
+
+function FindImg( NameOfFile )
+    -- Get raw path to the app documents directory
+    local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+    local destDir = system.DocumentsDirectory
+   
+    for file in lfs.dir( doc_path ) do
+
+        -- "file" is the current file or directory name
+        print( "Found file: " .. file )
+
+        if (file == NameOfFile) then
+            return true
+        end
+    end
+end
