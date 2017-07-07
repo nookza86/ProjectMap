@@ -158,6 +158,11 @@ end
 
 
 local function randomFlag( event )
+	if isRechable() == false then 
+ 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		return
+	end
+
 	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/" ..NoAtt .."/" .. event 
 	print( url )
 network.download( url , 
@@ -180,8 +185,8 @@ local function Check( event )
 		elseif (event.target.id == "ShareBtn") then
 			print( "Share with facebook button" )
 			--buttonOnRelease("sharePhotoDialog")
-			local command = "postPhoto"
-			--local command = "sharePhotoDialog"
+			--local command = "postPhoto"
+			local command = "sharePhotoDialog"
 			--local command = "postLink"
 			--local command = "postMessage"
 			local caption = DiaryNote
@@ -194,6 +199,12 @@ local function Check( event )
 			if (filename == nil or filename == "") then
 				return
 			else
+
+			if isRechable() == false then 
+ 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				return
+			end
+
 				buttonOnRelease(command, caption, AttNo, memNo, filename)
 			end
 

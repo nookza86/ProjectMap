@@ -371,6 +371,10 @@ function scene:hide(event)
 		RemoveAll(BackBtn)
 		RemoveAll(TitleImage)
 
+		if (LocationBtn) then
+			RemoveAll(LocationBtn)
+		end
+
 		print("Scene #HomePlace : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #HomePlace : hide (did)")

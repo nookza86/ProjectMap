@@ -105,6 +105,7 @@ local function processFBCommand(ccaption, AttNo, memNo, filename)
 			caption = "Link caption",
 			description = "Corona is great for developing mobile apps with the same codebase.",
 			picture = "http://www.coronalabs.com/links/demo/Corona90x90.png",
+			--picture = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."",
 			message = "Check it out!",
 		}
 		response = facebook.request( "me/feed", "POST", attachment )  -- Posting the photo
@@ -115,7 +116,8 @@ local function processFBCommand(ccaption, AttNo, memNo, filename)
 			caption = ccaption,
 			url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."",
 		}
-		response = facebook.request( "me/photos", "POST", attachment )		-- posting the photo
+		response = facebook.request( "me/photos", "POST", attachment )	
+		--response = facebook.request( "me/feed", "POST", attachment )		-- posting the photo
 
 	-- This displays a Facebook dialog to requests friends to play with you
 	elseif requestedFBCommand == SHOW_REQUEST_DIALOG then
@@ -134,17 +136,29 @@ local function processFBCommand(ccaption, AttNo, memNo, filename)
 			picture = "https://coronalabs.com/wp-content/uploads/2014/11/Corona-Icon.png",
 		}
 		response = facebook.showDialog( "link", linkData )
+		--response = facebook.request( "me/feed", "POST", linkData )
 
 	-- This displays a Facebook dialog for posting photos to your photo album
 	elseif requestedFBCommand == SHARE_PHOTO_DIALOG then
 		-- Create table with photo data to share
+
+--[[
 		local photoData = {
 			photos = {
 				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/1/1_1_1.jpg", },
-				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/1/1_1_1.jpg", },
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."", },
 			},
 		}
-		response = facebook.showDialog( "photo", photoData )		
+]]
+		
+		local photoData = {
+			photos = {
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."" }
+			},
+		}
+		
+		response = facebook.showDialog( "photo", photoData )
+		--response = facebook.request( "me/feed", "POST", photoData )		
 
 	-- Request the current logged in user's info
 	elseif requestedFBCommand == GET_USER_INFO then
@@ -286,22 +300,22 @@ function buttonOnRelease( command, caption, AttNo, memNo, filename )
 
 	if id == "login" then
 		requestedFBCommand = LOGIN
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postMessage" then
 		requestedFBCommand = POST_MSG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postLink" then
 		requestedFBCommand = POST_LINK
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postPhoto" then
 		requestedFBCommand = POST_PHOTO
 		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "showRequestDialog" then
 		requestedFBCommand = SHOW_REQUEST_DIALOG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "shareLinkDialog" then
 		requestedFBCommand = SHARE_LINK_DIALOG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "sharePhotoDialog" then
 		requestedFBCommand = SHARE_PHOTO_DIALOG
 		-- This can only be done if the Facebook app in installed, so verify that first
@@ -310,7 +324,7 @@ function buttonOnRelease( command, caption, AttNo, memNo, filename )
 			commandProcessedByFB = requestedFBCommand
 		else
 			-- Now enforce the state of our connection with Facebook to run this command
-			enforceFacebookLoginAndPermissions()
+			enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 		end
 	elseif id == "getUser" then
 		requestedFBCommand = GET_USER_INFO

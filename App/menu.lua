@@ -3,6 +3,7 @@ local widget = require("widget" )
 local json = require ("json")
 local sqlite = require("sqlite3")
 local facebook = require( "plugin.facebook.v4" )
+require ("Network-Check")
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
 local ForgotImage, SignUpImage, EmailImage, PasswordImage, TextFieldImage
@@ -258,6 +259,13 @@ end
 
 local function Check( event )
 	print( event.target.id )
+
+	if isRechable() == true then 
+		print( "Internet access" )
+	else 
+  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+  		return
+	end
 
 	if(event.target.id == "LoginWithFaceBookBtn") then
 		composer.gotoScene( "overview" )

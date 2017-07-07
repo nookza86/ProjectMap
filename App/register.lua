@@ -5,6 +5,7 @@ local json = require ("json")
 local mime = require( "mime" )
 local lfs = require( "lfs" )
 require("createAcc")
+require ("Network-Check")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
 local PictxfFirstName, PictxfLastName, PictxfPassword, PictxfConfirmPassword, PictxfEmail
@@ -213,6 +214,11 @@ local function CreateAccountListener( event )
 
     if(txfFirstName.text == "" or txfLastName.text == "" or txfPassword.text == "" or txfConfirmPassword.text == "" or txfEmail.text == "") then
         print( "some Field null" )
+        return
+    end
+
+    if isRechable() == false then 
+        native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
         return
     end
 

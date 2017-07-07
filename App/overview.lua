@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 require ("cal")
 require ("Network-Check")
+require ("image_proportion")
 local scrollView, island
 local screenW, screenH
 local PlaceGroup, ButtonGroup, TextGroup
@@ -337,7 +338,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	if (phase == "will") then
 		print("Scene #Overview : show (will)")
 
-	YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
+	--YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
 	island.x = cx
@@ -515,7 +516,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
 	RecommendPlace(  )
-
+--[[
 	LocationBtn = widget.newButton(
 		{
 	left = cx + 150,
@@ -529,6 +530,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
 		}
 	)
+	]]
 	--[[watchalong:addEventListener( "touch", check )
 	bangpae:addEventListener( "touch", check )
 	bigbuddha:addEventListener( "touch", check )
@@ -604,7 +606,7 @@ print( display.pixelHeight / display.actualContentHeight )
 
 	ButtonGroup = display.newGroup()
 	----------------------------------- Group Button -----------------------------------------
-	ButtonGroup:insert(LocationBtn)
+	--ButtonGroup:insert(LocationBtn)
 	if (CheckInList) then
 		ButtonGroup:insert(RecButton)
 	end
@@ -615,7 +617,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	TextGroup = display.newGroup()
 	----------------------------------- Group Text -----------------------------------------
 
-	TextGroup:insert(YourLocation)
+	--TextGroup:insert(YourLocation)
 
 	----------------------------------- scrollView -----------------------------------------
 	--scrollView:insert(PlaceGroup)
@@ -627,7 +629,14 @@ print( display.pixelHeight / display.actualContentHeight )
 	--y = -((island.height / 2) - (screenH/ 2)),
 	--time = 500
 	--}
-
+	CheckUnlockBangPaeLabel = true
+	CheckUnlockBigBuddhaLabel = true
+	CheckUnlockChalongLabel = true
+	CheckUnlockKamalaLabel = true
+	CheckUnlockKaronLabel = true
+	CheckUnlockKataLabel = true
+	CheckUnlockPatongLabel = true
+	
 	local sqlUnlock = "SELECT att_no FROM unattractions;"
 	--local sqlUnlock = "SELECT count(att_no) as Catt_no FROM unattractions;"
 	local CountAtt = 0
@@ -637,7 +646,7 @@ print( display.pixelHeight / display.actualContentHeight )
 				CheckUnlockBangPaeLabel = false
 			elseif (row.att_no == 2) then
 				RemoveAll(UnlockBigBuddhaLabel)
-				CheckUnlockBangPaeLabel = false
+				CheckUnlockBigBuddhaLabel = false
 			elseif (row.att_no == 3) then
 				RemoveAll(UnlockChalongLabel)
 				CheckUnlockChalongLabel = false
@@ -710,7 +719,7 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(kamala3)
 	PlaceGroup:remove(KamalaLabel)
 
-	ButtonGroup:remove(LocationBtn)
+	--ButtonGroup:remove(LocationBtn)
 
 	if (CheckInList) then
 		ButtonGroup:remove(RecButton)
@@ -731,7 +740,7 @@ composer.removeScene( "overview" )
 
 	
 
-	TextGroup:remove(YourLocation)
+	--TextGroup:remove(YourLocation)
 
 	RemoveAll(island)
 	RemoveAll(watchalong)
@@ -752,7 +761,7 @@ composer.removeScene( "overview" )
 	RemoveAll(CloudCenter)
 	RemoveAll(CloudCenterRight)
 	RemoveAll(LocationBtn)
-	RemoveAll(YourLocation)
+--	RemoveAll(YourLocation)
 	RemoveAll(ProfileImage)
 	RemoveAll(kamala1)
 	RemoveAll(kamala2)
