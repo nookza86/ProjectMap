@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
 local Recommend, TextDesField

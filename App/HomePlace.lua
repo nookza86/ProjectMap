@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require ("cal")
 require("createAcc")
 require("get-data")
@@ -13,6 +14,8 @@ local myMap = native.newMapView( 20, 20, 1, 1 )
 local params, cx, cy, cw, ch
 local Bg, BgBtn, BackBtn, TitleImage
 local InformationBtn, MapBtn, ShareBtn, DiaryBtn
+local IsUnlock = false
+local IsDiary = false
 
 ------
 local filename = system.pathForFile( "distance.json", system.ResourceDirectory )
@@ -49,12 +52,25 @@ local function Check( event )
 			composer.gotoScene("map", options)
 
 		elseif (event.target.id == "ShareBtn") then
-			print( "Go to scene #Share " .. params.PlaceName )
-			composer.gotoScene("share", options)
+			if (IsDiary) then
+				print( "Go to scene #Share " .. params.PlaceName )
+				composer.gotoScene("share", options)
+			else
+				native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
+				return
+			end
+
+			
 
 		elseif (event.target.id == "DiaryBtn") then
-			print( "Go to scene #Diary " .. params.PlaceName )
-			composer.gotoScene("Diary", options)
+			if (IsUnlock) then
+				print( "Go to scene #Diary " .. params.PlaceName )
+				composer.gotoScene("Diary", options)
+			else
+				native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
+				return
+			end
+			
 
 		elseif (event.target.id == "BackBtn") then
 			composer.gotoScene("overview")
@@ -262,8 +278,8 @@ function scene:show(event)
 		end
 
 		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-		print( sqlUnlock )
-	
+
+
 		for row in db:nrows(sqlUnlock) do
 			if (row.Catt_no == 0) then
 				LocationBtn = widget.newButton(
@@ -280,7 +296,20 @@ function scene:show(event)
 			}
 		)
 			end
+			
 		
+		end
+
+		local sqlUnlock3 = "SELECT un_id FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+
+		for row in db:nrows(sqlUnlock3) do
+			IsUnlock = true
+		end
+
+		local sqlUnlock4 = "SELECT diary_id FROM `diary` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+
+		for row in db:nrows(sqlUnlock4) do
+			IsDiary = true
 		end
 
 		InformationBtn = widget.newButton(

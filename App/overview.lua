@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require ("cal")
 require ("Network-Check")
 require ("image_proportion")
@@ -41,7 +42,7 @@ local RecNational = {}
 
 local function RemoveAll( event )
 	if(event) then
-		print( "deletePic "  )
+		--print( "deletePic "  )
 		event:removeSelf( )
 		event = nil
 		
@@ -339,6 +340,7 @@ print( display.pixelHeight / display.actualContentHeight )
 		print("Scene #Overview : show (will)")
 
 	--YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
+	--toast.show('Non-intrusive notification message!')  
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
 	island.x = cx

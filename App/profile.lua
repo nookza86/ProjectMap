@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require("createAcc")
 require("get-data")
 local sqlite = require("sqlite3")
@@ -104,7 +105,7 @@ local function loadImageListener( event )
 			UserImage1:scale( 0.2, 0.2 )
 	
 	end
-	native.setActivityIndicator( false )
+	--native.setActivityIndicator( false )
 end
 
 local function LoadUserImg( no )
@@ -134,7 +135,7 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
-		native.setActivityIndicator( true )
+		--native.setActivityIndicator( true )
 		Bg = display.newImageRect("Phuket/Profile/bg1.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
@@ -175,14 +176,48 @@ function scene:show(event)
 			end                       
 		end
 
+		local sqlUnlock = "SELECT att_no FROM unattractions;"
+		local CheckTrophyKata = 0
+		local CheckTrophyKamala = 0
+		local CheckTrophyChalong = 0
+		local CheckTrophyKaron = 0
+		local CheckTrophyPatong = 0
+		local CheckTrophyBigbuddha = 0
+		local CheckTrophyBangpae = 0
+
+		for row in db:nrows(sqlUnlock) do
+			if (row.att_no == 1) then
+				CheckTrophyBangpae = 1
+
+			elseif (row.att_no == 2) then
+				CheckTrophyBigbuddha = 1
+
+			elseif (row.att_no == 3) then
+				CheckTrophyChalong = 1
+
+			elseif (row.att_no == 4) then
+				CheckTrophyKamala = 1
+
+			elseif (row.att_no == 5) then
+				CheckTrophyKaron = 1
+
+			elseif (row.att_no == 6) then
+				CheckTrophyKata = 1
+
+			elseif (row.att_no == 7) then
+				CheckTrophyPatong = 1
+
+			end
+		end
+
 		
 
 		KataImage = widget.newButton(
     	{
 	        width = 532/3.5,
 	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/kata_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/kata_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/kata_".. CheckTrophyKata ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/kata_".. CheckTrophyKata ..".png",
 	        id = "kata",
 	        onEvent = Check
     	}
@@ -194,8 +229,8 @@ function scene:show(event)
     	{
 	        width = 564/3.5,
 	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/kamala_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/kamala_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/kamala_".. CheckTrophyKamala ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/kamala_".. CheckTrophyKamala ..".png",
 	        id = "kamala",
 	        onEvent = Check
     	}
@@ -207,8 +242,8 @@ function scene:show(event)
     	{
 	        width = 621/3.5,
 	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/chalong_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/chalong_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/chalong_".. CheckTrophyChalong ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/chalong_".. CheckTrophyChalong ..".png",
 	        id = "watchalong",
 	        onEvent = Check
     	}
@@ -220,8 +255,8 @@ function scene:show(event)
     	{
 	        width = 532/3.5,
 	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/karon_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/karon_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/karon_".. CheckTrophyKaron ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/karon_".. CheckTrophyKaron ..".png",
 	        id = "karon",
 	        onEvent = Check
     	}
@@ -233,8 +268,8 @@ function scene:show(event)
     	{
 	        width = 565/3.5,
 	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/patong_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/patong_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/patong_".. CheckTrophyPatong ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/patong_".. CheckTrophyPatong ..".png",
 	        id = "patong",
 	        onEvent = Check
     	}
@@ -246,8 +281,8 @@ function scene:show(event)
     	{
 	        width = 556/3.5,
 	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_".. CheckTrophyBigbuddha ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_".. CheckTrophyBigbuddha ..".png",
 	        id = "bigbuddha",
 	        onEvent = Check
     	}
@@ -259,8 +294,8 @@ function scene:show(event)
     	{
 	        width = 767/3.5,
 	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/bangpae_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/bangpae_0.png",
+	        defaultFile = "Phuket/Profile/NameActraction/bangpae_".. CheckTrophyBangpae ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/bangpae_".. CheckTrophyBangpae ..".png",
 	        id = "bangpae",
 	        onEvent = Check
     	}

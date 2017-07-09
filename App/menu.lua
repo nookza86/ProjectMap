@@ -3,6 +3,7 @@ local widget = require("widget" )
 local json = require ("json")
 local sqlite = require("sqlite3")
 local facebook = require( "plugin.facebook.v4" )
+local toast = require('plugin.toast')
 require ("Network-Check")
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText

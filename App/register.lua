@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 local mime = require( "mime" )
 local lfs = require( "lfs" )
+local toast = require('plugin.toast')
 require("createAcc")
 require ("Network-Check")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country

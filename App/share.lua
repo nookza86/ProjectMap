@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local mui = require( "materialui.mui" )
+local toast = require('plugin.toast')
 require("createAcc")
 require("get-data")
 require ("Network-Check")
@@ -99,9 +100,10 @@ end
 
 local function loadImageListener( event )
 	if(not event.isError) then
+		native.setActivityIndicator( true )
 		print( event.response.filename, event.response.baseDirectory )
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_1.jpg") then
-
+			
 			UserImage1 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
@@ -111,6 +113,7 @@ local function loadImageListener( event )
 			UserImage1:scale( 0.2, 0.2 )
 			UserImage1.id = event.response.filename
 			UserImage1:addEventListener( "touch", SelectImg )
+
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_2.jpg") then
@@ -151,8 +154,9 @@ local function loadImageListener( event )
 			UserImage4.id = event.response.filename
 			UserImage4:addEventListener( "touch", SelectImg )
 		end
-	
+		native.setActivityIndicator( false )
 	end
+
 end
 
 
@@ -233,6 +237,7 @@ function scene:show(event)
 	local phase = event.phase
 	params = event.params
 	if (phase == "will") then
+		
 		cx = display.contentCenterX
 	    cy = display.contentCenterY
 	    cw = display.contentWidth
@@ -241,7 +246,7 @@ function scene:show(event)
 	    CheckImg2 = false
 	    CheckImg3 = false
 	    CheckImg4 = false
-	  --  DropTableData(  )
+	  toast.show('Loading Image!')  
 	    Bg = display.newImage("Phuket/share/" .. params.PlaceName .. "/bg.png", cx, cy )
 		Bg:scale( 0.3, 0.3 ) 
 
@@ -349,9 +354,7 @@ function scene:show(event)
 		ShareBtn.x = cx + 180
 		ShareBtn.y = cy + 130
 
-			 myText = display.newText( "fileeeeeeeeeeeeeeee" , ShareBtn.x - 180, ShareBtn.y , native.systemFont, 40 )
-            myText:setFillColor( 1, 0, 0 ) 
-
+		--native.setActivityIndicator( false )
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")
 		--timer.performWithDelay(3000, showScene)
@@ -370,6 +373,7 @@ function scene:hide(event)
 		RemoveAll(UserImage4)
 		RemoveAll(BackBtn)
 		RemoveAll(ShareBtn)
+
 		print("Scene #share : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #share : hide (did)")

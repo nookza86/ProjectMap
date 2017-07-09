@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require("createAcc")
 require("get-data")
 require ("Network-Check")
@@ -113,6 +114,7 @@ local function DiaryListener(  )
  
     if(TextDesField.text == "" ) then
         print( "TextDesField null" )
+        native.showAlert( "Fill","Add some note.", { "OK" } )
         return
     end
     local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
@@ -183,6 +185,16 @@ local function Check( event )
 		if (event.target.name == "BackBtn") then
 			composer.gotoScene("HomePlace", options)
 		else
+			if isRechable() == false then 
+ 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				return
+			end
+
+			if (PhotoPickerCheck1 == false or PhotoPickerCheck2 == false or PhotoPickerCheck3 == false or PhotoPickerCheck4 == false ) then
+				native.showAlert( "No photo select","Add least 1 photo.", { "OK" } )
+				return
+			end
+
 			if (PhotoPickerCheck1 )then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
 			end
@@ -198,10 +210,7 @@ local function Check( event )
 			if (PhotoPickerCheck4 )then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
 			end
-			if isRechable() == false then 
- 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
- 				return
-			end
+			
 			DiaryListener(  )
 		end
 		
@@ -649,7 +658,7 @@ function scene:hide(event)
 		RemoveAll( BackBtn )
 		
 		
-		--RemoveAll(myText)
+		RemoveAll(myText)
 		RemoveAll( DiaryGroup )
 		RemoveAll( scrollView )
 
