@@ -189,12 +189,12 @@ local function Check( event )
  				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
  				return
 			end
-
+--[[
 			if (PhotoPickerCheck1 == false or PhotoPickerCheck2 == false or PhotoPickerCheck3 == false or PhotoPickerCheck4 == false ) then
 				native.showAlert( "No photo select","Add least 1 photo.", { "OK" } )
 				return
 			end
-
+]]
 			if (PhotoPickerCheck1 )then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
 			end
@@ -324,7 +324,7 @@ local sessionComplete = function(event)
    			ImageUser1:scale(scale , scale )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
-   			DiaryGroup:insert( ImageUser1 )
+   			--DiaryGroup:insert( ImageUser1 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2") then
    			PhotoPickerCheck2 = true
@@ -334,7 +334,7 @@ local sessionComplete = function(event)
    			ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
-   			DiaryGroup:insert( ImageUser2 )
+   			--DiaryGroup:insert( ImageUser2 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3") then
    			PhotoPickerCheck3 = true
@@ -344,7 +344,7 @@ local sessionComplete = function(event)
    			ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
-   			DiaryGroup:insert( ImageUser3 )
+   			--DiaryGroup:insert( ImageUser3 )
 
    		else
    			PhotoPickerCheck4 = true
@@ -354,7 +354,7 @@ local sessionComplete = function(event)
    			ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
-   			DiaryGroup:insert( ImageUser4 )
+   			--DiaryGroup:insert( ImageUser4 )
 
    		end
 
@@ -598,7 +598,7 @@ end
     )
 
 		
-		local DiaryGroup = display.newGroup()
+		
 		DiaryGroup:insert( BgText )
 		DiaryGroup:insert( ImageUser1 )
 		DiaryGroup:insert( ImageUser2 )
