@@ -598,7 +598,7 @@ end
     )
 
 		
-
+		local DiaryGroup = display.newGroup()
 		DiaryGroup:insert( BgText )
 		DiaryGroup:insert( ImageUser1 )
 		DiaryGroup:insert( ImageUser2 )

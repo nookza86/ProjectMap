@@ -152,6 +152,7 @@ local function CalDis( currentLatitude, currentLongitude )
 			    if(Userd <= d) then
 			    	InArea = true
 			    	UnlockListener(  )
+			    	break
 			    else
 			    	InArea = false
 			    end
