@@ -20,12 +20,12 @@ local BeautyRadioButton
 local CleanRadioButton
 local ImpressionScore, BeautyScore, CleanScore
 local PhotoPickerCheck1, PhotoPickerCheck2, PhotoPickerCheck3, PhotoPickerCheck4
-local DiaryGroup
 local TextDesField
 local AddImgListener
 local NoMember, NoAtt
 local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
 			myText:setFillColor( 1, 0, 0 ) 
+local DiaryGroup = display.newGroup()
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -324,6 +324,7 @@ local sessionComplete = function(event)
    			ImageUser1:scale(scale , scale )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
+   			DiaryGroup:insert( ImageUser1 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2") then
    			PhotoPickerCheck2 = true
@@ -333,6 +334,7 @@ local sessionComplete = function(event)
    			ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
+   			DiaryGroup:insert( ImageUser2 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3") then
    			PhotoPickerCheck3 = true
@@ -342,6 +344,7 @@ local sessionComplete = function(event)
    			ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
+   			DiaryGroup:insert( ImageUser3 )
 
    		else
    			PhotoPickerCheck4 = true
@@ -351,6 +354,7 @@ local sessionComplete = function(event)
    			ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
+   			DiaryGroup:insert( ImageUser4 )
 
    		end
 
@@ -593,7 +597,7 @@ end
         }
     )
 
-		DiaryGroup = display.newGroup()
+		
 
 		DiaryGroup:insert( BgText )
 		DiaryGroup:insert( ImageUser1 )
