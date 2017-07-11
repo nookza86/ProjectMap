@@ -106,10 +106,10 @@ local function UnlockListener(  )
         local unattractions = {}
 
         unattractions["member_no"] = member_no
-        unattractions["att_no"] = NoAtt
+        unattractions["att_no"] = att_no
 
         local unattractionsSendData = json.encode( unattractions )
-
+        print( "BBBBBBBBBBBBBBBBBBBBBBBB" .. unattractionsSendData )
         UnAttSend(unattractionsSendData)
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 5000, CallDrop )
@@ -188,6 +188,7 @@ end
 
 local function CheckLocation( event )
  	-- Do not continue if a MapView has not been created.
+ 	UnlockListener(  )
 
  	if isRechable() == false then 
  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
