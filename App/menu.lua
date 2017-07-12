@@ -186,6 +186,10 @@ local function InsertData(  )
 
  end
 
+local function GoS(  )
+			composer.gotoScene("overview")
+			native.setActivityIndicator( false )
+end
 
 local function networkListener( event )
     if ( event.isError ) then
@@ -195,8 +199,6 @@ local function networkListener( event )
     	myNewData = event.response
         print( "RESPONSE: " .. event.response )
         decodedData = (json.decode( myNewData ))
-
-        native.setActivityIndicator( false )
 
         ErrorCheck = decodedData["error"]
        -- ActiveCheck = decodedData["user"]["active"]
@@ -215,8 +217,8 @@ local function networkListener( event )
 
         	InsertData(  )     	
         	GetData(1)
+        	timer.performWithDelay( 5000, GoS ) 
         	
-        	composer.gotoScene("overview")
 
     	end
 
@@ -260,14 +262,14 @@ end
 
 local function Check( event )
 	print( event.target.id )
-
+--[[
 	if isRechable() == true then 
 		print( "Internet access" )
 	else 
   		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
   		return
 	end
-
+]]
 	if(event.target.id == "LoginWithFaceBookBtn") then
 		composer.gotoScene( "overview" )
 	end

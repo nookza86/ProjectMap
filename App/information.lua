@@ -89,6 +89,15 @@ local function RecommendPlace( PlaceNamee )
 	return CountRec
 end
 
+local function DescripField(  )
+	local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+	--	print(sql)
+		for row in db:nrows(sql) do
+			TextDesField.text = row.descriptions
+			--print(row.descriptions )
+		end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -115,13 +124,8 @@ function scene:show(event)
 	    TextDesField.isEditable = false
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
-		local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
-	--	print(sql)
-		for row in db:nrows(sql) do
-			TextDesField.text = row.descriptions
-			--print(row.descriptions )
-		end
-
+		
+		 timer.performWithDelay( 300, DescripField )
 		--TextDesField.isFontSizeScaled = true
 
 		BackBtn = widget.newButton(

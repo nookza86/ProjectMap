@@ -100,7 +100,7 @@ end
 
 local function loadImageListener( event )
 	if(not event.isError) then
-		native.setActivityIndicator( true )
+		
 		print( event.response.filename, event.response.baseDirectory )
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_1.jpg") then
 			
@@ -269,6 +269,7 @@ function scene:show(event)
 			member_no = row.member_no
 
 			if (row.diary_pic1 ~= "") then
+				native.setActivityIndicator( true )
 				CheckImg1 = true
 				FileName = row.diary_pic1
 				print( "1" )
@@ -276,6 +277,7 @@ function scene:show(event)
 			end
 -----------------------------------------2---------------------------------------------
 			if (row.diary_pic2 ~= "") then
+				native.setActivityIndicator( true )
 				CheckImg2 = true
 				print( "2" )
 				FileName = row.diary_pic2
@@ -283,6 +285,7 @@ function scene:show(event)
 			end
 -----------------------------------------3---------------------------------------------
 			if (row.diary_pic3 ~= "") then
+				native.setActivityIndicator( true )
 				CheckImg3 = true
 				print( "3" )
 				FileName = row.diary_pic3
@@ -290,6 +293,7 @@ function scene:show(event)
 			end
 -----------------------------------------4---------------------------------------------
 			if (row.diary_pic4 ~= "") then
+				native.setActivityIndicator( true )
 				CheckImg4 = true
 				print( "4" )
 				FileName = row.diary_pic4

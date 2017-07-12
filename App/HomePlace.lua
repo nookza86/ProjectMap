@@ -81,7 +81,7 @@ end
 local function GoS(  )
 
 	local options = {params = {PlaceName = params.PlaceName}}
-			composer.gotoScene("HomePlace", options)
+			composer.gotoScene("overview", options)
 			native.setActivityIndicator( false )
 end
 
@@ -109,10 +109,14 @@ local function UnlockListener(  )
         unattractions["att_no"] = att_no
 
         local unattractionsSendData = json.encode( unattractions )
-        print( "BBBBBBBBBBBBBBBBBBBBBBBB" .. unattractionsSendData )
+        --print( "BBBBBBBBBBBBBBBBBBBBBBBB" .. unattractionsSendData )
         UnAttSend(unattractionsSendData)
 		native.setActivityIndicator( true )
-		timer.performWithDelay( 5000, CallDrop )
+		timer.performWithDelay( 1000, CallDrop )
+
+		toast.show(params.PlaceName .." Unlock!")
+
+
         timer.performWithDelay( 5000, GoS )         
 end
 
@@ -138,27 +142,33 @@ local function CalDis( currentLatitude, currentLongitude )
 			local user = {}
 			user.latitude = currentLatitude
 			user.longitude = currentLongitude
-
+			--user.latitude = 7.827689
+			--user.longitude = 98.312640
 		   	for idx, val in ipairs(decoded.rule[RuleNo]["information"]) do
 				
 				point1.latitude = val.latitude1
 			    point1.longitude = val.longitude1
 			    point2.latitude = val.latitude2
 			    point2.longitude = val.longitude2
+			    --point 1 จุดศูนกลาง
 			    d = sphericalDistanceBetween( point1, point2 )
 			    Userd = sphericalDistanceBetween( point1, user )
-
 			    ---- Check distance User and Attraction -----
+
 			    if(Userd <= d) then
 			    	InArea = true
-			    	UnlockListener(  )
 			    	break
 			    else
 			    	InArea = false
 			    end
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    native.showAlert( "You Are Here", text, { "OK" } )
+			    toast.show("Not in area")
 			    print( "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea))
+			end
+
+			if (InArea == true) then
+				UnlockListener(  )
 			end
 		
 	end -- decode
@@ -188,8 +198,7 @@ end
 
 local function CheckLocation( event )
  	-- Do not continue if a MapView has not been created.
- 	UnlockListener(  )
-
+if(event.phase == "ended") then
  	if isRechable() == false then 
  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
  		return
@@ -219,6 +228,7 @@ local function CheckLocation( event )
 		-- Look up nearest address to this location (this is returned as a "mapAddress" event, handled above)
 		--myMap:nearestAddress( currentLatitude, currentLongitude, mapAddressHandler )
 	end
+end
 end
 --
 local function locationHandler( event )
