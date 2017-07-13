@@ -49,6 +49,25 @@ local function RemoveAll( event )
 	end
 end
 
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
+ 
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+            return true
+        end
+    end
+ 
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
+end
+
 local function check( event )
 	local obj = event.target.name
 
@@ -431,12 +450,12 @@ print( display.pixelHeight / display.actualContentHeight )
 
 	KamalaLabel = display.newImageRect( "Phuket/label/kamala.png", 414/6, 82/6 )
 	KamalaLabel.x = kamala1.x
-	KamalaLabel.y = kamala1.y + 20
+	KamalaLabel.y = kamala1.y + 30
 	KamalaLabel.name = "Kamala Beach"
 
 	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
 	UnlockKamalaLabel.x = kamala1.x
-	UnlockKamalaLabel.y = kamala1.y - 10
+	UnlockKamalaLabel.y = kamala1.y - 5
 
 	kamala2 = display.newImageRect( "Phuket/Overview/kamala_2.png", 213/17, 89/17 )
 	kamala2.x = kamala1.x - 20
@@ -829,5 +848,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene

@@ -23,6 +23,8 @@ local PhotoPickerCheck1, PhotoPickerCheck2, PhotoPickerCheck3, PhotoPickerCheck4
 local TextDesField
 local AddImgListener
 local NoMember, NoAtt
+local CheckIsHaveDiary = false
+local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
 			myText:setFillColor( 1, 0, 0 ) 
 local DiaryGroup = display.newGroup()
@@ -42,11 +44,31 @@ local PHOTO_FUNCTION = media.PhotoLibrary 		-- or media.SavedPhotosAlbum
 -----------------------------------------------------------------------------
 local function RemoveAll( event )
 	if(event) then
-		print( "deletePic in scene #Diary " .. params.PlaceName  )
+		--print( "deletePic in scene #Diary " .. params.PlaceName  )
 		event:removeSelf( )
 		event = nil
 		
 	end
+end
+
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
+ 
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+        	
+            return true
+        end
+    end
+ 
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
 end
 
 function scene:create(event)
@@ -383,6 +405,91 @@ function AddImgListener( event )
 	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
 end
 
+local function loadImageListener( event )
+	if(not event.isError) then
+		
+		print( event.response.filename, event.response.baseDirectory )
+		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_1.jpg") then
+			
+			ImageUser1 = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx - 170,
+							cy - 100 
+							)
+			ImageUser1:scale( 0.2, 0.2 )
+			ImageUser1.name = event.response.filename
+			ImageUser1:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert(ImageUser1)
+
+		end
+
+		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_2.jpg") then
+
+			ImageUser2 = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx - 70,
+							cy + 40 
+							)
+			ImageUser2:scale( 0.2, 0.2 )
+			ImageUser2.name = event.response.filename
+			ImageUser2:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert(ImageUser2)
+		end
+
+		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_3.jpg") then
+
+			ImageUser3 = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx + 60,
+							cy + 40 
+							)
+			ImageUser3:scale( 0.2, 0.2 )
+			ImageUser3.name = event.response.filename
+			ImageUser3:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert(ImageUser3)
+		end
+
+		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_4.jpg") then
+
+			ImageUser4 = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx + 190,
+							cy + 40 
+							)
+			ImageUser4:scale( 0.2, 0.2 )
+			ImageUser4.name = event.response.filename
+			ImageUser4:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert(ImageUser4)
+		end
+		native.setActivityIndicator( false )
+	end
+
+end
+
+
+
+local function randomFlag( event )
+	if isRechable() == false then 
+ 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		return
+	end
+
+	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/" ..NoAtt .."/" .. event 
+	print( url )
+network.download( url , 
+	"GET", 
+	loadImageListener,
+	{},
+	event,
+	system.DocumentsDirectory
+	)
+
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -393,8 +500,14 @@ function scene:show(event)
     ch = display.contentHeight
 
 	if (phase == "will") then
-		print( params.PlaceName )
-		--DropTableData(  )
+		
+		local sqlCheck = "SELECT count(diary_id) FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		--print( sqlCheck )
+		for row in db:nrows(sqlCheck) do
+			CheckIsHaveDiary = true
+		end
+
+
 		Bg = display.newImageRect("Phuket/Diary/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy
@@ -408,6 +521,17 @@ function scene:show(event)
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = true
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
+
+	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+
+		for row in db:nrows(sqlDes) do
+			TextDesField.text = row.diary_note
+			DB_diary_pic1 = row.diary_pic1
+			DB_diary_pic2 = row.diary_pic2
+			DB_diary_pic3 = row.diary_pic3
+			DB_diary_pic4 = row.diary_pic4
+			print( DB_diary_pic1,DB_diary_pic2,DB_diary_pic3,DB_diary_pic4 )
+		end
 
 		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
 		ScoreImage.x = cx 
@@ -425,12 +549,19 @@ function scene:show(event)
 			NoAtt = row.att_no
 		end
 
-		ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/12, 1280/12 )
-		ImageUser1.x = cx - 170
-		ImageUser1.y = cy - 100
-		ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
-		ImageUser1:addEventListener( "touch", AddImgListener )
-		PhotoPickerCheck1 = false
+		if (DB_diary_pic1 == nil) then
+			ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/12, 1280/12 )
+			ImageUser1.x = cx - 170
+			ImageUser1.y = cy - 100
+			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
+			ImageUser1:addEventListener( "touch", AddImgListener )
+			PhotoPickerCheck1 = false
+
+		else
+			randomFlag(DB_diary_pic1)
+			PhotoPickerCheck1 = true
+		end
+		
 
 		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
 		ImageUser2.x = cx - 220
@@ -465,6 +596,19 @@ function scene:show(event)
 		CleanImage.x = BeautyImage.x
 		CleanImage.y = BeautyImage.y + 50
 	
+		local DB_impression = 1
+		local DB_beauty = 1
+		local DB_clean = 1
+	    local sqlRadio = "SELECT impression, beauty, clean FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+
+		for row in db:nrows(sqlRadio) do
+			DB_impression = row.impression
+			DB_beauty = row.beauty
+			DB_clean = row.clean
+
+			print( DB_impression,DB_beauty,DB_clean )
+		end
+
 		-- Create a group for the radio button set
  	ImpressionRadioGroup = display.newGroup()
  	BeautyRadioGroup = display.newGroup()
@@ -473,8 +617,13 @@ function scene:show(event)
 -- Create two associated radio buttons (inserted into the same display group)
 	ImpressionRadioButton = {}
 	local position = ImpressionImage.x + 130
-	local initialSwitch = true
+	local initialSwitch = false
 	for i=1,5 do
+		if (i == DB_impression) then
+			initialSwitch = true
+		else
+			initialSwitch = false
+		end
 		ImpressionRadioButton[i] = widget.newSwitch(
     {
         left = 150,
@@ -487,14 +636,19 @@ function scene:show(event)
         onPress = onSwitchPress
     }
 	)
-		initialSwitch = false
+		
 		position = position + 50
 	end
 
 	BeautyRadioButton = {}
 	position = BeautyImage.x + 130
-	initialSwitch = true
+	initialSwitch = false
 	for i=1,5 do
+		if (i == DB_beauty) then
+			initialSwitch = true
+		else
+			initialSwitch = false
+		end
 		BeautyRadioButton[i] = widget.newSwitch(
     {
         left = 150,
@@ -507,14 +661,19 @@ function scene:show(event)
         onPress = onSwitchPress
     }
 	)
-		initialSwitch = false
+		
 		position = position + 50
 	end
 
 	CleanRadioButton = {}
 	position = CleanImage.x + 130
-	initialSwitch = true
+	initialSwitch = false
 	for i=1,5 do
+		if (i == DB_clean) then
+			initialSwitch = true
+		else
+			initialSwitch = false
+		end
 		CleanRadioButton[i] = widget.newSwitch(
     {
         left = 150,
@@ -527,7 +686,7 @@ function scene:show(event)
         onPress = onSwitchPress
     }
 	)
-		initialSwitch = false
+		
 		position = position + 50
 	end
 
@@ -573,10 +732,10 @@ end
 		SaveBtn.name = "SaveBtn"
 
 		
-		ImageUser1:addEventListener( "touch", Check )
-		ImageUser2:addEventListener( "touch", Check )
-		ImageUser3:addEventListener( "touch", Check )
-		ImageUser4:addEventListener( "touch", Check )
+		--ImageUser1:addEventListener( "touch", Check )
+		--ImageUser2:addEventListener( "touch", Check )
+		--ImageUser3:addEventListener( "touch", Check )
+		--ImageUser4:addEventListener( "touch", Check )
 		
 
 
@@ -600,10 +759,22 @@ end
 		
 		
 		DiaryGroup:insert( BgText )
-		DiaryGroup:insert( ImageUser1 )
-		DiaryGroup:insert( ImageUser2 )
-		DiaryGroup:insert( ImageUser3 )
-		DiaryGroup:insert( ImageUser4 )
+		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
+			DiaryGroup:insert( ImageUser1 )
+		end
+
+		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
+			DiaryGroup:insert( ImageUser2 )
+		end
+
+		if (DB_diary_pic3 == nil or DB_diary_pic3 == "") then
+			DiaryGroup:insert( ImageUser3 )
+		end
+
+		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
+			DiaryGroup:insert( ImageUser4 )
+		end
+
 		--DiaryGroup:insert(myText)
 
 		DiaryGroup:insert( ScoreImage )
@@ -688,5 +859,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene
