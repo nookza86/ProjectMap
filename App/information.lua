@@ -6,7 +6,7 @@ local toast = require('plugin.toast')
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
 local Recommend, TextDesField
-local AttImg
+local AttImg, NearAtt
 local NumberOfRecPlace = {}
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -133,16 +133,16 @@ function scene:show(event)
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
 		
-		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/3.3, 637/3.3)
-		BgText.x = cx + 80
-		BgText.y = cy - 30
+		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4, 637/4)
+		BgText.x = cx + 60
+		BgText.y = cy 
 		
 
-		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
+		TextDesField = native.newTextBox( BgText.x + 5 , BgText.y, BgText.width , BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
-	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
+	    TextDesField.font = native.newFont( "Cloud-Light", 14 )
 
 		
 		 timer.performWithDelay( 300, DescripField )
@@ -165,7 +165,7 @@ function scene:show(event)
 		NumberOfRecPlace = RecommendPlace(params.PlaceName)
 		
 		--print( NumberOfRecPlace )
-		local PositionX = cx + 60
+		local PositionX = cx 
 		local PositionY = cy + 90
 		Recommend = {}
 		for i=1, #NumberOfRecPlace do
@@ -180,24 +180,29 @@ function scene:show(event)
 	    	}
 				)
 			if (i == 3) then
-				PositionX = cx + 60
-				PositionY = cy + 130
+				PositionX = cx + 70
+				PositionY = cy + 120
 				print( "if 3" )
 			end
 
 			Recommend[i].x = PositionX 
 			Recommend[i].y = PositionY 
-			Recommend[i]:scale(0.5,0.5)
+			Recommend[i]:scale(0.4,0.4)
 			PositionX = PositionX + 150
 			
 		end
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
-		AttImg.x = cx - 200
+		AttImg.x = cx - 160
 		AttImg.y = cy 
 		AttImg:scale( 0.2, 0.2 ) 
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
+
+		NearAtt = display.newImageRect( "Phuket/Information/text_nearby.png", 362, 137)
+		NearAtt.x = cx - 110
+		NearAtt.y = cy + 95
+		NearAtt:scale( 0.25, 0.25 ) 
 
 		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
@@ -215,6 +220,7 @@ function scene:hide(event)
 		RemoveAll(BackBtn)
 		RemoveAll(TextDesField)
 		RemoveAll(AttImg)
+		RemoveAll(NearAtt)
 
 	for i=1, #NumberOfRecPlace do
 		Recommend[i]:removeSelf( )
