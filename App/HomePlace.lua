@@ -72,6 +72,7 @@ local function Check( event )
 			composer.gotoScene("map", options)
 
 		elseif (event.target.id == "ShareBtn") then
+
 			if (IsDiary) then
 				print( "Go to scene #Share " .. params.PlaceName )
 				composer.gotoScene("share", options)
@@ -333,12 +334,13 @@ function scene:show(event)
 		end
 
 		local sqlUnlock3 = "SELECT un_id FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-
+		IsUnlock = false
 		for row in db:nrows(sqlUnlock3) do
 			IsUnlock = true
 		end
 
 		local sqlUnlock4 = "SELECT diary_id FROM `diary` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		IsDiary = false
 
 		for row in db:nrows(sqlUnlock4) do
 			IsDiary = true

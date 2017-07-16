@@ -23,10 +23,8 @@ local PhotoPickerCheck1, PhotoPickerCheck2, PhotoPickerCheck3, PhotoPickerCheck4
 local TextDesField
 local AddImgListener
 local NoMember, NoAtt
-local CheckIsHaveDiary = false
+local CheckIsHaveDiary
 local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
-local myText = display.newText( "5555555555", 100, 200, native.systemFont, 16 )
-			myText:setFillColor( 1, 0, 0 ) 
 local DiaryGroup = display.newGroup()
 
 -----------------PPhoto Picker----------------------------------------
@@ -150,9 +148,23 @@ local function DiaryListener(  )
 		for row in db:nrows(sql2) do
 			member_no = row.id
 		end
-
+--[[
+	local DB_DIARY_ID = 0	
+	local sql3 = "SELECT diary_id FROM diary WHERE att_name = '".. params.PlaceName .."';"
+		for row in db:nrows(sql2) do
+			DB_DIARY_ID = row.diary_id
+		end
+]]
         local diary = {}
 
+        if (CheckIsHaveDiary == true) then
+        	diary["command"] = "update"
+        	--diary["diary_id"] = member_no
+        else
+        	diary["command"] = "insert"
+        end
+
+        
         diary["member_no"] = member_no
         diary["att_no"] = NoAtt
         diary["diary_note"] = TextDesField.text
@@ -345,8 +357,9 @@ local sessionComplete = function(event)
    			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 170, cy - 100, true )
    			ImageUser1:scale(scale , scale )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
+   			DiaryGroup:insert( ImageUser1 )
    			ImageUser1:addEventListener( "touch", AddImgListener )
-   			--DiaryGroup:insert( ImageUser1 )
+   			
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2") then
    			PhotoPickerCheck2 = true
@@ -356,7 +369,7 @@ local sessionComplete = function(event)
    			ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
-   			--DiaryGroup:insert( ImageUser2 )
+   			DiaryGroup:insert( ImageUser2 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3") then
    			PhotoPickerCheck3 = true
@@ -366,7 +379,7 @@ local sessionComplete = function(event)
    			ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
-   			--DiaryGroup:insert( ImageUser3 )
+   			DiaryGroup:insert( ImageUser3 )
 
    		else
    			PhotoPickerCheck4 = true
@@ -376,12 +389,12 @@ local sessionComplete = function(event)
    			ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
-   			--DiaryGroup:insert( ImageUser4 )
+   			DiaryGroup:insert( ImageUser4 )
 
    		end
 
    		
-   		myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
+   		--myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
    		display.remove( photo )
 		
 	else
@@ -394,7 +407,7 @@ local sessionComplete = function(event)
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_4") then
    			PhotoPickerCheck4 = false
    		end
-		myText.text = "No Image Selected"
+		--myText.text = "No Image Selected"
 
 	end
 end
@@ -420,8 +433,9 @@ local function loadImageListener( event )
 			ImageUser1:scale( 0.2, 0.2 )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
-			DiaryGroup:insert(ImageUser1)
+			--DiaryGroup:insert(ImageUser1)
 
+			
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_2.jpg") then
@@ -435,7 +449,7 @@ local function loadImageListener( event )
 			ImageUser2:scale( 0.2, 0.2 )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
-			DiaryGroup:insert(ImageUser2)
+			--DiaryGroup:insert(ImageUser2)
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_3.jpg") then
@@ -449,7 +463,7 @@ local function loadImageListener( event )
 			ImageUser3:scale( 0.2, 0.2 )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
-			DiaryGroup:insert(ImageUser3)
+			--DiaryGroup:insert(ImageUser3)
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_4.jpg") then
@@ -463,7 +477,7 @@ local function loadImageListener( event )
 			ImageUser4:scale( 0.2, 0.2 )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
-			DiaryGroup:insert(ImageUser4)
+			--DiaryGroup:insert(ImageUser4)
 		end
 		native.setActivityIndicator( false )
 	end
@@ -502,7 +516,7 @@ function scene:show(event)
 	if (phase == "will") then
 		
 		local sqlCheck = "SELECT count(diary_id) FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-		--print( sqlCheck )
+		CheckIsHaveDiary = false
 		for row in db:nrows(sqlCheck) do
 			CheckIsHaveDiary = true
 		end
@@ -523,15 +537,19 @@ function scene:show(event)
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
 	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-
+	    DB_diary_pic1 = ""
+	    DB_diary_pic2 = ""
+	    DB_diary_pic3 = ""
+	    DB_diary_pic4 = ""
 		for row in db:nrows(sqlDes) do
 			TextDesField.text = row.diary_note
 			DB_diary_pic1 = row.diary_pic1
 			DB_diary_pic2 = row.diary_pic2
 			DB_diary_pic3 = row.diary_pic3
 			DB_diary_pic4 = row.diary_pic4
-			print( DB_diary_pic1,DB_diary_pic2,DB_diary_pic3,DB_diary_pic4 )
+			
 		end
+		print( DB_diary_pic1,DB_diary_pic2,DB_diary_pic3,DB_diary_pic4 )
 
 		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
 		ScoreImage.x = cx 
@@ -543,46 +561,65 @@ function scene:show(event)
 			NoMember = row.id
 		end
 
-		local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+		local sql22 = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+		print( sql22 )
 		NoAtt = 0
-		for row in db:nrows(sql) do
+		for row in db:nrows(sql22) do
 			NoAtt = row.att_no
+			print( NoAtt )
 		end
 
-		if (DB_diary_pic1 == nil) then
+		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
 			ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/12, 1280/12 )
 			ImageUser1.x = cx - 170
 			ImageUser1.y = cy - 100
 			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			PhotoPickerCheck1 = false
-
+			--DiaryGroup:insert( ImageUser1 )
 		else
-			randomFlag(DB_diary_pic1)
+			randomFlag(NoAtt .. "_" .. NoMember .. "_1.jpg")
 			PhotoPickerCheck1 = true
 		end
 		
+		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
+			ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
+			ImageUser2.x = cx - 220
+			ImageUser2.y = cy - 20
+			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
+			ImageUser2:addEventListener( "touch", AddImgListener )
+			PhotoPickerCheck2 = false
+			--DiaryGroup:insert( ImageUser2 )
+		else
+			randomFlag(NoAtt .. "_" .. NoMember .. "_2.jpg")
+			PhotoPickerCheck2 = true
+		end
 
-		ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
-		ImageUser2.x = cx - 220
-		ImageUser2.y = cy - 20
-		ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
-		ImageUser2:addEventListener( "touch", AddImgListener )
-		PhotoPickerCheck2 = false
+		if (DB_diary_pic3 == nil or DB_diary_pic3 == "") then
+			ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
+			ImageUser3.x = cx - 170
+			ImageUser3.y = cy - 20
+			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
+			ImageUser3:addEventListener( "touch", AddImgListener )
+			PhotoPickerCheck3 = false
+			--DiaryGroup:insert( ImageUser3 )
+		else
+			randomFlag(NoAtt .. "_" .. NoMember .. "_3.jpg")
+			PhotoPickerCheck3 = true
+		end
 
-		ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
-		ImageUser3.x = ImageUser2.x + 50
-		ImageUser3.y = ImageUser2.y 
-		ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
-		ImageUser3:addEventListener( "touch", AddImgListener )
-		PhotoPickerCheck3 = false
-
-		ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
-		ImageUser4.x = ImageUser3.x + 50
-		ImageUser4.y = ImageUser3.y 
-		ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
-		ImageUser4:addEventListener( "touch", AddImgListener )
-		PhotoPickerCheck4 = false
+		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
+			ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/30, 1280/30 )
+			ImageUser4.x = cx - 120
+			ImageUser4.y = cy - 20 
+			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
+			ImageUser4:addEventListener( "touch", AddImgListener )
+			PhotoPickerCheck4 = false
+			--DiaryGroup:insert( ImageUser4 )
+		else
+			randomFlag(NoAtt .. "_" .. NoMember .. "_4.jpg")
+			PhotoPickerCheck4 = true
+		end
 
 		ImpressionImage = display.newImageRect( "Phuket/Diary/impression.png", 450/2.5, 80/2.5 )
 		ImpressionImage.x = ImageUser4.x - 20
@@ -727,8 +764,8 @@ end
     	}
 			)
 		
-		SaveBtn.x = cx 
-		SaveBtn.y = cy + 280
+		SaveBtn.x = cx - 50
+		SaveBtn.y = cy -130
 		SaveBtn.name = "SaveBtn"
 
 		
@@ -738,7 +775,7 @@ end
 		--ImageUser4:addEventListener( "touch", Check )
 		
 
-
+--[[
 		scrollView = widget.newScrollView(
     {
         top = 70,
@@ -755,10 +792,11 @@ end
         horizontalScrollDisabled = true
         }
     )
-
+]]
 		
 		
-		DiaryGroup:insert( BgText )
+		--DiaryGroup:insert( BgText )
+		--[[
 		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
 			DiaryGroup:insert( ImageUser1 )
 		end
@@ -774,20 +812,20 @@ end
 		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
 			DiaryGroup:insert( ImageUser4 )
 		end
-
+]]
 		--DiaryGroup:insert(myText)
-
+--[[
 		DiaryGroup:insert( ScoreImage )
 		DiaryGroup:insert( ImpressionImage )
 		DiaryGroup:insert( BeautyImage )
 		DiaryGroup:insert( CleanImage )
 		DiaryGroup:insert( SaveBtn )
 		DiaryGroup:insert(TextDesField)
-
-    scrollView:insert( DiaryGroup )
-    scrollView:insert( ImpressionRadioGroup )
-    scrollView:insert( BeautyRadioGroup )
-    scrollView:insert( CleanRadioGroup )
+]]
+   -- scrollView:insert( DiaryGroup )
+   -- scrollView:insert( ImpressionRadioGroup )
+   -- scrollView:insert( BeautyRadioGroup )
+   -- scrollView:insert( CleanRadioGroup )
 
 	elseif (phase == "did") then
 		print("Scene #Diary : show (did)")
@@ -800,31 +838,37 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-		scrollView:remove( DiaryGroup )
-	    scrollView:remove( ImpressionRadioGroup )
-	    scrollView:remove( BeautyRadioGroup )
-	    scrollView:remove( CleanRadioGroup )
+		ImageUser1:removeEventListener( "touch", AddImgListener )
+		ImageUser2:removeEventListener( "touch", AddImgListener )
+		ImageUser3:removeEventListener( "touch", AddImgListener )
+		ImageUser4:removeEventListener( "touch", AddImgListener )
 
+
+		--scrollView:remove( DiaryGroup )
+	   -- scrollView:remove( ImpressionRadioGroup )
+	   -- scrollView:remove( BeautyRadioGroup )
+	    --scrollView:remove( CleanRadioGroup )
+--[[
 	    DiaryGroup:remove( BgText )
 		DiaryGroup:remove( ImageUser1 )
 		DiaryGroup:remove( ImageUser2 )
 		DiaryGroup:remove( ImageUser3 )
 		DiaryGroup:remove( ImageUser4 )
-		--DiaryGroup:remove( myText )
+		DiaryGroup:remove( myText )
 
 		DiaryGroup:remove( ScoreImage )
 		DiaryGroup:remove( ImpressionImage )
 		DiaryGroup:remove( BeautyImage )
 		DiaryGroup:remove( CleanImage )
 		DiaryGroup:remove( SaveBtn )
-
+]]
 		RemoveAll( Bg )
 		RemoveAll( BgText )
+		RemoveAll(TextDesField)
 		RemoveAll( ImageUser1 )
 		RemoveAll( ImageUser2 )
 		RemoveAll( ImageUser3 )
 		RemoveAll( ImageUser4 )
-		RemoveAll( ImageUser5)
 		RemoveAll( ScoreImage )
 		RemoveAll( ImpressionImage )
 		RemoveAll( BeautyImage )
@@ -833,9 +877,11 @@ function scene:hide(event)
 		RemoveAll( BackBtn )
 		
 		
-		RemoveAll(myText)
-		RemoveAll( DiaryGroup )
-		RemoveAll( scrollView )
+		--RemoveAll(myText)
+		--RemoveAll( DiaryGroup )
+		--RemoveAll( scrollView )
+
+		--display.remove( DiaryGroup )
 
 	for i=1,5 do
 		ImpressionRadioGroup:remove( ImpressionRadioButton[i] )	

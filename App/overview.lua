@@ -18,6 +18,7 @@ local CloudBigBudda, CloudTree, CloudWatChalong, CloudRight, CloudCenter, CloudC
 local ProfileImage
 local BangPaeLabel, BigBuddhaLabel, ChalongLabel, KamalaLabel, KaronLabel, KataLabel, PatongLabel
 local RecButton, RecBg, CloseBtn, backgroundALpha
+local Bird1, Bird2
 local CheckInList, IsClick
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -371,7 +372,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	ProfileImage.name = "profile"
 
 	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
-	watchalong.x = island.x - 10
+	watchalong.x = island.x + 10
 	watchalong.y = island.y
 	watchalong.name = "Chalong Temple"
 
@@ -389,7 +390,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	--CloudWatChalong.y = watchalong.y - 10
 
 	bangpae = display.newImageRect( "Phuket/Overview/bangpae.png", 596/6, 531/6)
-	bangpae.x = island.x + 80
+	bangpae.x = island.x + 100
 	bangpae.y = island.y + 10
 	bangpae.name = "Bang Pae Waterfall"
 
@@ -407,7 +408,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	TribeBangpareImage.y = bangpae.y + 30
 	
 	bigbuddha = display.newImageRect( "Phuket/Overview/bigbuddha.png", 365/4, 227/4 )
-	bigbuddha.x = island.x - 120
+	bigbuddha.x = island.x - 100
 	bigbuddha.y = island.y + 10
 	bigbuddha.name = "Big Buddha"
 
@@ -425,7 +426,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudBigBudda.y = bigbuddha.y - 10
 
 	kata = display.newImageRect( "Phuket/Overview/kata.png", 466/7, 214/7 )
-	kata.x = island.x - 220
+	kata.x = island.x - 200
 	kata.y = island.y - 10
 	kata.name = "Kata Beach"
 
@@ -444,7 +445,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	cocoKataImage.rotation = -15
 
 	kamala1 = display.newImageRect( "Phuket/Overview/kamala_1.png", 356/17, 236/17 )
-	kamala1.x = island.x + 40
+	kamala1.x = island.x + 50
 	kamala1.y = island.y - 130
 	kamala1.name = "Kamala Beach"
 
@@ -468,7 +469,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	kamala3.name = "Kamala Beach"
 
 	karon = display.newImageRect( "Phuket/Overview/karon.png", 472/9, 385/9 )
-	karon.x = island.x - 110
+	karon.x = island.x - 90
 	karon.y = island.y - 50
 	karon.name = "Karon Beach"
 	karon.xScale = -1
@@ -483,8 +484,8 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockKaronLabel.x = karon.x
 	UnlockKaronLabel.y = karon.y - 15
 
-	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/10, 258/10 )
-	patong.x = island.x - 50
+	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/11, 258/11 )
+	patong.x = island.x - 40
 	patong.y = island.y - 80
 	patong.name = "Patong Beach"
 
@@ -507,7 +508,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	ChairPatong.xScale = -1
 ]]
 	TreeImage = display.newImageRect( "Phuket/Overview/tree.png", 291/6, 161/6 )
-	TreeImage.x = island.x - 20
+	TreeImage.x = island.x 
 	TreeImage.y = island.y - 120
 
 	CloudTree = display.newImageRect( "Phuket/Overview/cloud.png", 338/8, 135/8 )
@@ -515,7 +516,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudTree.y = TreeImage.y + 10
 
 	LagoonImage = display.newImageRect( "Phuket/Overview/lagoon.png", 1116/14, 763/14 )
-	LagoonImage.x = island.x + 80
+	LagoonImage.x = island.x + 100
 	LagoonImage.y = island.y - 70
 
 	cocoLagoonImage = display.newImageRect( "Phuket/Overview/coco.png", 340/10, 622/10 )
@@ -526,9 +527,17 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudRight.x = island.x + 200
 	CloudRight.y = island.y + 10
 
+	Bird2 = display.newImageRect( "Phuket/Overview/bird.png", 167/6, 49/6 )
+	Bird2.x = CloudRight.x 
+	Bird2.y = CloudRight.y
+
 	CloudCenter = display.newImageRect( "Phuket/Overview/cloud.png", 338/4, 135/4 )
 	CloudCenter.x = island.x + 50
 	CloudCenter.y = island.y - 30
+
+	Bird1 = display.newImageRect( "Phuket/Overview/bird.png", 167/6, 49/6 )
+	Bird1.x = CloudCenter.x 
+	Bird1.y = CloudCenter.y
 
 	CloudCenterRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/5, 135/6 )
 	CloudCenterRight.x = island.x + 150
@@ -795,6 +804,8 @@ composer.removeScene( "overview" )
 	RemoveAll(KamalaLabel)
 	RemoveAll(BangPaeLabel)
 	RemoveAll(PatongLabel)
+	RemoveAll(Bird1)
+	RemoveAll(Bird2)
 
 
 	if (CheckUnlockBangPaeLabel) then
