@@ -84,6 +84,7 @@ local function Check( event )
 			
 
 		elseif (event.target.id == "DiaryBtn") then
+			IsUnlock=true
 			if (IsUnlock) then
 				print( "Go to scene #Diary " .. params.PlaceName )
 				composer.gotoScene("Diary", options)
@@ -299,7 +300,7 @@ function scene:show(event)
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 		--Bg:scale( 0.3, 0.3 ) 
-
+--[[
 		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
 		
 		if(params.PlaceName == "Bang Pae Waterfall") then
@@ -309,7 +310,7 @@ function scene:show(event)
 		else
 			TitleImage:scale( 0.5, 0.5 )
 		end
-
+]]
 		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 
 
@@ -432,7 +433,7 @@ function scene:hide(event)
 		RemoveAll(ShareBtn)
 		RemoveAll(DiaryBtn)
 		RemoveAll(BackBtn)
-		RemoveAll(TitleImage)
+		--RemoveAll(TitleImage)
 
 		if (LocationBtn) then
 			RemoveAll(LocationBtn)

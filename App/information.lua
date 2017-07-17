@@ -135,10 +135,10 @@ function scene:show(event)
 		
 		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4, 637/4)
 		BgText.x = cx + 60
-		BgText.y = cy 
+		BgText.y = cy - 20
 		
 
-		TextDesField = native.newTextBox( BgText.x + 5 , BgText.y, BgText.width , BgText.height - 30, 100 )
+		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30 , BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
@@ -160,13 +160,13 @@ function scene:show(event)
 			)
 		
 		BackBtn.x = cx - 240
-		BackBtn.y = cy + 100
+		BackBtn.y = cy + 120
 
 		NumberOfRecPlace = RecommendPlace(params.PlaceName)
 		
 		--print( NumberOfRecPlace )
 		local PositionX = cx 
-		local PositionY = cy + 90
+		local PositionY = cy + 80
 		Recommend = {}
 		for i=1, #NumberOfRecPlace do
 				Recommend[i] = widget.newButton(
@@ -181,7 +181,7 @@ function scene:show(event)
 				)
 			if (i == 3) then
 				PositionX = cx + 70
-				PositionY = cy + 120
+				PositionY = cy + 110
 				print( "if 3" )
 			end
 
@@ -194,14 +194,14 @@ function scene:show(event)
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
 		AttImg.x = cx - 160
-		AttImg.y = cy 
+		AttImg.y = cy - 3
 		AttImg:scale( 0.2, 0.2 ) 
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
 
 		NearAtt = display.newImageRect( "Phuket/Information/text_nearby.png", 362, 137)
 		NearAtt.x = cx - 110
-		NearAtt.y = cy + 95
+		NearAtt.y = cy + 85
 		NearAtt:scale( 0.25, 0.25 ) 
 
 		elseif (phase == "did") then
