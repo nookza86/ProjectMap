@@ -356,8 +356,8 @@ function scene:show(event)
 
 	 LoginBtn = widget.newButton(
     	{
-	        width = 150/2,
-	        height = 45/2,
+	        width = 291/4,
+	        height = 108/4,
 	        defaultFile = "Phuket/Button/Button/login.png",
 	        overFile = "Phuket/Button/ButtonPress/login.png",
 	        id = "login",
@@ -370,8 +370,8 @@ function scene:show(event)
 
 	 LoginWithFaceBookBtn = widget.newButton(
     	{
-	        width = 250 / 2.5,
-	        height = 60/ 2.5,
+	        width = 451 / 4.5,
+	        height = 121/ 4.5,
 	        defaultFile = "Phuket/Button/Button/login_w_fb.png",
 	        overFile = "Phuket/Button/ButtonPress/login_w_fb.png",
 	        id = "LoginWithFaceBookBtn",

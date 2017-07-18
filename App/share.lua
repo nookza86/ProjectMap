@@ -218,7 +218,7 @@ local function Check( event )
 			local memNo = member_no
 			local filename = SelecFileImg
 
-			myText.text = "n : " .. filename
+			--myText.text = "n : " .. filename
 
 			if (filename == nil or filename == "") then
 				return
@@ -352,8 +352,8 @@ function scene:show(event)
 		
 		BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -361,13 +361,13 @@ function scene:show(event)
     	}
 			)
 		
-		BackBtn.x = cx - 240
-		BackBtn.y = cy + 130
+		BackBtn.x = cx - 230
+		BackBtn.y = cy - 110
 		
 		ShareBtn = widget.newButton(
     	{
-	        width = 250/1.5,
-	        height = 60/1.5,
+	        width = 451/2.5,
+	        height = 121/2.5,
 	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
 	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
 	        id = "ShareBtn",

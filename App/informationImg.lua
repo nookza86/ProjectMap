@@ -56,8 +56,8 @@ function scene:show(event)
 
 	BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -65,8 +65,8 @@ function scene:show(event)
     	}
 			)
 		
-		BackBtn.x = cx - 240
-		BackBtn.y = cy + 100	
+		BackBtn.x = cx - 230
+		BackBtn.y = cy - 110	
 		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
 

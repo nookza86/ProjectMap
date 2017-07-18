@@ -34,9 +34,9 @@ local appFont = "HelveticaNeue-Light"
 local debugOutput = true  -- Set true to enable console print output
 
 -- Create status text objects
-local statusHeader = display.newText( mainGroup, "Status", display.contentCenterX, 50, appFont, 20 )
-local statusMessage = display.newText( mainGroup, "(not connected)", display.contentCenterX, 75, appFont, 16 )
-statusMessage:setFillColor( 0.7 )
+--local statusHeader = display.newText( mainGroup, "Status", display.contentCenterX, 50, appFont, 20 )
+--local statusMessage = display.newText( mainGroup, "(not connected)", display.contentCenterX, 75, appFont, 16 )
+--statusMessage:setFillColor( 0.7 )
 
 -- State variables for Facebook commands we're executing
 local requestedFBCommand
@@ -194,7 +194,7 @@ local function enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filenam
 		else
 			print( "Already logged in with necessary permissions" )
 			printTable( accessToken )
-			statusMessage.text = "Logged in"
+			--statusMessage.text = "Logged in"
 			processFBCommand(caption, AttNo, memNo, filename)
 		end
 	else
@@ -234,7 +234,7 @@ local function listener( event )
 	-- Note that if the app is already logged in, we will still get a "login" phase
     if ( "session" == event.type ) then
 
-		statusMessage.text = event.phase  -- "login", "loginFailed", "loginCancelled", or "logout"
+		--statusMessage.text = event.phase  -- "login", "loginFailed", "loginCancelled", or "logout"
 		print( "Session status: " .. event.phase )
 
 		if ( event.phase ~= "login" ) then
@@ -258,25 +258,25 @@ local function listener( event )
 			print( "Facebook Command: " .. commandProcessedByFB )
 
 			if ( commandProcessedByFB == POST_MSG ) then
-				statusMessage.text = "Message posted"
+				--statusMessage.text = "Message posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == POST_LINK ) then
-				statusMessage.text = "Link posted"
+				--statusMessage.text = "Link posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == POST_PHOTO ) then
-				statusMessage.text = "Photo posted"
+				--statusMessage.text = "Photo posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == GET_USER_INFO ) then
-				statusMessage.text = response.name
+				--statusMessage.text = response.name
 				printTable( response )
 			else
 				statusMessage.text = "(unknown)"
 			end
         elseif tostring( event.response ) == "Duplicate status message" then
-        	statusMessage.text = "Caught duplicate status message!"
+        	--statusMessage.text = "Caught duplicate status message!"
 			printTable( event.response )
         else
-			statusMessage.text = "Post failed"
+			--statusMessage.text = "Post failed"
 			printTable( event.response )
 		end
 
@@ -284,7 +284,7 @@ local function listener( event )
 		-- Advance the Facebook command state as this command has been processed by Facebook
 		commandProcessedByFB = requestedFBCommand
 
-		statusMessage.text = event.response
+		--statusMessage.text = event.response
     end
 end
 
@@ -320,7 +320,7 @@ function buttonOnRelease( command, caption, AttNo, memNo, filename )
 		requestedFBCommand = SHARE_PHOTO_DIALOG
 		-- This can only be done if the Facebook app in installed, so verify that first
 		if not facebook.isFacebookAppEnabled() then
-			statusMessage.text = "Facebook app needed to share photos"
+			--statusMessage.text = "Facebook app needed to share photos"
 			commandProcessedByFB = requestedFBCommand
 		else
 			-- Now enforce the state of our connection with Facebook to run this command
@@ -332,11 +332,11 @@ function buttonOnRelease( command, caption, AttNo, memNo, filename )
 	elseif id == "publishInstall" then
 		requestedFBCommand = PUBLISH_INSTALL
 		facebook.publishInstall()
-		statusMessage.text = "App install status posted"
+		--statusMessage.text = "App install status posted"
 		commandProcessedByFB = requestedFBCommand
 	elseif id == "isFacebookAppEnabled" then
 		requestedFBCommand = IS_FACEBOOK_APP_ENABLED
-		statusMessage.text = "Facebook app enabled: " .. tostring(facebook.isFacebookAppEnabled())
+		--statusMessage.text = "Facebook app enabled: " .. tostring(facebook.isFacebookAppEnabled())
 		commandProcessedByFB = requestedFBCommand
 	else  -- Logout
 		requestedFBCommand = LOGOUT

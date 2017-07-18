@@ -19,8 +19,8 @@ local CheckPasswordMatch, CheckEmail
 local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
 local SelectImg
-local myText = display.newText( "5555555555", display.contentCenterY, display.contentCenterY + 330, native.systemFont, 16 )
-            myText:setFillColor( 1, 0, 0 ) 
+--local myText = display.newText( "5555555555", display.contentCenterY, display.contentCenterY + 330, native.systemFont, 16 )
+ --           myText:setFillColor( 1, 0, 0 ) 
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -109,7 +109,7 @@ local function uploadListener( event )
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
-       myText.text = "Status:" .. event.status .. " Response: " .. event.response
+       --myText.text = "Status:" .. event.status .. " Response: " .. event.response
 
    else
       if ( event.phase == "began" ) then
@@ -120,7 +120,7 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         myText.text = event.status .. " " .. event.response
+         --myText.text = event.status .. " " .. event.response
 --[[
          if (event.status == "201") then
             local UpImg = {}
@@ -156,7 +156,7 @@ local function UploadUserImage( MemNo )
     local headers = {}
     headers.filename = filename
     params.headers = headers
-     myText.text = "with file name " .. filename
+     --myText.text = "with file name " .. filename
      print( "Upload User Image To " .. url .." with file name " .. filename )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
@@ -165,7 +165,7 @@ local function reNameImg( member_no )
     -- Get raw path to the app documents directory
     local doc_path = system.pathForFile( "", system.DocumentsDirectory )
     local destDir = system.DocumentsDirectory
-    myText.text = "reNameImg"
+    --myText.text = "reNameImg"
     for file in lfs.dir( doc_path ) do
         -- "file" is the current file or directory name
         print( "Found file: " .. file )
@@ -177,11 +177,11 @@ local function reNameImg( member_no )
             )
 
             if result then
-                myText.text = "File renamed"
+                --myText.text = "File renamed"
                 print( "File renamed" )
                 UploadUserImage( member_no )
             else
-                myText.text = "File not renamed re: " .. reason 
+                --myText.text = "File not renamed re: " .. reason 
                 print( "File not renamed", reason )  --> File not renamed    orange.txt: No such file or directory
             end
             break
@@ -204,7 +204,7 @@ local function networkListener( event )
         decodedData = (json.decode( myNewData ))
 
         if (decodedData["error"] == false) then
-            myText.text = decodedData["member_no"] 
+            --myText.text = decodedData["member_no"] 
              print( decodedData["member_no"] )
              reNameImg( decodedData["member_no"] )
         end
@@ -326,12 +326,12 @@ local sessionComplete = function(event)
 
             ImageGroup:insert(PicUser)
 
-        myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
+        --myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
         display.remove( photo )
         
     else
         PhotoPickerCheck = false
-        myText.text = "No Image Selected"
+       -- myText.text = "No Image Selected"
 
     end
 end
@@ -438,8 +438,8 @@ function scene:show(event)
 
     CreateBtn = widget.newButton(
         {
-            width = 150/1.5,
-            height = 45/1.5,
+            width = 291/2.5,
+            height = 108/2.5,
             defaultFile = "Phuket/Button/Button/create.png",
             overFile = "Phuket/Button/ButtonPress/create.png",
             id = "CreateBtn",
@@ -452,8 +452,8 @@ function scene:show(event)
 
     BackBtn = widget.newButton(
         {
-            width = 70/2,
-            height = 70/2,
+            width = 130/2.5,
+            height = 101/2.5,
             defaultFile = "Phuket/Button/Button/back.png",
             overFile = "Phuket/Button/ButtonPress/back.png",
             id = "BackBtn",
@@ -489,7 +489,7 @@ function scene:show(event)
     ImageGroup:insert(txfPassword)
     ImageGroup:insert(txfConfirmPassword)
     ImageGroup:insert(txfEmail)
-    ImageGroup:insert(myText)
+    --ImageGroup:insert(myText)
 
     local days = {}
     local years = {}

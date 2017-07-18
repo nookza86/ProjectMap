@@ -23,7 +23,7 @@ local NoMember, NoAtt
 local CheckIsHaveDiary
 local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local DiaryGroup = display.newGroup()
-local myText ,scrollView
+local myText ,scrollView, Text
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -534,6 +534,10 @@ function scene:show(event)
 	    TextDesField.isEditable = true
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
+	    Text = display.newImageRect( "Phuket/Diary/text.png", 658/4, 367/4)
+		Text.x = cx + 105
+		Text.y = cy + 42
+
 	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 	    DB_diary_pic1 = ""
 	    DB_diary_pic2 = ""
@@ -582,7 +586,7 @@ function scene:show(event)
 		
 		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
 			ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15 ,1280/15 )
-			ImageUser2.x = cx - 70
+			ImageUser2.x = cx - 80
 			ImageUser2.y = cy - 30
 			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
 			ImageUser2:addEventListener( "touch", AddImgListener )
@@ -608,7 +612,7 @@ function scene:show(event)
 
 		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
 			ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15, 1280/15 )
-			ImageUser4.x = cx - 70
+			ImageUser4.x = cx - 80
 			ImageUser4.y = cy + 70
 			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
 			ImageUser4:addEventListener( "touch", AddImgListener )
@@ -661,9 +665,9 @@ function scene:show(event)
         --left = PositionLeft,
         --top = PositionTop,
         x = position,
-        y = cy + 35,
-        width = 30,
-        height = 30,
+        y = cy + 30,
+        width = 25,
+        height = 25,
         style = "radio",
         id = "ImpressionRadioButton".. i,
         initialSwitchState = initialSwitch,
@@ -691,9 +695,9 @@ function scene:show(event)
         --left = 150,
         --top = 200,
         x = position ,
-        y = cy + 65,
-        width = 30,
-        height = 30,
+        y = cy + 55,
+        width = 25,
+        height = 25,
         style = "radio",
         id = "BeautyRadioButton".. i,
         initialSwitchState = initialSwitch,
@@ -721,9 +725,9 @@ function scene:show(event)
        -- left = 150,
        -- top = 200,
          x = position ,
-        y = cy + 95,
-        width = 30,
-        height = 30,
+        y = cy + 80,
+        width = 25,
+        height = 25,
         style = "radio",
         id = "CleanRadioButton".. i,
         initialSwitchState = initialSwitch,
@@ -750,8 +754,8 @@ end
 
 		BackBtn = widget.newButton(
     	{
-	        width = 40,
-	        height = 40,
+	        width = 130/3,
+	        height = 101/3,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -759,14 +763,14 @@ end
     	}
 			)
 		
-		BackBtn.x = cx - 250
-		BackBtn.y = cy + 120
+		BackBtn.x = cx - 240
+		BackBtn.y = cy - 130
 		BackBtn.name = "BackBtn"
 
 		SaveBtn = widget.newButton(
     	{
-	        width = 150/2,
-	        height = 45/2,
+	        width = 291/4,
+	        height = 108/4,
 	        defaultFile = "Phuket/Button/Button/save.png",
 	        overFile = "Phuket/Button/ButtonPress/save.png",
 	        id = "SaveBtn",
@@ -774,8 +778,8 @@ end
     	}
 			)
 		
-		SaveBtn.x = cx + 200
-		SaveBtn.y = cy + 120
+		SaveBtn.x = cx + 140
+		SaveBtn.y = cy + 110
 		SaveBtn.name = "SaveBtn"
 
 		--myText = display.newText( "Hello World!", 400, 200, native.systemFont, 36 )
@@ -851,6 +855,7 @@ function scene:hide(event)
 		RemoveAll( ImageUser4 )
 		RemoveAll( SaveBtn )
 		RemoveAll( BackBtn )
+		RemoveAll(Text)
 
 	for i=1,5 do
 		ImpressionRadioGroup:remove( ImpressionRadioButton[i] )	

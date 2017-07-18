@@ -50,6 +50,17 @@ local function RemoveAll( event )
 	end
 end
 
+local function showAlertListener( event )
+	print( event.action )
+	if (event.action == "clicked") then
+		print( event.index )
+		--native.showAlert( "Error", event.index, { "OK" } )
+ 	if (event.index == 1) then
+ 			os.exit( )
+ 		end
+	end
+end
+
 local function onKeyEvent( event )
     -- Print which key was pressed down/up
     local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
@@ -60,7 +71,8 @@ local function onKeyEvent( event )
     if ( event.keyName == "back" ) then
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
-            return true
+        	native.showAlert( "Do you want to exit?", "" ,{ "OK" , "Cancel"} , showAlertListener )
+            --return true
         end
     end
  
@@ -71,7 +83,7 @@ end
 
 local function check( event )
 	local obj = event.target.name
-
+	
 	print( obj )
 	
 	if(obj == "Chalong Temple") then

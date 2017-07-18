@@ -150,8 +150,8 @@ function scene:show(event)
 
 		BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -160,7 +160,7 @@ function scene:show(event)
 			)
 		
 		BackBtn.x = cx - 240
-		BackBtn.y = cy + 120
+		BackBtn.y = cy - 110
 
 		NumberOfRecPlace = RecommendPlace(params.PlaceName)
 		
@@ -194,7 +194,7 @@ function scene:show(event)
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
 		AttImg.x = cx - 160
-		AttImg.y = cy - 3
+		AttImg.y = cy - 20
 		AttImg:scale( 0.2, 0.2 ) 
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
