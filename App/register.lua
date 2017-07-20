@@ -278,7 +278,7 @@ local sessionComplete = function(event)
     if photo then
 
         if photo.width > photo.height then
-            photo:rotate( -90 )         -- rotate for landscape
+           -- photo:rotate( -90 )         -- rotate for landscape
             print( "Rotated" )
         end
         

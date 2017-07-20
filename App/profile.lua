@@ -115,7 +115,7 @@ end
 local function loadImageListener( event )
 	if(not event.isError) then
 		print( event.response.filename, event.response.baseDirectory )
-
+			RemoveAll(UserImage)
 			UserImage1 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
@@ -366,7 +366,11 @@ function scene:hide(event)
 		RemoveAll(TitleImage)
 		RemoveAll(UsernameImage)
 		RemoveAll(CountryImage)
-		RemoveAll(UserImage)
+		--[[
+		if (UserImage ~= nil or UserImage ~= "") then
+			RemoveAll(UserImage)
+		end
+		]]
 		RemoveAll(KataImage)
 		RemoveAll(KamalaImage)
 		RemoveAll(ChalongImage)
@@ -378,6 +382,7 @@ function scene:hide(event)
 		RemoveAll(OkBtn)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
+		RemoveAll(UserImage1)
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		

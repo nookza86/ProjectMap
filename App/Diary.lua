@@ -313,7 +313,7 @@ local sessionComplete = function(event)
 	if photo then
 
 		if photo.width > photo.height then
-			photo:rotate( -90 )			-- rotate for landscape
+			--photo:rotate( -90 )			-- rotate for landscape
 			print( "Rotated" )
 		end
 		
@@ -353,7 +353,7 @@ local sessionComplete = function(event)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
    			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 190, cy - 30, true )
-   			ImageUser1:scale(scale , scale )
+   			ImageUser1:scale(scale / 2, scale / 2 )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
    			
@@ -426,7 +426,7 @@ local function loadImageListener( event )
 							cx - 190,
 							cy - 30 
 							)
-			ImageUser1:scale( 0.2, 0.2 )
+			ImageUser1:scale( 0.15, 0.15 )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			--DiaryGroup:insert(ImageUser1)
@@ -442,7 +442,7 @@ local function loadImageListener( event )
 							cx - 70,
 							cy - 30 
 							)
-			ImageUser2:scale( 0.2, 0.2 )
+			ImageUser2:scale( 0.15, 0.15 )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			--DiaryGroup:insert(ImageUser2)
@@ -456,10 +456,11 @@ local function loadImageListener( event )
 							cx - 190,
 							cy + 70 
 							)
-			ImageUser3:scale( 0.2, 0.2 )
+			ImageUser3:scale( 0.15, 0.15 )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			--DiaryGroup:insert(ImageUser3)
+			print( "DDDDDDDDDDDDD"..ImageUser3.width, ImageUser3.height )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_4.jpg") then
@@ -470,7 +471,7 @@ local function loadImageListener( event )
 							cx - 70,
 							cy + 70 
 							)
-			ImageUser4:scale( 0.2, 0.2 )
+			ImageUser4:scale( 0.15, 0.15 )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			--DiaryGroup:insert(ImageUser4)

@@ -61,10 +61,6 @@ local function Check( event )
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("informationImg",options)
-
-		else
-			local options = {params = {PlaceName = event.target.id}}
-			composer.gotoScene("HomePlace",options)
 		end
 	end
 end
@@ -181,7 +177,7 @@ function scene:show(event)
 				)
 			if (i == 3) then
 				PositionX = cx + 70
-				PositionY = cy + 110
+				PositionY = cy + 120
 				print( "if 3" )
 			end
 
