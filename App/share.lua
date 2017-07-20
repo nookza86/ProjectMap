@@ -128,7 +128,7 @@ local function loadImageListener( event )
 							event.response.filename, 
 							event.response.baseDirectory,
 							cx - 200,
-							cy + 40 
+							cy + 30 
 							)
 			UserImage1:scale( 0.2, 0.2 )
 			UserImage1.id = event.response.filename
@@ -142,7 +142,7 @@ local function loadImageListener( event )
 							event.response.filename, 
 							event.response.baseDirectory,
 							cx - 70,
-							cy + 40 
+							cy + 30 
 							)
 			UserImage2:scale( 0.2, 0.2 )
 			UserImage2.id = event.response.filename
@@ -155,7 +155,7 @@ local function loadImageListener( event )
 							event.response.filename, 
 							event.response.baseDirectory,
 							cx + 60,
-							cy + 40 
+							cy + 30 
 							)
 			UserImage3:scale( 0.2, 0.2 )
 			UserImage3.id = event.response.filename
@@ -168,7 +168,7 @@ local function loadImageListener( event )
 							event.response.filename, 
 							event.response.baseDirectory,
 							cx + 190,
-							cy + 40 
+							cy + 30 
 							)
 			UserImage4:scale( 0.2, 0.2 )
 			UserImage4.id = event.response.filename
@@ -267,8 +267,14 @@ function scene:show(event)
 	    CheckImg3 = false
 	    CheckImg4 = false
 	  toast.show('Loading Image!')  
-	    Bg = display.newImage("Phuket/share/" .. params.PlaceName .. "/bg.png", cx, cy )
-		Bg:scale( 0.3, 0.3 ) 
+
+		Bg = display.newImageRect("Phuket/share/bg.png", cw, ch )
+	    Bg.x = cx 
+		Bg.y = cy 
+
+		Tett = display.newImageRect("Phuket/share/text.png", 764/2, 94/2 )
+	    Tett.x = cx 
+		Tett.y = cy  - 70
 
 		local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
 		NoAtt = 0
@@ -324,30 +330,30 @@ function scene:show(event)
 
 		if (CheckImg1 == false) then
 			print( "else1" )
-			UserImage1 = display.newImageRect( "Phuket/share/" .. params.PlaceName .. "/addpicture.png", 999/9, 929/9 )
+			UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage1.x = cx - 200
-			UserImage1.y = cy + 40
+			UserImage1.y = cy + 30
 		end
 
 		if (CheckImg2 == false) then
 			print( "else2" )
-			UserImage2 = display.newImageRect( "Phuket/share/" .. params.PlaceName .. "/addpicture.png", 999/9, 929/9 )
+			UserImage2 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage2.x = cx - 70
-			UserImage2.y =cy + 40
+			UserImage2.y =cy + 30
 		end
 
 		if (CheckImg3 == false) then
 			print( "else3" )
-			UserImage3 = display.newImageRect( "Phuket/share/" .. params.PlaceName .. "/addpicture.png", 999/9, 929/9 )
+			UserImage3 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage3.x = cx + 60
-			UserImage3.y = cy + 40
+			UserImage3.y = cy + 30
 		end
 
 		if (CheckImg4 == false) then
 			print( "else4" )
-			UserImage4 = display.newImageRect( "Phuket/share/" .. params.PlaceName .. "/addpicture.png", 999/9, 929/9 )
+			UserImage4 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage4.x = cx + 190
-			UserImage4.y = cy + 40
+			UserImage4.y = cy + 30
 		end
 		
 		BackBtn = widget.newButton(
@@ -366,8 +372,8 @@ function scene:show(event)
 		
 		ShareBtn = widget.newButton(
     	{
-	        width = 451/2.5,
-	        height = 121/2.5,
+	        width = 451/3.5,
+	        height = 121/3.5,
 	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
 	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
 	        id = "ShareBtn",
@@ -375,8 +381,8 @@ function scene:show(event)
     	}
 			)
 		
-		ShareBtn.x = cx + 180
-		ShareBtn.y = cy + 130
+		ShareBtn.x = cx 
+		ShareBtn.y = cy + 110
 
 		--native.setActivityIndicator( false )
 	elseif (phase == "did") then
