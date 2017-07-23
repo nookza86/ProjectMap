@@ -50,6 +50,7 @@ function scene:create(event)
 end
 
 local function networkListener( event )
+	native.setActivityIndicator( false )
     if ( event.isError ) then
         print( "Network error!" )
         local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
@@ -58,19 +59,15 @@ local function networkListener( event )
         print( "RESPONSE: " .. event.response )
         decodedData = (json.decode( myNewData ))
 
-        native.setActivityIndicator( false )
-
         ErrorCheck = decodedData["error"]
-       -- ActiveCheck = decodedData["user"]["active"]
 
     	if( ErrorCheck == true) then
-    		local alert = native.showAlert( "Error", "Try again.", { "OK" })
+    		local alert = native.showAlert( "Error", decodedData["error_msg"], { "OK" })
         	print( "Try again." )
 
         else
-        	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
-
-        	composer.gotoScene("overview")
+        	local alert = native.showAlert( "", "check your email", { "OK" })
+        	composer.gotoScene("menu")
 
     	end
 
@@ -91,7 +88,7 @@ local function ForGotListener(  )
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "LoginSend=" .. ForgotSend
+    local body = "ForgotSend=" .. ForgotSend
 
     local params = {}
     params.headers = headers
@@ -106,16 +103,22 @@ end
 
 local function Check( event )
 	print( event.target.id )
-	local options = {params = {PlaceName = params.PlaceName}}
+	--local options = {params = {PlaceName = params.PlaceName}}
 	
 	if(event.phase == "ended") then
-		if (EmailTxf.text == "" or EmailTxf.text == nil) then
-			native.showAlert( "Error", "Type email", { "OK" } )
-			return
+		if (event.target.id == "ok") then
 
-		else
-			native.setActivityIndicator( true )
-			ForGotListener(  )
+			if (EmailTxf.text == "" or EmailTxf.text == nil) then
+				native.showAlert( "Error", "Type email", { "OK" } )
+				return
+			else
+				native.setActivityIndicator( true )
+				ForGotListener(  )
+			end
+
+		elseif (event.target.id == "BackBtn") then
+			composer.gotoScene("menu")
+			
 		end
 
 	end
@@ -133,8 +136,7 @@ function scene:show(event)
 
 	if (phase == "will") then
 
-		
-		Bg = display.newImageRect("Phuket/Home/".. params.PlaceName .. "/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 
@@ -148,19 +150,32 @@ function scene:show(event)
 		EmailImage.x = EmailTxf.x
 		EmailImage.y = EmailTxf.y
 
-
 		OkBtn = widget.newButton(
     	{
-	        width = 100/1.5,
-	        height = 50/1.5,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/ok.png",
 	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "ok",
 	        onEvent = Check
     	}
 			)
-		OkBtn.x = cx + 230
-		OkBtn.y = cy + 130
+		OkBtn.x = cx 
+		OkBtn.y = cy + 100
+
+		BackBtn = widget.newButton(
+    	{
+	        width = 130/2.5,
+	        height = 101/2.5,
+	        defaultFile = "Phuket/Button/Button/back.png",
+	        overFile = "Phuket/Button/ButtonPress/back.png",
+	        id = "BackBtn",
+	        onEvent = Check
+    	}
+			)
+		
+		BackBtn.x = cx - 240
+		BackBtn.y = cy - 110
 
 	elseif (phase == "did") then
 		print("Scene #HomePlace : show (did)")
@@ -173,7 +188,10 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-
+		RemoveAll(Bg)
+		RemoveAll(EmailTxf)
+		RemoveAll(EmailImage)
+		RemoveAll(OkBtn)
 		print("Scene #HomePlace : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #HomePlace : hide (did)")

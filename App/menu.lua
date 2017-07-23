@@ -24,7 +24,25 @@ local function RemoveAll( event )
 		
 	end
 end
+--[[
+local function yourFunctionWhenOrientationChanges (event)
 
+local currentOrientation = event.type
+	--print( currentOrientation )
+
+-- Determine current orientation
+-- Use string.find(currentOrientation, 'landscape')
+-- Use string.find(currentOrientation, 'portrait')
+
+if (currentOrientation == "landscapeLeft") then
+	myText.rotation = 180 
+elseif (currentOrientation == "landscapeRight") then
+	myText.rotation = -180
+end
+
+	
+end
+]]
 local function GetDataListener( event )
     if ( event.isError ) then
         print( "Network error!" )
@@ -206,11 +224,11 @@ local function networkListener( event )
     	if( ErrorCheck == true) then
     		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
-
+        	native.setActivityIndicator( false )
         elseif ( decodedData["user"]["active"] == 'no') then
         	local alert = native.showAlert( "Error", "Please Activate.", { "OK" })
         	print( "Need Activate." )
-
+        	native.setActivityIndicator( false )
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["first_name"] )
@@ -290,6 +308,8 @@ local function Check( event )
 
 		elseif (event.target.id == "SignUp") then
 			composer.gotoScene("register")
+		elseif (event.target.id == "Forgot") then
+			composer.gotoScene("forgot")
 		end
 	end
 
@@ -337,7 +357,7 @@ function scene:show(event)
 	    PasswordTxf = native.newTextField( cx , cy + 80, 200, 25 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
-	    PasswordTxf.text = "123456789"
+	    PasswordTxf.text = "111111111"
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 
@@ -385,6 +405,8 @@ function scene:show(event)
 	ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5 )
 	ForgotImage.x = display.contentCenterX - 40
 	ForgotImage.y = display.contentCenterY + 145
+	ForgotImage.id = "Forgot"
+	ForgotImage:addEventListener( "touch", Check )
 
 	SignUpImage = display.newImageRect("Phuket/menu/signup.png", 200/3.5, 60/3.5 )
 	SignUpImage.x = ForgotImage.x + 90
@@ -433,5 +455,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+--Runtime:addEventListener( "orientation", yourFunctionWhenOrientationChanges )
 
 return scene
