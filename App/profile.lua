@@ -125,7 +125,11 @@ local function loadImageListener( event )
 			UserImage1:scale( 0.2, 0.2 )
 	
 	end
-	--native.setActivityIndicator( false )
+	native.setActivityIndicator( false )
+	--[[
+	if (UserImage1) then
+		native.setActivityIndicator( false )
+	end]]
 end
 
 local function LoadUserImg( no )
@@ -155,7 +159,7 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
-		--native.setActivityIndicator( true )
+		native.setActivityIndicator( true )
 		Bg = display.newImageRect("Phuket/Profile/bg1.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 

@@ -105,9 +105,10 @@ local function SelectImg( event )
 		CheckSelectImg = true
 	end	
 
-	backgroundALpha = display.newImageRect( "check.png", RecWidth / 6, RecHeight / 6)
+	backgroundALpha = display.newImageRect( "check.png", 395, 512)
 	backgroundALpha.x = PositionX
 	backgroundALpha.y = PositionY
+	backgroundALpha:scale(0.2, 0.2 )
 	
 --[[
 	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
@@ -130,9 +131,13 @@ local function loadImageListener( event )
 							cx - 200,
 							cy + 30 
 							)
-			UserImage1:scale( 0.2, 0.2 )
+			UserImage1:scale( 0.15, 0.15 )
 			UserImage1.id = event.response.filename
 			UserImage1:addEventListener( "touch", SelectImg )
+
+			if (UserImage1) then
+				native.setActivityIndicator( false )
+			end
 
 		end
 
@@ -144,9 +149,12 @@ local function loadImageListener( event )
 							cx - 70,
 							cy + 30 
 							)
-			UserImage2:scale( 0.2, 0.2 )
+			UserImage2:scale( 0.15, 0.15 )
 			UserImage2.id = event.response.filename
 			UserImage2:addEventListener( "touch", SelectImg )
+			if (UserImage2) then
+				native.setActivityIndicator( false )
+			end
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -157,9 +165,12 @@ local function loadImageListener( event )
 							cx + 60,
 							cy + 30 
 							)
-			UserImage3:scale( 0.2, 0.2 )
+			UserImage3:scale( 0.15, 0.15 )
 			UserImage3.id = event.response.filename
 			UserImage3:addEventListener( "touch", SelectImg )
+			if (UserImage3) then
+				native.setActivityIndicator( false )
+			end
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -170,11 +181,14 @@ local function loadImageListener( event )
 							cx + 190,
 							cy + 30 
 							)
-			UserImage4:scale( 0.2, 0.2 )
+			UserImage4:scale( 0.15, 0.15 )
 			UserImage4.id = event.response.filename
 			UserImage4:addEventListener( "touch", SelectImg )
+			if (UserImage4) then
+				native.setActivityIndicator( false )
+			end
 		end
-		native.setActivityIndicator( false )
+		
 	end
 
 end
