@@ -15,7 +15,7 @@ local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, UserImage1, UserImage2, UserImage3, UserImage4
 local BackBtn, ShareBtn
-local FileName, member_no, NoAtt, DiaryNote, SelecFileImg
+local member_no, NoAtt, DiaryNote, SelecFileImg
 local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 local backgroundALpha
 local CheckSelectImg = false
@@ -50,26 +50,23 @@ local function onKeyEvent( event )
     return false
 end
 
-function scene:create(event)
-	local sceneGroup = self.view
-	print("Scene #share : create")
-end
-
 local function SelectImg( event )
 	SelecFileImg = event.target.id
-	print( SelecFileImg )
+
+	if (composer.getSceneName( "current" ) ~= "share") then
+
+		return
+	end
+	print( SelecFileImg .. "DD " .. composer.getSceneName( "current" ) )
 	
-	local RecWidth = 0
-	local RecHeight = 0
+	--local RecWidth = 0
+	--local RecHeight = 0
 	local PositionX = 0
 	local PositionY = 0
+	if (event.phase == "ended") then
+		
 	
---[[
-	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
-	backgroundALpha:setFillColor( black )
-	backgroundALpha:scale( 0.2, 0.2 )
-	backgroundALpha.alpha = 0.5
-]]
+
 	if (CheckSelectImg == true) then
 		--RemoveAll(backgroundALpha)
 		backgroundALpha:removeSelf( )
@@ -77,29 +74,29 @@ local function SelectImg( event )
 	end
 
 	if (SelecFileImg == NoAtt .. "_" .. member_no .. "_1.jpg") then
-		RecWidth = UserImage1.width
-		RecHeight = UserImage1.height
+		--RecWidth = UserImage1.width
+		--RecHeight = UserImage1.height
 		PositionX = UserImage1.x
 		PositionY = UserImage1.y
 		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_2.jpg") then
-		RecWidth = UserImage2.width
-		RecHeight = UserImage2.height
+		--RecWidth = UserImage2.width
+		--RecHeight = UserImage2.height
 		PositionX = UserImage2.x
 		PositionY = UserImage2.y
 		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_3.jpg") then
-		RecWidth = UserImage3.width
-		RecHeight = UserImage3.height
+		--RecWidth = UserImage3.width
+		--RecHeight = UserImage3.height
 		PositionX = UserImage3.x
 		PositionY = UserImage3.y
 		CheckSelectImg = true
 
 	elseif (SelecFileImg == NoAtt .. "_" .. member_no .. "_4.jpg") then
-		RecWidth = UserImage4.width
-		RecHeight = UserImage4.height
+		--RecWidth = UserImage4.width
+		--RecHeight = UserImage4.height
 		PositionX = UserImage4.x
 		PositionY = UserImage4.y
 		CheckSelectImg = true
@@ -110,16 +107,12 @@ local function SelectImg( event )
 	backgroundALpha.y = PositionY
 	backgroundALpha:scale(0.2, 0.2 )
 	
---[[
-	backgroundALpha = display.newRect(PositionX,PositionY,RecWidth,RecHeight)
-	backgroundALpha:setFillColor( black )
-	backgroundALpha:scale( 0.2, 0.2 )
-	backgroundALpha.alpha = 0.5
-]]
+	end
 
 end
 
 local function loadImageListener( event )
+
 	if(not event.isError) then
 		
 		print( event.response.filename, event.response.baseDirectory )
@@ -218,6 +211,7 @@ local function Check( event )
 	local options = {params = {PlaceName = params.PlaceName}}
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
+		--	composer.removeScene( "share" )
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("HomePlace",options)
 		elseif (event.target.id == "ShareBtn") then
@@ -266,6 +260,11 @@ local function DropTableData(  )
 
  end
 
+function scene:create(event)
+	local sceneGroup = self.view
+	print("Scene #share : create")
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -311,36 +310,30 @@ function scene:show(event)
 			if (row.diary_pic1 ~= "") then
 				native.setActivityIndicator( true )
 				CheckImg1 = true
-				FileName = row.diary_pic1
-				print( "1" )
 				randomFlag(row.diary_pic1)
 			end
 -----------------------------------------2---------------------------------------------
 			if (row.diary_pic2 ~= "") then
 				native.setActivityIndicator( true )
 				CheckImg2 = true
-				print( "2" )
-				FileName = row.diary_pic2
 				randomFlag(row.diary_pic2)
 			end
 -----------------------------------------3---------------------------------------------
 			if (row.diary_pic3 ~= "") then
 				native.setActivityIndicator( true )
 				CheckImg3 = true
-				print( "3" )
-				FileName = row.diary_pic3
 				randomFlag(row.diary_pic3)
 			end
 -----------------------------------------4---------------------------------------------
 			if (row.diary_pic4 ~= "") then
 				native.setActivityIndicator( true )
 				CheckImg4 = true
-				print( "4" )
-				FileName = row.diary_pic4
 				randomFlag(row.diary_pic4)
 			end
 
 		end
+
+
 
 		if (CheckImg1 == false) then
 			print( "else1" )
@@ -398,7 +391,6 @@ function scene:show(event)
 		ShareBtn.x = cx 
 		ShareBtn.y = cy + 110
 
-		--native.setActivityIndicator( false )
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")
 		--timer.performWithDelay(3000, showScene)
@@ -410,14 +402,52 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+
+		if (CheckImg1 == true) then
+			UserImage1:removeEventListener( "touch", SelectImg )
+		end
+
+		if (CheckImg2 == true) then
+			UserImage2:removeEventListener( "touch", SelectImg )
+		end
+
+		if (CheckImg3 == true) then
+			UserImage3:removeEventListener( "touch", SelectImg )
+		end
+
+		if (CheckImg4 == true) then
+			UserImage4:removeEventListener( "touch", SelectImg )
+		end
+
 		RemoveAll(Bg)
-		RemoveAll(UserImage1)
-		RemoveAll(UserImage2)
-		RemoveAll(UserImage3)
-		RemoveAll(UserImage4)
+		RemoveAll(Tett)
 		RemoveAll(BackBtn)
 		RemoveAll(ShareBtn)
+		--RemoveAll(UserImage1)
+		--RemoveAll(UserImage2)
+		--RemoveAll(UserImage3)
+	--	RemoveAll(UserImage4)
+		
 
+		UserImage1:removeSelf( )
+		UserImage1=nil
+
+		UserImage2:removeSelf( )
+		UserImage2=nil
+
+		UserImage3:removeSelf( )
+		UserImage3=nil
+
+		UserImage4:removeSelf( )
+		UserImage4=nil
+
+		if (backgroundALpha) then
+			RemoveAll(backgroundALpha)
+		end
+
+		
+
+		CheckSelectImg = false
 		print("Scene #share : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #share : hide (did)")
@@ -427,6 +457,7 @@ end
 function scene:destroy(event)
 	local sceneGroup = self.view
 	print("Scene #share : destroy")
+
 end
 
 scene:addEventListener("create", scene)

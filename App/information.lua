@@ -51,6 +51,12 @@ end
 local function Check( event )
 	print( event.target.id )
 	print( event.phase )
+
+	if(event.target.id == "img") then
+		local options = {params = {PlaceName = params.PlaceName}}
+			print( "Go to scene #HomePlace " .. params.PlaceName )
+			composer.gotoScene("informationImg",options)
+	end
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
 			local options = {params = {PlaceName = params.PlaceName}}
@@ -61,6 +67,9 @@ local function Check( event )
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("informationImg",options)
+		else
+ 			local options = {params = {PlaceName = event.target.id}}
+ 			composer.gotoScene("HomePlace",options)
 		end
 	end
 end
