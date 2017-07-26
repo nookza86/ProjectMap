@@ -7,9 +7,9 @@
 					<span class="fui-search"></span></a>
 				<a href="/admin/database/attractions/view.php" class="btn btn-info btn-block"> Attractions Management 
 					<span class="fui-search"></span></a>
-				<a href="/admin/database/members/view.php" class="btn btn-info btn-block"> Unlock Attractions Management 
+				<a href="/admin/database/unattractions/view.php" class="btn btn-info btn-block"> Unlock Attractions Management 
 					<span class="fui-search"></span></a>
-				<a href="/admin/database/members/view.php" class="btn btn-info btn-block"> Diary Management 
+				<a href="/admin/database/diary/view.php" class="btn btn-info btn-block"> Diary Management 
 					<span class="fui-search"></span></a>
 				<a href="logout.php" class="btn btn-info btn-block">Logout 
 					<span class="fui-export"></span></a>
