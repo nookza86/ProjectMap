@@ -24,6 +24,7 @@ local CheckIsHaveDiary
 local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local DiaryGroup = display.newGroup()
 local myText ,scrollView, Text
+local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -429,6 +430,7 @@ local function loadImageListener( event )
 			ImageUser1:scale( 0.15, 0.15 )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
+			LOADING_IMG_1 = true
 			--DiaryGroup:insert(ImageUser1)
 
 			
@@ -445,6 +447,7 @@ local function loadImageListener( event )
 			ImageUser2:scale( 0.15, 0.15 )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
+			LOADING_IMG_2 = true
 			--DiaryGroup:insert(ImageUser2)
 		end
 
@@ -459,6 +462,7 @@ local function loadImageListener( event )
 			ImageUser3:scale( 0.15, 0.15 )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
+			LOADING_IMG_3 = true
 			--DiaryGroup:insert(ImageUser3)
 			print( "DDDDDDDDDDDDD"..ImageUser3.width, ImageUser3.height )
 		end
@@ -474,9 +478,10 @@ local function loadImageListener( event )
 			ImageUser4:scale( 0.15, 0.15 )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
+			LOADING_IMG_4 = true
 			--DiaryGroup:insert(ImageUser4)
 		end
-		native.setActivityIndicator( false )
+
 	end
 
 end
@@ -501,6 +506,16 @@ network.download( url ,
 
 end
 
+local function listener( event )
+    if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
+    	 timer.cancel( event.source )
+    	 native.setActivityIndicator( false )
+    	 print( "LOADING DONE" )
+    	else
+    		print( "LOADING IMG" )
+    end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -509,6 +524,13 @@ function scene:show(event)
     cy = display.contentCenterY
     cw = display.contentWidth
     ch = display.contentHeight
+
+    LOADING_IMG_1 = false
+	LOADING_IMG_2 = false
+	LOADING_IMG_3 = false
+	LOADING_IMG_4 = false
+	native.setActivityIndicator( true )
+	timer.performWithDelay( 1000, listener, 0 )
 
 	if (phase == "will") then
 		

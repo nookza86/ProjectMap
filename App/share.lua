@@ -20,6 +20,7 @@ local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 local backgroundALpha
 local CheckSelectImg = false
 local myText
+local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
 
 local function RemoveAll( event )
 	if(event) then
@@ -127,10 +128,9 @@ local function loadImageListener( event )
 			UserImage1:scale( 0.15, 0.15 )
 			UserImage1.id = event.response.filename
 			UserImage1:addEventListener( "touch", SelectImg )
-
-			if (UserImage1) then
-				native.setActivityIndicator( false )
-			end
+			UserImage1.alpha = 0
+       		transition.to( UserImage1, { alpha=1.0 } )
+       		LOADING_IMG_1 = true
 
 		end
 
@@ -145,9 +145,9 @@ local function loadImageListener( event )
 			UserImage2:scale( 0.15, 0.15 )
 			UserImage2.id = event.response.filename
 			UserImage2:addEventListener( "touch", SelectImg )
-			if (UserImage2) then
-				native.setActivityIndicator( false )
-			end
+			UserImage2.alpha = 0
+       		transition.to( UserImage2, { alpha=1.0 } )
+       		LOADING_IMG_2 = true
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -161,9 +161,9 @@ local function loadImageListener( event )
 			UserImage3:scale( 0.15, 0.15 )
 			UserImage3.id = event.response.filename
 			UserImage3:addEventListener( "touch", SelectImg )
-			if (UserImage3) then
-				native.setActivityIndicator( false )
-			end
+			UserImage3.alpha = 0
+       		transition.to( UserImage3, { alpha=1.0 } )
+       		LOADING_IMG_3 = true
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -177,9 +177,9 @@ local function loadImageListener( event )
 			UserImage4:scale( 0.15, 0.15 )
 			UserImage4.id = event.response.filename
 			UserImage4:addEventListener( "touch", SelectImg )
-			if (UserImage4) then
-				native.setActivityIndicator( false )
-			end
+			UserImage4.alpha = 0
+       		transition.to( UserImage4, { alpha=1.0 } )
+       		LOADING_IMG_4 = true
 		end
 		
 	end
@@ -265,12 +265,27 @@ function scene:create(event)
 	print("Scene #share : create")
 end
 
+local function listener( event )
+    if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
+    	 timer.cancel( event.source )
+    	 native.setActivityIndicator( false )
+    	 print( "LOADING DONE" )
+    	else
+    		print( "LOADING IMG" )
+    end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	params = event.params
 	if (phase == "will") then
-		
+		LOADING_IMG_1 = false
+	    LOADING_IMG_2 = false
+	    LOADING_IMG_3 = false
+	    LOADING_IMG_4 = false
+		native.setActivityIndicator( true )
+		timer.performWithDelay( 1000, listener, 0 )
 		cx = display.contentCenterX
 	    cy = display.contentCenterY
 	    cw = display.contentWidth
@@ -279,6 +294,7 @@ function scene:show(event)
 	    CheckImg2 = false
 	    CheckImg3 = false
 	    CheckImg4 = false
+	    
 	  toast.show('Loading Image!')  
 
 		Bg = display.newImageRect("Phuket/share/bg.png", cw, ch )
@@ -302,31 +318,31 @@ function scene:show(event)
 		end
 
 		local sql = "SELECT member_no, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE att_no IN (SELECT att_no FROM attractions WHERE att_name = '" .. params.PlaceName .. "' );"
-		print( "SQL is : " .. sql )
+		--print( "SQL is : " .. sql )
 		for row in db:nrows(sql) do
 			print( row.member_no , row.diary_pic1, row.diary_pic2, row.diary_pic3, row.diary_pic4 )
 			member_no = row.member_no
 
 			if (row.diary_pic1 ~= "") then
-				native.setActivityIndicator( true )
+				
 				CheckImg1 = true
 				randomFlag(row.diary_pic1)
 			end
 -----------------------------------------2---------------------------------------------
 			if (row.diary_pic2 ~= "") then
-				native.setActivityIndicator( true )
+
 				CheckImg2 = true
 				randomFlag(row.diary_pic2)
 			end
 -----------------------------------------3---------------------------------------------
 			if (row.diary_pic3 ~= "") then
-				native.setActivityIndicator( true )
+
 				CheckImg3 = true
 				randomFlag(row.diary_pic3)
 			end
 -----------------------------------------4---------------------------------------------
 			if (row.diary_pic4 ~= "") then
-				native.setActivityIndicator( true )
+
 				CheckImg4 = true
 				randomFlag(row.diary_pic4)
 			end
@@ -340,13 +356,15 @@ function scene:show(event)
 			UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage1.x = cx - 200
 			UserImage1.y = cy + 30
+			LOADING_IMG_1 = true
 		end
 
 		if (CheckImg2 == false) then
 			print( "else2" )
 			UserImage2 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage2.x = cx - 70
-			UserImage2.y =cy + 30
+			UserImage2.y = cy + 30
+			LOADING_IMG_2 = true
 		end
 
 		if (CheckImg3 == false) then
@@ -354,6 +372,7 @@ function scene:show(event)
 			UserImage3 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage3.x = cx + 60
 			UserImage3.y = cy + 30
+			LOADING_IMG_3 = true
 		end
 
 		if (CheckImg4 == false) then
@@ -361,6 +380,7 @@ function scene:show(event)
 			UserImage4 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage4.x = cx + 190
 			UserImage4.y = cy + 30
+			LOADING_IMG_4 = true
 		end
 		
 		BackBtn = widget.newButton(

@@ -123,13 +123,20 @@ local function loadImageListener( event )
 							cy + 40 
 							)
 			UserImage1:scale( 0.2, 0.2 )
+
+
+        local mask = graphics.newMask( "cccccc.png" )
+		 
+		UserImage1:setMask( mask )
+		 
+		UserImage1.maskX = -10
+		--UserImage1.maskRotation = 20
+		UserImage1.maskScaleX = 1
+		UserImage1.maskScaleY = 1
 	
 	end
 	native.setActivityIndicator( false )
-	--[[
-	if (UserImage1) then
-		native.setActivityIndicator( false )
-	end]]
+
 end
 
 local function LoadUserImg( no )
