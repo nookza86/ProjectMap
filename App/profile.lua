@@ -157,6 +157,23 @@ function scene:create(event)
 	print("Scene #Profile : create")
 end
 
+local function FindImg( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -175,20 +192,20 @@ function scene:show(event)
 		TitleImage = display.newImageRect( "Phuket/Profile/profile.png", 369/2.5, 83/2.5 )
 		TitleImage.x = cx 
 		TitleImage.y = cy - 135
-
+--[[
 		UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 		UserImage.x = cx - 180
 		UserImage.y = cy - 55
-
+]]
 		UsernameImage = display.newImageRect( "Phuket/Profile/user.png", 400/3, 80/3 )
-		UsernameImage.x = UserImage.x + 180
-		UsernameImage.y = UserImage.y - 30
+		UsernameImage.x = cx
+		UsernameImage.y = cy - 80
 
 		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 486/3, 55/3 )
 		CountryImage.x = UsernameImage.x
 		CountryImage.y = UsernameImage.y + 40
 
-		TextName = display.newText( "", UserImage.x + 350, UserImage.y - 30, native.systemFont, 16 )
+		TextName = display.newText( "", cx + 180 , cy - 80, native.systemFont, 16 )
 		TextName:setFillColor( 1, 0, 0 )
 
 		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, native.systemFont, 16 )
@@ -197,12 +214,31 @@ function scene:show(event)
 		for row in db:nrows("SELECT img, fname, lname, country FROM personel;") do
 			TextName.text = row.fname .. " " .. row.lname  
 			TextCountry.text = row.country   
-
+			Filename = row.img
 			if (row.img == "") then
 			    UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 				UserImage.x = cx - 180
 				UserImage.y = cy - 55           
-			else  
+			elseif (FindImg( Filename ) == true) then  
+				UserImage1 = display.newImage( 
+							Filename, 
+							system.DocumentsDirectory,
+							cx - 200,
+							cy + 40 
+							)
+			UserImage1:scale( 0.2, 0.2 )
+
+
+		        local mask = graphics.newMask( "cccccc.png" )
+				 
+				UserImage1:setMask( mask )
+				 
+				UserImage1.maskX = -10
+				--UserImage1.maskRotation = 20
+				UserImage1.maskScaleX = 1
+				UserImage1.maskScaleY = 1
+				native.setActivityIndicator( false )
+			else
 				LoadUserImg(row.img)
 			end                       
 		end

@@ -24,6 +24,7 @@ local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local myMap = native.newMapView( 20, 20, 1, 1 )
+local DisableBTN, EnableBTN
 
 ------------------------------------------
 local UnlockBangPaeLabel, UnlockBigBuddhaLabel, UnlockChalongLabel, UnlockKamalaLabel, UnlockKaronLabel, UnlockKataLabel, UnlockPatongLabel
@@ -81,64 +82,69 @@ local function onKeyEvent( event )
     return false
 end
 
+
+
 local function check( event )
 	local obj = event.target.name
 	
 	print( obj )
-	
-	if(obj == "Chalong Temple") then
+	--if (event.phase == "ended") then
 		
-		local options = {params = {PlaceName = "Chalong Temple"}}
-		composer.gotoScene("HomePlace", options)
+		if(obj == "Chalong Temple") then
+			
+			local options = {params = {PlaceName = "Chalong Temple"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "Bang Pae Waterfall") then
-	
-		local options = {params = {PlaceName = "Bang Pae Waterfall"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Big Buddha") then
+		elseif(obj == "Bang Pae Waterfall") then
 		
-		local options = {params = {PlaceName = "Big Buddha"}}
-		composer.gotoScene("HomePlace", options)
+			local options = {params = {PlaceName = "Bang Pae Waterfall"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "Kata Beach") then
-		
-		local options = {params = {PlaceName = "Kata Beach"}}
-		composer.gotoScene("HomePlace", options)
+		elseif(obj == "Big Buddha") then
+			
+			local options = {params = {PlaceName = "Big Buddha"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "Karon Beach") then
-		
-		local options = {params = {PlaceName = "Karon Beach"}}
-		composer.gotoScene("HomePlace", options)
+		elseif(obj == "Kata Beach") then
+			
+			local options = {params = {PlaceName = "Kata Beach"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "Kamala Beach") then
-		
-		local options = {params = {PlaceName = "Kamala Beach"}}
-		composer.gotoScene("HomePlace", options)
+		elseif(obj == "Karon Beach") then
+			
+			local options = {params = {PlaceName = "Karon Beach"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "Patong Beach") then
-		
-		local options = {params = {PlaceName = "Patong Beach"}}
-		composer.gotoScene("HomePlace", options)
+		elseif(obj == "Kamala Beach") then
+			
+			local options = {params = {PlaceName = "Kamala Beach"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "profile") then
-		
-		local options = {params = {PlaceName = "Patong Beach"}}
-		composer.gotoScene("profile")
+		elseif(obj == "Patong Beach") then
+			
+			local options = {params = {PlaceName = "Patong Beach"}}
+			composer.gotoScene("HomePlace", options)
 
-	elseif(obj == "CloseBtn") then
-		IsClick = false
-		RemoveAll(RecBg)
-		RemoveAll(CloseBtn)
-		RemoveAll(backgroundALpha)
-		for i=1, CountRec do
-			print( CountRec )
-			RecNational[i]:removeSelf( )
-			RecNational[i] = nil
+		elseif(obj == "profile") then
+			
+			local options = {params = {PlaceName = "Patong Beach"}}
+			composer.gotoScene("profile")
+
+		elseif(obj == "CloseBtn") then
+			--RecButton:setEnabled( true )
+			EnableBTN(  )
+			IsClick = false
+			RemoveAll(RecBg)
+			RemoveAll(CloseBtn)
+			RemoveAll(backgroundALpha)
+			for i=1, CountRec do
+				print( CountRec )
+				RecNational[i]:removeSelf( )
+				RecNational[i] = nil
+			end
+			
 		end
-		
-
-	end
+	--end
 end
 
 -- A function to handle the "mapAddress" event (also known as "reverse geocoding", ie: coordinates -> string).
@@ -221,24 +227,11 @@ function scene:create(event)
 	print("Scene #Overview : create")
 end
 
-local function Check( event )
-	--composer.gotoScene("overview", {effect = "fade", time = 500})
-	IsClick = true
-	if (event.phase == "ended") then
-		backgroundALpha = display.newRect(0,0,570,360)
-		backgroundALpha.x = display.contentWidth / 2
-		backgroundALpha.y = display.contentHeight / 2
-		backgroundALpha:setFillColor( black )
-		backgroundALpha.alpha = 0.5
-
-		RecBg = display.newImageRect( "Phuket/Overview/rec.png", 1152 / 3, 787/ 3 )
-		RecBg.x = display.contentCenterX
-		RecBg.y = display.contentCenterY
-
-		CloseBtn = widget.newButton(
+local function WaitForTran(  )
+	CloseBtn = widget.newButton(
     	{
-	        width = 50,
-	        height = 25,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/ok.png",
 	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "CloseBtn",
@@ -248,6 +241,8 @@ local function Check( event )
 		CloseBtn.name = "CloseBtn"
 		CloseBtn.x = RecBg.x 
 		CloseBtn.y = RecBg.y + 100
+		CloseBtn.alpha = 0
+       	transition.to( CloseBtn, { alpha=1.0 } )
 
 		local PositionX = 0
 		local PositionY = 0
@@ -278,7 +273,7 @@ local function Check( event )
 			RecNational[idx].name = val 
 			RecNational[idx].x = PositionX 
 			RecNational[idx].y = PositionY 
-			RecNational[idx]:scale(0.5,0.5)
+			RecNational[idx]:scale(0.4,0.4)
 			PositionY = PositionY + 50
 
 			if (idx == 3) then
@@ -287,7 +282,27 @@ local function Check( event )
 				print( "if > 3" )
 			end
 
-		end
+		end	
+end
+
+local function Check( event )
+	IsClick = true
+	if (event.phase == "ended") then
+	DisableBTN()
+		backgroundALpha = display.newRect(0,0,570,360)
+		backgroundALpha.x = display.contentWidth / 2
+		backgroundALpha.y = display.contentHeight / 2
+		backgroundALpha:setFillColor( black )
+		backgroundALpha.alpha = 0.5
+
+		RecBg = display.newImageRect( "Phuket/Overview/rec.png", 1152 / 3, 787/ 3 )
+		RecBg.x = display.contentCenterX
+		RecBg.y = -100
+
+		transition.moveTo( RecBg, {  y=display.contentCenterY, time=500} )
+
+		timer.performWithDelay( 600, WaitForTran, 1 )
+		
 
 	end
 end
@@ -299,7 +314,7 @@ local function RecommendPlace(  )
 		for row in db:nrows(sql) do
 			nationality = row.country
 		end
-		--nationality = "Australia"
+		nationality = "Australia"
 		--nationality = "Canada"
 		print( nationality )
 		if not decoded then
@@ -347,6 +362,32 @@ local function RecommendPlace(  )
 	end
 
 	end -- decode
+	
+end
+
+function EnableBTN(  )
+	RecButton:setEnabled( true )
+	ChalongLabel:addEventListener( "touch", check )
+	BangPaeLabel:addEventListener( "touch", check )
+	BigBuddhaLabel:addEventListener( "touch", check )
+	KataLabel:addEventListener( "touch", check )
+	KaronLabel:addEventListener( "touch", check )
+	ProfileImage:addEventListener( "touch", check )
+	PatongLabel:addEventListener( "touch", check )
+	KamalaLabel:addEventListener( "touch", check )
+	
+end
+
+function DisableBTN(  )
+	RecButton:setEnabled( false )
+	ChalongLabel:removeEventListener( "touch", check )
+	BangPaeLabel:removeEventListener( "touch", check )
+	BigBuddhaLabel:removeEventListener( "touch", check )
+	KataLabel:removeEventListener( "touch", check )
+	KaronLabel:removeEventListener( "touch", check )
+	ProfileImage:removeEventListener( "touch", check )
+	PatongLabel:removeEventListener( "touch", check )
+	KamalaLabel:removeEventListener( "touch", check )
 	
 end
 
@@ -557,7 +598,9 @@ print( display.pixelHeight / display.actualContentHeight )
 
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
+	--IsClick = false
 	RecommendPlace(  )
+
 --[[
 	LocationBtn = widget.newButton(
 		{

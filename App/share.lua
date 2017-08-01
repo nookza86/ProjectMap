@@ -195,7 +195,7 @@ local function randomFlag( event )
 	end
 
 	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/" ..NoAtt .."/" .. event 
-	print( url )
+	--print( url )
 network.download( url , 
 	"GET", 
 	loadImageListener,
@@ -275,6 +275,23 @@ local function listener( event )
     end
 end
 
+local function FindImg( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -295,7 +312,7 @@ function scene:show(event)
 	    CheckImg3 = false
 	    CheckImg4 = false
 	    
-	  toast.show('Loading Image!')  
+	 -- toast.show('Loading Image!')  
 
 		Bg = display.newImageRect("Phuket/share/bg.png", cw, ch )
 	    Bg.x = cx 
@@ -320,35 +337,103 @@ function scene:show(event)
 		local sql = "SELECT member_no, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE att_no IN (SELECT att_no FROM attractions WHERE att_name = '" .. params.PlaceName .. "' );"
 		--print( "SQL is : " .. sql )
 		for row in db:nrows(sql) do
-			print( row.member_no , row.diary_pic1, row.diary_pic2, row.diary_pic3, row.diary_pic4 )
+			--print( row.member_no , row.diary_pic1, row.diary_pic2, row.diary_pic3, row.diary_pic4 )
 			member_no = row.member_no
 
 			if (row.diary_pic1 ~= "") then
 				
 				CheckImg1 = true
-				randomFlag(row.diary_pic1)
+				Filename = row.diary_pic1
+				if (FindImg( Filename ) == true) then
+					
+					UserImage1 = display.newImage( 
+							Filename, 
+							system.DocumentsDirectory,
+							cx - 200,
+							cy + 30 
+							)
+					UserImage1:scale( 0.15, 0.15 )
+					UserImage1.id = Filename
+					UserImage1:addEventListener( "touch", SelectImg )
+					UserImage1.alpha = 0
+		       		transition.to( UserImage1, { alpha=1.0 } )
+		       		LOADING_IMG_1 = true
+				else
+					randomFlag(row.diary_pic1)
+				end
+				--randomFlag(row.diary_pic1)
 			end
 -----------------------------------------2---------------------------------------------
 			if (row.diary_pic2 ~= "") then
 
 				CheckImg2 = true
+				Filename = row.diary_pic2
+				if (FindImg( Filename ) == true) then
+					
+					UserImage2 = display.newImage( 
+							Filename, 
+							system.DocumentsDirectory,
+							cx - 70,
+							cy + 30  
+							)
+					UserImage2:scale( 0.15, 0.15 )
+					UserImage2.id = Filename
+					UserImage2:addEventListener( "touch", SelectImg )
+					UserImage2.alpha = 0
+		       		transition.to( UserImage2, { alpha=1.0 } )
+		       		LOADING_IMG_2 = true
+				else
 				randomFlag(row.diary_pic2)
 			end
+		end
 -----------------------------------------3---------------------------------------------
 			if (row.diary_pic3 ~= "") then
 
 				CheckImg3 = true
+				Filename = row.diary_pic3
+				if (FindImg( Filename ) == true) then
+					
+					UserImage3 = display.newImage( 
+							Filename, 
+							system.DocumentsDirectory,
+							cx + 60,
+							cy + 30 
+							)
+					UserImage3:scale( 0.15, 0.15 )
+					UserImage3.id = Filename
+					UserImage3:addEventListener( "touch", SelectImg )
+					UserImage3.alpha = 0
+		       		transition.to( UserImage3, { alpha=1.0 } )
+		       		LOADING_IMG_3 = true
+				else
 				randomFlag(row.diary_pic3)
 			end
+		end
 -----------------------------------------4---------------------------------------------
 			if (row.diary_pic4 ~= "") then
 
 				CheckImg4 = true
+				Filename = row.diary_pic4
+				if (FindImg( Filename ) == true) then
+					
+					UserImage4 = display.newImage( 
+							Filename, 
+							system.DocumentsDirectory,
+							cx + 190,
+							cy + 30  
+							)
+					UserImage4:scale( 0.15, 0.15 )
+					UserImage4.id = Filename
+					UserImage4:addEventListener( "touch", SelectImg )
+					UserImage4.alpha = 0
+		       		transition.to( UserImage4, { alpha=1.0 } )
+		       		LOADING_IMG_4 = true
+				else
 				randomFlag(row.diary_pic4)
 			end
 
 		end
-
+end
 
 
 		if (CheckImg1 == false) then

@@ -6,7 +6,7 @@ local toast = require('plugin.toast')
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
 local Recommend, TextDesField
-local AttImg, NearAtt
+local AttImg, NearAtt, FrameAttImg
 local NumberOfRecPlace = {}
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -196,6 +196,7 @@ function scene:show(event)
 			PositionX = PositionX + 150
 			
 		end
+		
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
 		AttImg.x = cx - 160
@@ -204,8 +205,17 @@ function scene:show(event)
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
 
+		FrameAttImg = display.newImageRect( "Phuket/Information/frame_pic.png", cw, ch)
+		FrameAttImg.x = cx - 160
+		FrameAttImg.y = cy - 20
+		FrameAttImg:scale( 0.21, 0.22 ) 
+
+
+
+		print( AttImg.width, AttImg.height )
+
 		NearAtt = display.newImageRect( "Phuket/Information/text_nearby.png", 362, 137)
-		NearAtt.x = cx - 110
+		NearAtt.x = cx - 130
 		NearAtt.y = cy + 85
 		NearAtt:scale( 0.25, 0.25 ) 
 

@@ -430,6 +430,8 @@ local function loadImageListener( event )
 			ImageUser1:scale( 0.15, 0.15 )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
+			ImageUser1.alpha = 0
+       		transition.to( ImageUser1, { alpha=1.0 } )
 			LOADING_IMG_1 = true
 			--DiaryGroup:insert(ImageUser1)
 
@@ -447,6 +449,8 @@ local function loadImageListener( event )
 			ImageUser2:scale( 0.15, 0.15 )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
+			ImageUser2.alpha = 0
+       		transition.to( ImageUser2, { alpha=1.0 } )
 			LOADING_IMG_2 = true
 			--DiaryGroup:insert(ImageUser2)
 		end
@@ -462,9 +466,11 @@ local function loadImageListener( event )
 			ImageUser3:scale( 0.15, 0.15 )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
+			ImageUser3.alpha = 0
+       		transition.to( ImageUser3, { alpha=1.0 } )
 			LOADING_IMG_3 = true
 			--DiaryGroup:insert(ImageUser3)
-			print( "DDDDDDDDDDDDD"..ImageUser3.width, ImageUser3.height )
+			
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. NoMember .. "_4.jpg") then
@@ -478,6 +484,8 @@ local function loadImageListener( event )
 			ImageUser4:scale( 0.15, 0.15 )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
+			ImageUser4.alpha = 0
+       		transition.to( ImageUser4, { alpha=1.0 } )
 			LOADING_IMG_4 = true
 			--DiaryGroup:insert(ImageUser4)
 		end
