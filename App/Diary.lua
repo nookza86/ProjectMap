@@ -499,6 +499,7 @@ end
 local function randomFlag( event )
 	if isRechable() == false then 
  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		native.setActivityIndicator( false )
  		return
 	end
 

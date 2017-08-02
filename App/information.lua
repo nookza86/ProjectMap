@@ -236,6 +236,7 @@ function scene:hide(event)
 		RemoveAll(TextDesField)
 		RemoveAll(AttImg)
 		RemoveAll(NearAtt)
+		RemoveAll(FrameAttImg)
 
 	for i=1, #NumberOfRecPlace do
 		Recommend[i]:removeSelf( )

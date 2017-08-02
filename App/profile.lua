@@ -12,7 +12,7 @@ local Bg, cx, cy, cw, ch
 local TitleImage, UsernameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
-local TextName, TextCountry
+local TextName, TextCountry, ProfileFrame
 
 local function RemoveAll( event )
 	if(event) then
@@ -115,24 +115,64 @@ end
 local function loadImageListener( event )
 	if(not event.isError) then
 		print( event.response.filename, event.response.baseDirectory )
-			RemoveAll(UserImage)
-			UserImage1 = display.newImage( 
+        	UserImage = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 200,
-							cy + 40 
+							cx - 180,
+							cy - 55 
 							)
-			UserImage1:scale( 0.2, 0.2 )
+				--UserImage:scale( 0.2, 0.2 )
+				UserImage.name = "profile"
+				
 
+	       if UserImage.width > UserImage.height then
+			--UserImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / UserImage.contentWidth
+		local yScale = ch / UserImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 512
+		local maxHeight = 512
 
-        local mask = graphics.newMask( "cccccc.png" )
+		UserImage:scale( scale, scale )
+		--UserImage.x = cx
+		--UserImage.y = cy + 100
+		
+		--rescale width
+		if ( UserImage.width > maxWidth ) then
+		   local ratio = maxWidth / UserImage.width
+		   UserImage.width = maxWidth
+		   UserImage.height = UserImage.height * ratio
+		end
 		 
-		UserImage1:setMask( mask )
-		 
-		UserImage1.maskX = -10
-		--UserImage1.maskRotation = 20
-		UserImage1.maskScaleX = 1
-		UserImage1.maskScaleY = 1
+		--rescale height
+		if ( UserImage.height > maxHeight ) then
+		   local ratio = maxHeight / UserImage.height
+		   UserImage.height = maxHeight
+		   UserImage.width = UserImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			UserImage:setMask( mask )
+			
+			UserImage.maskX = 1
+			--UserImage.maskY = 1
+			--UserImage.maskRotation = 20
+			UserImage.maskScaleX = 2
+			UserImage.maskScaleY = 2
+
+			print( UserImage.width, UserImage.height )
+
+	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
+	ProfileFrame.x = UserImage.x 
+	ProfileFrame.y = UserImage.y + 6
+	ProfileFrame.name = "profile"
 	
 	end
 	native.setActivityIndicator( false )
@@ -220,24 +260,65 @@ function scene:show(event)
 				UserImage.x = cx - 180
 				UserImage.y = cy - 55           
 			elseif (FindImg( Filename ) == true) then  
-				UserImage1 = display.newImage( 
-							Filename, 
+				UserImage = display.newImage( 
+							row.img, 
 							system.DocumentsDirectory,
-							cx - 200,
-							cy + 40 
+							cx - 180,
+							cy - 55 
 							)
-			UserImage1:scale( 0.2, 0.2 )
+				--UserImage:scale( 0.2, 0.2 )
+				UserImage.name = "profile"
+				
 
+	       if UserImage.width > UserImage.height then
+			--UserImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / UserImage.contentWidth
+		local yScale = ch / UserImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 512
+		local maxHeight = 512
 
-		        local mask = graphics.newMask( "cccccc.png" )
-				 
-				UserImage1:setMask( mask )
-				 
-				UserImage1.maskX = -10
-				--UserImage1.maskRotation = 20
-				UserImage1.maskScaleX = 1
-				UserImage1.maskScaleY = 1
-				native.setActivityIndicator( false )
+		UserImage:scale( scale, scale )
+		--UserImage.x = cx
+		--UserImage.y = cy + 100
+		
+		--rescale width
+		if ( UserImage.width > maxWidth ) then
+		   local ratio = maxWidth / UserImage.width
+		   UserImage.width = maxWidth
+		   UserImage.height = UserImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( UserImage.height > maxHeight ) then
+		   local ratio = maxHeight / UserImage.height
+		   UserImage.height = maxHeight
+		   UserImage.width = UserImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			UserImage:setMask( mask )
+			
+			UserImage.maskX = 1
+			--UserImage.maskY = 1
+			--UserImage.maskRotation = 20
+			UserImage.maskScaleX = 1.5
+			UserImage.maskScaleY = 1.5
+
+			print( UserImage.width, UserImage.height )
+
+	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
+	ProfileFrame.x = UserImage.x 
+	ProfileFrame.y = UserImage.y + 6
+	ProfileFrame.name = "profile"
+native.setActivityIndicator( false )
 			else
 				LoadUserImg(row.img)
 			end                       
@@ -430,6 +511,7 @@ function scene:hide(event)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
 		RemoveAll(UserImage1)
+		RemoveAll(ProfileFrame)
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		

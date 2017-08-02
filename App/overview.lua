@@ -88,7 +88,7 @@ local function check( event )
 	local obj = event.target.name
 	
 	print( obj )
-	--if (event.phase == "ended") then
+	if (event.phase == "ended") then
 		
 		if(obj == "Chalong Temple") then
 			
@@ -144,82 +144,106 @@ local function check( event )
 			end
 			
 		end
-	--end
-end
-
--- A function to handle the "mapAddress" event (also known as "reverse geocoding", ie: coordinates -> string).
-local mapAddressHandler = function( event )
-	if event.isError then
-		-- Failed to receive location information.
-		native.showAlert( "Error", event.errorMessage, { "OK" } )
-	else
-		-- Location information received. Display it.
-		local locationText =
-				"Latitude: " .. currentLatitude .. 
-				", Longitude: " .. currentLongitude ..
-				", Address: " .. ( event.streetDetail or "" ) ..
-				" " .. ( event.street or "" ) ..
-				", " .. ( event.city or "" ) ..
-				", " .. ( event.region or "" ) ..
-				", " .. ( event.country or "" ) ..
-				", " .. ( event.postalCode or "" )
-		native.showAlert( "You Are Here", locationText, { "OK" } )
-		YourLocation.text = locationText
-		
 	end
 end
 
-local function CheckLocation1( event )
- 
-    -- Fetch the user's current location
-	-- Note: in Xcode Simulator, the current location defaults to Apple headquarters in Cupertino, CA
-	currentLocation = myMap:getUserLocation()
-	if currentLocation.errorCode then
-		if currentLocation.errorCode ~= 0 then -- errorCode 0 is: Pending User Authorization!
-			currentLatitude = 0
-			currentLongitude = 0
-			native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
+
+local function loadImageListener( event )
+	if(not event.isError) then
+		print( event.response.filename, event.response.baseDirectory )
+			--RemoveAll(UserImage)
+			ProfileImage = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx - 250,
+							cy - 130 
+							)
+			
+			ProfileImage.name = "profile"
+			ProfileImage:addEventListener( "touch", check )
+
+        if ProfileImage.width > ProfileImage.height then
+			--ProfileImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
 		end
-	else
-		-- Current location data was received.
-		-- Move map so that current location is at the center.
-		currentLatitude = currentLocation.latitude
-		currentLongitude = currentLocation.longitude
-		myMap:setRegion( currentLatitude, currentLongitude, 0.01, 0.01, true )
 		
-		-- Look up nearest address to this location (this is returned as a "mapAddress" event, handled above)
-		myMap:nearestAddress( currentLatitude, currentLongitude, mapAddressHandler )
+		-- Scale image to fit content scaled screen
+		local xScale = cw / ProfileImage.contentWidth
+		local yScale = ch / ProfileImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 256
+		local maxHeight = 256
+
+		ProfileImage:scale( scale, scale )
+		--ProfileImage.x = cx
+		--ProfileImage.y = cy + 100
+		
+		--rescale width
+		if ( ProfileImage.width > maxWidth ) then
+		   local ratio = maxWidth / ProfileImage.width
+		   ProfileImage.width = maxWidth
+		   ProfileImage.height = ProfileImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( ProfileImage.height > maxHeight ) then
+		   local ratio = maxHeight / ProfileImage.height
+		   ProfileImage.height = maxHeight
+		   ProfileImage.width = ProfileImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			ProfileImage:setMask( mask )
+			
+			ProfileImage.maskX = 1
+			--ProfileImage.maskY = 1
+			--ProfileImage.maskRotation = 20
+			ProfileImage.maskScaleX = 1
+			ProfileImage.maskScaleY = 1.1
+
+			print( ProfileImage.width, ProfileImage.height )
+
+			ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3, 187/3 )
+	ProfileFrame.x = ProfileImage.x 
+	ProfileFrame.y = ProfileImage.y + 3
+	ProfileFrame.name = "profile"
+	
 	end
-end
---
-local function locationHandler( event )
- 
-    if ( event.isError ) then
-        print( "Map Error: " .. event.errorMessage )
-        native.showAlert( "Error", event.errorMessage, { "OK" } )
-    else
-        print( "The specified string is at: " .. event.latitude .. "," .. event.longitude )
-        --native.showAlert( "Error", event.latitude .." long :" .. event.longitude, { "OK" } )
-        --myMap:setCenter( event.latitude, event.longitude )
-        myMap:nearestAddress( event.latitude, event.longitude, mapAddressHandler )
-    end
- 
+	--native.setActivityIndicator( false )
+
 end
 
-local function CheckLocation( event )
- 	
- 	local point1 = {}
- 	local point2 = {}
- 	point1.latitude = 7.827657
- 	point1.longitude = 98.312738
+local function LoadUserImg( no )
+	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. no 
+	print( url )
+network.download( url , 
+	"GET", 
+	loadImageListener,
+	{},
+	no,
+	system.ApplicationSupportDirectory
+	)
 
-	point2.latitude = 7.827357
- 	point2.longitude = 98.312627
+end
 
- 	local d = sphericalDistanceBetween( point1, point2 )
- 	print( d )
-  -- myMap:requestLocation( "วัดไชยธาราราม", locationHandler )
-
+local function FindImg( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
 end
 
 function scene:create(event)
@@ -240,7 +264,7 @@ local function WaitForTran(  )
 			)
 		CloseBtn.name = "CloseBtn"
 		CloseBtn.x = RecBg.x 
-		CloseBtn.y = RecBg.y + 100
+		CloseBtn.y = RecBg.y + 90
 		CloseBtn.alpha = 0
        	transition.to( CloseBtn, { alpha=1.0 } )
 
@@ -248,11 +272,11 @@ local function WaitForTran(  )
 		local PositionY = 0
 
 		if (CountRec > 3) then
-			 PositionX = display.contentCenterX - 100
-			 PositionY = display.contentCenterY - 40
+			 PositionX = display.contentCenterX - 90
+			 PositionY = display.contentCenterY - 60
 		else
 			 PositionX = display.contentCenterX 
-			 PositionY = display.contentCenterY - 40
+			 PositionY = display.contentCenterY - 60
 		end
 
 		for idx, val in ipairs(decoded["rule"][RuleOtherNo]["recommend"]) do
@@ -273,12 +297,12 @@ local function WaitForTran(  )
 			RecNational[idx].name = val 
 			RecNational[idx].x = PositionX 
 			RecNational[idx].y = PositionY 
-			RecNational[idx]:scale(0.4,0.4)
+			RecNational[idx]:scale(0.45,0.45)
 			PositionY = PositionY + 50
 
 			if (idx == 3) then
-				PositionX = cx + 80
-				PositionY = display.contentCenterY - 40
+				PositionX = cx + 90
+				PositionY = display.contentCenterY - 60
 				print( "if > 3" )
 			end
 
@@ -295,7 +319,7 @@ local function Check( event )
 		backgroundALpha:setFillColor( black )
 		backgroundALpha.alpha = 0.5
 
-		RecBg = display.newImageRect( "Phuket/Overview/rec.png", 1152 / 3, 787/ 3 )
+		RecBg = display.newImageRect( "Phuket/Overview/rec.png", cw, ch )
 		RecBg.x = display.contentCenterX
 		RecBg.y = -100
 
@@ -419,10 +443,86 @@ print( display.pixelHeight / display.actualContentHeight )
 	island.x = cx
 	island.y = cy
 
-	ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
-	ProfileImage.x = cx - 250
-	ProfileImage.y = cy - 130
-	ProfileImage.name = "profile"
+	for row in db:nrows("SELECT img FROM personel;") do
+			if (row.img == "") then
+			    ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
+				ProfileImage.x = cx - 250
+				ProfileImage.y = cy - 130
+				ProfileImage.name = "profile"        
+			elseif (FindImg( row.img ) == true) then  
+
+				ProfileImage = display.newImage( 
+							row.img, 
+							system.DocumentsDirectory,
+							cx - 250,
+							cy - 130 
+							)
+				--ProfileImage:scale( 0.2, 0.2 )
+				ProfileImage.name = "profile"
+				ProfileImage:addEventListener( "touch", check )
+
+	       if ProfileImage.width > ProfileImage.height then
+			--ProfileImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / ProfileImage.contentWidth
+		local yScale = ch / ProfileImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 256
+		local maxHeight = 256
+
+		ProfileImage:scale( scale, scale )
+		--ProfileImage.x = cx
+		--ProfileImage.y = cy + 100
+		
+		--rescale width
+		if ( ProfileImage.width > maxWidth ) then
+		   local ratio = maxWidth / ProfileImage.width
+		   ProfileImage.width = maxWidth
+		   ProfileImage.height = ProfileImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( ProfileImage.height > maxHeight ) then
+		   local ratio = maxHeight / ProfileImage.height
+		   ProfileImage.height = maxHeight
+		   ProfileImage.width = ProfileImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			ProfileImage:setMask( mask )
+			
+			ProfileImage.maskX = 1
+			--ProfileImage.maskY = 1
+			--ProfileImage.maskRotation = 20
+			ProfileImage.maskScaleX = 0.75
+			ProfileImage.maskScaleY = 0.75
+
+			print( ProfileImage.width, ProfileImage.height )
+
+	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3.5, 187/3.5 )
+	ProfileFrame.x = ProfileImage.x 
+	ProfileFrame.y = ProfileImage.y + 3
+	ProfileFrame.name = "profile"
+	      
+			
+			
+			
+			else
+				LoadUserImg(row.img)
+			end                       
+		end
+
+
+
+				
+
+
 
 	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
 	watchalong.x = island.x + 10
@@ -632,7 +732,6 @@ print( display.pixelHeight / display.actualContentHeight )
 	BigBuddhaLabel:addEventListener( "touch", check )
 	KataLabel:addEventListener( "touch", check )
 	KaronLabel:addEventListener( "touch", check )
-	ProfileImage:addEventListener( "touch", check )
 	PatongLabel:addEventListener( "touch", check )
 	KamalaLabel:addEventListener( "touch", check )
 	
@@ -687,7 +786,8 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(CloudRight)
 	PlaceGroup:insert(CloudCenter)
 	PlaceGroup:insert(CloudCenterRight)
-	PlaceGroup:insert(ProfileImage)
+	--PlaceGroup:insert(ProfileImage)
+	
 
 	ButtonGroup = display.newGroup()
 	----------------------------------- Group Button -----------------------------------------
@@ -798,7 +898,7 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(CloudRight)
 	PlaceGroup:remove(CloudCenter)
 	PlaceGroup:remove(CloudCenterRight)
-	PlaceGroup:remove(ProfileImage)
+	--PlaceGroup:remove(ProfileImage)
 	PlaceGroup:remove(kamala1)
 	PlaceGroup:remove(kamala2)
 	PlaceGroup:remove(kamala3)
@@ -848,6 +948,7 @@ composer.removeScene( "overview" )
 	RemoveAll(LocationBtn)
 --	RemoveAll(YourLocation)
 	RemoveAll(ProfileImage)
+	RemoveAll(ProfileFrame)
 	RemoveAll(kamala1)
 	RemoveAll(kamala2)
 	RemoveAll(kamala3)
