@@ -10,11 +10,14 @@ require ("Network-Check")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
 local PictxfFirstName, PictxfLastName, PictxfPassword, PictxfConfirmPassword, PictxfEmail
-local Bg, CreateBtn, BackBtn, BgPickerWheels
+local Bg, CreateBtn, BackBtn
 local cx, cy
 local ImageGroup, txfGroup
 local ImageGroup = display.newGroup()
-local pickerWheel
+local GenderPickerWheel, BirthPickerWheel, CountryPickerWheel
+local FrameGender, FrameBirth, FrameCountry
+local BoxGender, BoxBirth, BoxCountry
+local GenderTitle, BirthTitle, CountryTitle
 local CheckPasswordMatch, CheckEmail
 local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
@@ -358,88 +361,76 @@ function scene:show(event)
     Bg = display.newImageRect( "Phuket/CreateAccount/bg.png", cw , ch  )
     Bg.x = cx
     Bg.y = cy 
-    --Bg:scale( 0.3, 0.3 )
-
+    
     PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
-    PicUser.x = cx - 190
-    PicUser.y = cy - 20
+    PicUser.x = cx - 195
+    PicUser.y = cy - 80
     PicUser:addEventListener( "touch", SelectImg )
     PicUser.name = "PIC"
     PhotoPickerCheck = false
 
-    PicTitle = display.newImageRect( "Phuket/CreateAccount/title.png", 801/3.5, 120/3.5 )
-    PicTitle.x = cx + 20
-    PicTitle.y = cy - 140
+    PicFirstName = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
+    PicFirstName.x = cx - 70
+    PicFirstName.y = cy - 90
 
-    PicFirstName = display.newImageRect( "Phuket/CreateAccount/firstname.png", 366/2.8, 95/2.8 )
-    PicFirstName.x = cx - 50
-    PicFirstName.y = cy - 80
+    PicLastName = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
+    PicLastName.x = PicFirstName.x + 130
+    PicLastName.y = PicFirstName.y
 
-    PicLastName = display.newImageRect( "Phuket/CreateAccount/lastname.png", 359/2.8, 96/2.8 )
-    PicLastName.x = cx - 50
-    PicLastName.y = cy - 40
+    PicPassword = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
+    PicPassword.x = PicLastName.x + 130
+    PicPassword.y = PicLastName.y
 
-    PicPassword = display.newImageRect( "Phuket/CreateAccount/pass.png", 296/2.8, 94/2.8 )
-    PicPassword.x = cx - 60
-    PicPassword.y = cy
+    PicEmail = display.newImageRect( "Phuket/CreateAccount/box.png", 250, 25 )
+    PicEmail.x = PicFirstName.x + 65
+    PicEmail.y = PicFirstName.y + 50
 
-    PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/confirm.png", 247/2.8, 152/2.8 )
-    PicConfirmPassword.x = cx - 70
-    PicConfirmPassword.y = cy + 45
+    PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
+    PicConfirmPassword.x = PicEmail.x + 195
+    PicConfirmPassword.y = PicEmail.y
 
-    PicEmail = display.newImageRect( "Phuket/CreateAccount/email.png", 209/2.8, 95/2.8 )
-    PicEmail.x = cx - 80
-    PicEmail.y = cy + 90
-
-    PicBirthDay = display.newImageRect( "Phuket/CreateAccount/birth.png", 298/2.8, 94/2.8 )
-    PicBirthDay.x = cx - 60
-    PicBirthDay.y = cy + 140
-
-    PicGender = display.newImageRect( "Phuket/CreateAccount/gender.png", 229/2.8, 94/2.8 )
-    PicGender.x = cx - 210
-    PicGender.y = cy + 140
-
-    PicCountry = display.newImageRect( "Phuket/CreateAccount/country.png", 255/2.8, 94/2.8 )
-    PicCountry.x = cx + 120
-    PicCountry.y = cy + 140
-
-    txfFirstName = native.newTextField( PicFirstName.x + 180, PicFirstName.y, 250, 30 )
+    txfFirstName = native.newTextField( PicFirstName.x  , PicFirstName.y, PicFirstName.width - 10, PicFirstName.height - 10 )
     txfFirstName.inputType = "default"
     txfFirstName.text = ""
-    --txfFirstName.hasBackground = false
+    txfFirstName.hasBackground = false
+    txfFirstName.placeholder = "Firstname"
 
-    txfLastName = native.newTextField( PicLastName.x + 180, PicLastName.y, 250, 30 )
+    txfLastName = native.newTextField( PicLastName.x  , PicLastName.y, PicLastName.width - 10, PicLastName.height - 10 )
     txfLastName.inputType = "default"
     txfLastName.text = ""
-    --txfLastName.hasBackground = false
+    txfLastName.hasBackground = false
+    txfLastName.placeholder = "Lastname"
 
-    txfPassword = native.newTextField( PicPassword.x + 190, PicPassword.y, 250, 30 )
+    txfPassword = native.newTextField( PicPassword.x  , PicPassword.y, PicPassword.width - 10, PicPassword.height - 10 )
     txfPassword.inputType = "default"
     txfPassword.isSecure = true
     txfPassword.text = ""
-    --txfPassword.hasBackground = false
+    txfPassword.hasBackground = false
+    txfPassword.placeholder = "Password"
 
-    txfConfirmPassword = native.newTextField( PicConfirmPassword.x + 200, PicConfirmPassword.y, 250, 30 )
+    txfConfirmPassword = native.newTextField( PicConfirmPassword.x  , PicConfirmPassword.y, PicConfirmPassword.width - 10, PicConfirmPassword.height - 10 )
     txfConfirmPassword.inputType = "default"
     txfConfirmPassword.text = ""
     txfConfirmPassword.isSecure = true
-   -- txfConfirmPassword.hasBackground = false
+    txfConfirmPassword.hasBackground = false
     txfConfirmPassword.name = "txfConfirmPassword"
+    txfConfirmPassword.placeholder = "Confirm Password"
 
     txfConfirmPassword:addEventListener("userInput", textFieldHandler)
 
-    txfEmail = native.newTextField( PicEmail.x + 210, PicEmail.y, 250, 30 )
+    txfEmail = native.newTextField( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
-    --txfEmail.hasBackground = false
+    txfEmail.hasBackground = false
     txfEmail.name = "txfEmail"
+    txfEmail.placeholder = "Email"
 
     txfEmail:addEventListener("userInput", textFieldHandler)
 
     CreateBtn = widget.newButton(
         {
-            width = 291/2.5,
-            height = 108/2.5,
+            width = 291/3.5,
+            height = 108/3.5,
             defaultFile = "Phuket/Button/Button/create.png",
             overFile = "Phuket/Button/ButtonPress/create.png",
             id = "CreateBtn",
@@ -448,12 +439,12 @@ function scene:show(event)
             )
         
     CreateBtn.x = cx 
-    CreateBtn.y = cy + 360
+    CreateBtn.y = cy + 138
 
     BackBtn = widget.newButton(
         {
-            width = 130/2.5,
-            height = 101/2.5,
+            width = 130/3.5,
+            height = 101/3.5,
             defaultFile = "Phuket/Button/Button/back.png",
             overFile = "Phuket/Button/ButtonPress/back.png",
             id = "BackBtn",
@@ -462,70 +453,108 @@ function scene:show(event)
             )
         
         BackBtn.x = cx - 240
-        BackBtn.y = cy + 360
+        BackBtn.y = cy + 138
+   
+------------------------------- Gender ------------------------------------------------
+    local columnGenderData = { 
+        {
+            align = "center",
+            width = 50,
+            startIndex = 1,
+            labels = {"Male", "Female"},
+        }
+    }
 
 
-    --ImageGroup = display.newGroup()
-    ---------------------------------- Group Place -----------------------------------------
-    --ImageGroup:insert(Bg)
-    ImageGroup:insert(PicUser)
-    ImageGroup:insert(PicTitle)
-    ImageGroup:insert(PicFirstName)
-    ImageGroup:insert(PicLastName)
-    ImageGroup:insert(PicPassword)
-    ImageGroup:insert(PicConfirmPassword)
-    ImageGroup:insert(PicEmail)
-    ImageGroup:insert(PicBirthDay)
-    ImageGroup:insert(PicGender)
-    ImageGroup:insert(PicCountry)
-    ImageGroup:insert(CreateBtn)
-    ImageGroup:insert(BackBtn)
-    
+ 
+    -- Create the widget
+    GenderPickerWheel = widget.newPickerWheel(
+    {
+        x = display.contentCenterX - 210,
+        y = display.contentCenterY + 50,
+        --top = display.contentHeight - 120,
+        columns = columnGenderData,
+        style = "resizable",
+        width = 50,
+        rowHeight = 20,
+        --onValueSelected = s,
+        fontSize = 12
+    })  
 
-    txfGroup = display.newGroup()
-    ----------------------------------- Group Button -----------------------------------------
-    ImageGroup:insert(txfFirstName)
-    ImageGroup:insert(txfLastName)
-    ImageGroup:insert(txfPassword)
-    ImageGroup:insert(txfConfirmPassword)
-    ImageGroup:insert(txfEmail)
-    --ImageGroup:insert(myText)
+    FrameGender = display.newImageRect( "Phuket/CreateAccount/FrameGender.png", GenderPickerWheel.width + 25, GenderPickerWheel.height + 20 )
+    FrameGender.x = GenderPickerWheel.x
+    FrameGender.y = GenderPickerWheel.y
 
+    BoxGender = display.newImageRect( "Phuket/CreateAccount/t1.png", 70, 25 )
+    BoxGender.x = GenderPickerWheel.x
+    BoxGender.y = GenderPickerWheel.y - 40
+
+    GenderTitle = display.newImageRect( "Phuket/CreateAccount/gender.png", 168/3, 47/3)
+    GenderTitle.x = BoxGender.x + 2
+    GenderTitle.y = BoxGender.y - 2
+
+------------------------------- Birth ------------------------------------------------
     local days = {}
     local years = {}
     for i = 1,31 do days[i] = i end
     for j = 1,47 do years[j] = 1970+j end
 
-    local columnData = { 
-        {
-            align = "center",
-            width = 70,
-            startIndex = 1,
-            labels = {"Male", "Female"},
-        },
+    local columnBirthData = { 
         {
             align = "right",
-            width = 80,
+            width = 70,
             startIndex = 5,
             labels = {
                 "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" 
             },
         },
         {
-            align = "center",
-            width = 70,
+            align = "right",
+            width = 30,
             startIndex = 18,
             labels = days,
         },
         {
-            align = "center",
-            width = 40,
+            align = "right",
+            width = 50,
             startIndex = 21,
             labels = years,
-        },
+        }
+    }
+
+
+ 
+    -- Create the widget
+    BirthPickerWheel = widget.newPickerWheel(
+    {
+        x = display.contentCenterX - 70,
+        y = display.contentCenterY + 50,
+        --top = display.contentHeight - 120,
+        columns = columnBirthData,
+        style = "resizable",
+        width = 160,
+        rowHeight = 20,
+        --onValueSelected = s,
+        fontSize = 12
+    })  
+
+    FrameBirth = display.newImageRect( "Phuket/CreateAccount/FrameBirth.png", BirthPickerWheel.width + 15, BirthPickerWheel.height + 20 )
+    FrameBirth.x = BirthPickerWheel.x
+    FrameBirth.y = BirthPickerWheel.y
+
+    BoxBirth = display.newImageRect( "Phuket/CreateAccount/t2.png", 160, 25 )
+    BoxBirth.x = BirthPickerWheel.x
+    BoxBirth.y = BirthPickerWheel.y - 45
+
+    BirthTitle = display.newImageRect( "Phuket/CreateAccount/birth.png", 228/3, 37/3)
+    BirthTitle.x = BoxBirth.x
+    BirthTitle.y = BoxBirth.y 
+
+------------------------------- Country ------------------------------------------------
+   local columnCountryData = { 
         {
             align = "center",
-            width = 240,
+            width = 200,
             startIndex = 21,
             labels = {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia",
                 "Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
@@ -549,59 +578,36 @@ function scene:show(event)
                 "Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom",
                 "United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela",
                 "Vietnam","Yemen","Zambia","Zimbabwe"},
-        },
+        }
     }
+
+
  
     -- Create the widget
-    pickerWheel = widget.newPickerWheel(
+    CountryPickerWheel = widget.newPickerWheel(
     {
-        x = display.contentCenterX ,
-        y = display.contentCenterY + 240,
-        top = display.contentHeight - 228,
-        columns = columnData,
+        x = display.contentCenterX + 140,
+        y = display.contentCenterY + 50,
+        --top = display.contentHeight - 120,
+        columns = columnCountryData,
         style = "resizable",
-        width = 500,
-        rowHeight = 32,
+        width = 200,
+        rowHeight = 20,
         --onValueSelected = s,
-        fontSize = 14
+        fontSize = 12
     })  
 
-    BgPickerWheels = display.newImageRect( "Phuket/CreateAccount/select.png", 500 , 160 )
-    BgPickerWheels.x = pickerWheel.x
-    BgPickerWheels.y = pickerWheel.y
+    FrameCountry = display.newImageRect( "Phuket/CreateAccount/FrameCountry.png", CountryPickerWheel.width + 15, CountryPickerWheel.height + 20 )
+    FrameCountry.x = CountryPickerWheel.x
+    FrameCountry.y = CountryPickerWheel.y
 
-    print( pickerWheel.x , pickerWheel.y, pickerWheel.height, pickerWheel.width )
+    BoxCountry = display.newImageRect( "Phuket/CreateAccount/t3.png", 180, 25 )
+    BoxCountry.x = CountryPickerWheel.x
+    BoxCountry.y = CountryPickerWheel.y - 46
 
- 
--- Get the table of current values for all columns
--- This can be performed on a button tap, timer execution, or other event
-
-    
-    scrollView = widget.newScrollView(
-    {
-        top = 0,
-        left = 0,
-        width = screenW,
-        height = screenH,
-        scrollWidth = cw,
-        scrollHeight = ch,
-        topPadding = 20,
-        bottomPadding = 30,
-        hideBackground = true,
-       -- hideScrollBar = true,
-       -- isBounceEnabled = false,
-        horizontalScrollDisabled = true
-        }
-    )
-    ImageGroup:insert(pickerWheel)
-    ImageGroup:insert(BgPickerWheels)
-    scrollView:insert( ImageGroup )
-    --scrollView:insert( pickerWheel )
-    
-    
-    --textField:setTextColor( 0.8, 0.8, 0.8 )
-    --textField.hasBackground = false
-
+    CountryTitle = display.newImageRect( "Phuket/CreateAccount/country.png", 187/3, 47/3)
+    CountryTitle.x = BoxCountry.x
+    CountryTitle.y = BoxCountry.y 
     
     elseif (phase == "did") then
         print("Scene Overview : show (did)")
@@ -614,27 +620,6 @@ function scene:hide(event)
     local sceneGroup = self.view
     local phase = event.phase
     if (phase == "will") then
-        
-        ImageGroup:remove(PicUser)
-        ImageGroup:remove(PicTitle)
-        ImageGroup:remove(PicFirstName)
-        ImageGroup:remove(PicLastName)
-        ImageGroup:remove(PicPassword)
-        ImageGroup:remove(PicConfirmPassword)
-        ImageGroup:remove(PicEmail)
-        ImageGroup:remove(PicBirthDay)
-        ImageGroup:remove(PicGender)
-        ImageGroup:remove(PicCountry)
-        ImageGroup:remove(CreateBtn)
-        ImageGroup:remove(BackBtn)
-
-        ImageGroup:remove(txfFirstName)
-        ImageGroup:remove(txfLastName)
-        ImageGroup:remove(txfPassword)
-        ImageGroup:remove(txfConfirmPassword)
-        ImageGroup:remove(txfEmail)
-        ImageGroup:removeSelf( )
-        ImageGroup = nil
 
         RemoveAll(PicUser)
         RemoveAll(PicTitle)
@@ -654,6 +639,24 @@ function scene:hide(event)
         RemoveAll(txfPassword)
         RemoveAll(txfConfirmPassword)
         RemoveAll(txfEmail)
+
+        RemoveAll(BoxBirth)
+        RemoveAll(BoxCountry)
+        RemoveAll(BoxGender)
+        RemoveAll(GenderTitle)
+        RemoveAll(CountryTitle)
+        RemoveAll(BirthTitle)
+
+        RemoveAll(FrameGender)
+        RemoveAll(FrameCountry)
+        RemoveAll(FrameBirth)
+
+        CountryPickerWheel = nil
+        BirthPickerWheel = nil
+        GenderPickerWheel = nil
+
+
+
         print("Scene #Overview : hide (will)")
     elseif (phase == "did") then
         print("Scene #Overview : hide (did)")

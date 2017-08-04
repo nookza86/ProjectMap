@@ -274,6 +274,9 @@ local function WaitForTran(  )
 		if (CountRec > 3) then
 			 PositionX = display.contentCenterX - 90
 			 PositionY = display.contentCenterY - 60
+		elseif (CountRec == 1) then
+			 PositionX = display.contentCenterX 
+			 PositionY = display.contentCenterY 
 		else
 			 PositionX = display.contentCenterX 
 			 PositionY = display.contentCenterY - 60
@@ -340,6 +343,7 @@ local function RecommendPlace(  )
 		end
 		nationality = "Australia"
 		--nationality = "Canada"
+		--nationality = "India"
 		print( nationality )
 		if not decoded then
 		    print( "Decode failed at "..tostring(pos)..": "..tostring(msg) )
@@ -373,7 +377,7 @@ local function RecommendPlace(  )
 			)
 		
 		RecButton.x = cx + 230
-		RecButton.y = cy - 120
+		RecButton.y = cy + 110
 		for idx, val in ipairs(decoded["rule"][RuleOtherNo]["recommend"]) do
 			CountRec = CountRec + 1
 		end
