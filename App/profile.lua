@@ -12,7 +12,7 @@ local Bg, cx, cy, cw, ch
 local TitleImage, UsernameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
-local TextName, TextCountry, ProfileFrame
+local TextName, TextCountry, ProfileFrame, mask
 
 local function RemoveAll( event )
 	if(event) then
@@ -156,7 +156,7 @@ local function loadImageListener( event )
 		   UserImage.width = UserImage.width * ratio
 		end
 
-		 local mask = graphics.newMask( "cc.png" )
+		 mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
 			 
 			UserImage:setMask( mask )
@@ -450,7 +450,7 @@ native.setActivityIndicator( false )
 			)
 		BangpaeImage.x = PatongImage.x
 		BangpaeImage.y = PatongImage.y + 40
-
+--[[
 		SettingBtn = widget.newButton(
     	{
 	        width = 70/1.5,
@@ -463,7 +463,7 @@ native.setActivityIndicator( false )
 			)
 		SettingBtn.x = cx - 230
 		SettingBtn.y = cy + 130
-
+]]
 		OkBtn = widget.newButton(
     	{
 	        width = 130/2.5,
@@ -494,11 +494,9 @@ function scene:hide(event)
 		RemoveAll(TitleImage)
 		RemoveAll(UsernameImage)
 		RemoveAll(CountryImage)
-		--[[
-		if (UserImage ~= nil or UserImage ~= "") then
+
 			RemoveAll(UserImage)
-		end
-		]]
+
 		RemoveAll(KataImage)
 		RemoveAll(KamalaImage)
 		RemoveAll(ChalongImage)
@@ -506,12 +504,15 @@ function scene:hide(event)
 		RemoveAll(PatongImage)
 		RemoveAll(BigbuddhaImage)
 		RemoveAll(BangpaeImage)
-		RemoveAll(SettingBtn)
+		--RemoveAll(SettingBtn)
 		RemoveAll(OkBtn)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
 		RemoveAll(UserImage1)
 		RemoveAll(ProfileFrame)
+
+		 RemoveAll(mask)
+        RemoveAll(ProfileFrame)
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		

@@ -889,6 +889,8 @@ function scene:hide(event)
 		RemoveAll( BackBtn )
 		RemoveAll(Text)
 
+		RemoveAll(scrollView)
+
 	for i=1,5 do
 		ImpressionRadioGroup:remove( ImpressionRadioButton[i] )	
 		BeautyRadioGroup:remove( BeautyRadioButton[i] )	

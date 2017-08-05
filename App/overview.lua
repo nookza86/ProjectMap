@@ -538,7 +538,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	ChalongLabel.y = watchalong.y + 30
 	ChalongLabel.name = "Chalong Temple"
 
-	UnlockChalongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockChalongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockChalongLabel.x = watchalong.x
 	UnlockChalongLabel.y = watchalong.y - 5
 
@@ -556,7 +556,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	BangPaeLabel.y = bangpae.y + 55
 	BangPaeLabel.name = "Bang Pae Waterfall"
 
-	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/8, 514/8)
+	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBangPaeLabel.x = bangpae.x
 	UnlockBangPaeLabel.y = bangpae.y + 15
 	
@@ -574,7 +574,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	BigBuddhaLabel.y = bigbuddha.y + 30
 	BigBuddhaLabel.name = "Big Buddha"
 
-	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBigBuddhaLabel.x = bigbuddha.x
 	UnlockBigBuddhaLabel.y = bigbuddha.y - 5
 
@@ -592,7 +592,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	KataLabel.y = kata.y + 20
 	KataLabel.name = "Kata Beach"
 
-	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKataLabel.x = kata.x
 	UnlockKataLabel.y = kata.y - 15
 
@@ -611,7 +611,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	KamalaLabel.y = kamala1.y + 30
 	KamalaLabel.name = "Kamala Beach"
 
-	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKamalaLabel.x = kamala1.x
 	UnlockKamalaLabel.y = kamala1.y - 5
 
@@ -637,7 +637,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	KaronLabel.y = karon.y + 20
 	KaronLabel.name = "Karon Beach"
 
-	UnlockKaronLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKaronLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKaronLabel.x = karon.x
 	UnlockKaronLabel.y = karon.y - 15
 
@@ -651,7 +651,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	PatongLabel.y = patong.y + 30
 	PatongLabel.name = "Patong Beach"
 
-	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockPatongLabel.x = patong.x
 	UnlockPatongLabel.y = patong.y - 5
 

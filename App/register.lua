@@ -21,9 +21,8 @@ local GenderTitle, BirthTitle, CountryTitle
 local CheckPasswordMatch, CheckEmail
 local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
-local SelectImg
---local myText = display.newText( "5555555555", display.contentCenterY, display.contentCenterY + 330, native.systemFont, 16 )
- --           myText:setFillColor( 1, 0, 0 ) 
+local SelectImg, mask, ProfileFrame
+local myText, scrollView
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -234,7 +233,6 @@ end
 
 
 local function CreateAccountListener( event )
-    print( event.phase )
 
     if(txfFirstName.text == "" or txfLastName.text == "" or txfPassword.text == "" or txfConfirmPassword.text == "" or txfEmail.text == "") then
         print( "some Field null" )
@@ -247,13 +245,16 @@ local function CreateAccountListener( event )
     end
 
     if(event.phase == "began" and CheckPasswordMatch == true and CheckEmail == true) then
-        local values = pickerWheel:getValues()
- 
-        local GenderValue = values[1].value
-        local BirthMonthValue = values[2].index
-        local BirthDayValue = values[3].value
-        local BirthYearValue = values[4].value
-        local CountryValue = values[5].value
+
+        local GenderPickerValues = GenderPickerWheel:getValues()
+        local BirthPickerValues = BirthPickerWheel:getValues()
+        local CountryPickerValues = CountryPickerWheel:getValues()
+
+        local GenderValue = GenderPickerValues[1].value
+        local BirthMonthValue = BirthPickerValues[1].index
+        local BirthDayValue = BirthPickerValues[2].value
+        local BirthYearValue = BirthPickerValues[3].value
+        local CountryValue = CountryPickerValues[1].value
 
         local register = {}
         register["fname"] = txfFirstName.text
@@ -277,7 +278,7 @@ end
 
 local sessionComplete = function(event)
     photo = event.target
-    
+    --myText.text = "ses"
     if photo then
 
         if photo.width > photo.height then
@@ -290,13 +291,13 @@ local sessionComplete = function(event)
         local yScale = _H / photo.contentHeight
         local scale = math.max( xScale, yScale ) * .75
         
-        local maxWidth = 1280
-        local maxHeight = 720
+        local maxWidth = 256
+        local maxHeight = 256
 
-        photo:scale( scale, scale )
+        --photo:scale( scale, scale )
         photo.x = centerX
         photo.y = centerY
-       -- myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
+        --myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
         print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 
 
@@ -316,31 +317,40 @@ local sessionComplete = function(event)
         end
 
         display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-           
+        display.remove( photo )
             PhotoPickerCheck1 = true
             PicUser:removeEventListener( "touch", SelectImg )
-            ImageGroup:remove( PicUser )
             RemoveAll(PicUser)
 
-            PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, centerX - 190, centerY - 20, true )
-            PicUser:scale(scale , scale )
+            PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 195, cy - 80, true )
+            PicUser:scale(0.2  , 0.2  )
             PicUser.name = "PIC"
             PicUser:addEventListener( "touch", SelectImg )
 
-            ImageGroup:insert(PicUser)
+         mask = graphics.newMask( "cc.png" )
+             
+            PicUser:setMask( mask )
+            
+            PicUser.maskX = 1
+            --PicUser.maskY = 1
+            --PicUser.maskRotation = 20
+            PicUser.maskScaleX = 2
+            PicUser.maskScaleY = 2
 
-        --myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
-        display.remove( photo )
-        
+            ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
+            ProfileFrame.x = PicUser.x 
+            ProfileFrame.y = PicUser.y + 6
+
     else
         PhotoPickerCheck = false
-       -- myText.text = "No Image Selected"
+        --myText.text = "No Image Selected"
 
     end
 end
 
 function SelectImg( event )
      PhotoName = event.target.name
+    -- myText.text = "This"
      media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })   
 end
 
@@ -357,6 +367,24 @@ function scene:show(event)
     cy = display.contentCenterY
     cw = display.contentWidth
     ch = display.contentHeight
+
+scrollView = widget.newScrollView(
+    {
+        top = 00,
+        left = 0,
+        width = display.contentWidth,
+        height = display.contentHeight,
+        scrollWidth = 0,
+        scrollHeight = 0,
+        --topPadding = 20,
+        bottomPadding = 0,
+        hideBackground = true,
+       -- hideScrollBar = true,
+        isBounceEnabled = false,
+        verticalScrollDisabled = false,
+        horizontalScrollDisabled = false
+        }
+    )
 
     Bg = display.newImageRect( "Phuket/CreateAccount/bg.png", cw , ch  )
     Bg.x = cx
@@ -445,15 +473,15 @@ function scene:show(event)
         {
             width = 130/3.5,
             height = 101/3.5,
-            defaultFile = "Phuket/Button/Button/back.png",
-            overFile = "Phuket/Button/ButtonPress/back.png",
+            defaultFile = "Phuket/Button/Button/close.png",
+            overFile = "Phuket/Button/ButtonPress/close.png",
             id = "BackBtn",
             onEvent = Check
         }
             )
         
-        BackBtn.x = cx - 240
-        BackBtn.y = cy + 138
+        BackBtn.x = cx + 240
+        BackBtn.y = cy - 138
    
 ------------------------------- Gender ------------------------------------------------
     local columnGenderData = { 
@@ -608,7 +636,39 @@ function scene:show(event)
     CountryTitle = display.newImageRect( "Phuket/CreateAccount/country.png", 187/3, 47/3)
     CountryTitle.x = BoxCountry.x
     CountryTitle.y = BoxCountry.y 
+--[[  
+    myText = display.newText( "5555555555", display.contentCenterX - 200, display.contentCenterY + 100 , native.systemFont, 26 )
+            myText:setFillColor( 1, 0, 0 ) 
+
     
+
+    scrollView:insert( PicUser )
+
+    scrollView:insert( txfEmail )
+    scrollView:insert( txfPassword )
+    scrollView:insert( txfConfirmPassword )
+    scrollView:insert( txfFirstName )
+    scrollView:insert( txfLastName )
+
+    scrollView:insert( GenderPickerWheel )
+    scrollView:insert( BirthPickerWheel )
+    scrollView:insert( CountryPickerWheel )
+
+    scrollView:insert( CreateBtn )
+    scrollView:insert( BackBtn )
+
+    scrollView:insert( FrameCountry )
+    scrollView:insert( FrameGender )
+    scrollView:insert( FrameBirth )
+
+    scrollView:insert( BoxGender )
+    scrollView:insert( BoxCountry )
+    scrollView:insert( BoxBirth )
+
+    scrollView:insert( GenderTitle )
+    scrollView:insert( BirthTitle )
+    scrollView:insert( CountryTitle )
+    ]]
     elseif (phase == "did") then
         print("Scene Overview : show (did)")
     
@@ -651,9 +711,19 @@ function scene:hide(event)
         RemoveAll(FrameCountry)
         RemoveAll(FrameBirth)
 
-        CountryPickerWheel = nil
-        BirthPickerWheel = nil
-        GenderPickerWheel = nil
+        RemoveAll(mask)
+        RemoveAll(ProfileFrame)
+
+
+        RemoveAll(CountryPickerWheel)
+        RemoveAll(BirthPickerWheel)
+        RemoveAll(GenderPickerWheel)
+
+        RemoveAll(scrollView)
+
+       -- CountryPickerWheel = nil
+       -- BirthPickerWheel = nil
+       -- GenderPickerWheel = nil
 
 
 
