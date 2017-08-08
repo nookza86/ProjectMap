@@ -138,16 +138,18 @@ function scene:show(event)
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
 		
-		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4, 637/4)
-		BgText.x = cx + 60
-		BgText.y = cy - 20
+		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4.5, 637/5)
+		BgText.x = cx + 90
+		BgText.y = cy - 30
 		
 
 		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30 , BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
-	    TextDesField.font = native.newFont( "Cloud-Light", 14 )
+	    TextDesField.font = native.newFont( "Cloud-Light", 12 )
+	   -- TextDesField.size = nil
+	    --TextDesField:resizeHeightToFitFont()
 
 		
 		 timer.performWithDelay( 300, DescripField )
@@ -171,7 +173,7 @@ function scene:show(event)
 		
 		--print( NumberOfRecPlace )
 		local PositionX = cx 
-		local PositionY = cy + 80
+		local PositionY = cy + 60
 		Recommend = {}
 		for i=1, #NumberOfRecPlace do
 				Recommend[i] = widget.newButton(
@@ -186,7 +188,7 @@ function scene:show(event)
 				)
 			if (i == 3) then
 				PositionX = cx + 70
-				PositionY = cy + 120
+				PositionY = cy + 100
 				print( "if 3" )
 			end
 
@@ -199,16 +201,16 @@ function scene:show(event)
 		
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
-		AttImg.x = cx - 160
-		AttImg.y = cy - 20
-		AttImg:scale( 0.2, 0.2 ) 
+		AttImg.x = cx - 135
+		AttImg.y = cy - 30
+		AttImg:scale( 0.3, 0.3 ) 
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
 
 		FrameAttImg = display.newImageRect( "Phuket/Information/frame_pic.png", cw, ch)
-		FrameAttImg.x = cx - 160
-		FrameAttImg.y = cy - 20
-		FrameAttImg:scale( 0.21, 0.22 ) 
+		FrameAttImg.x = AttImg.x
+		FrameAttImg.y = AttImg.y
+		FrameAttImg:scale( 0.31, 0.32 ) 
 
 
 

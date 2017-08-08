@@ -320,8 +320,16 @@ local sessionComplete = function(event)
         display.remove( photo )
             PhotoPickerCheck1 = true
             PicUser:removeEventListener( "touch", SelectImg )
-            RemoveAll(PicUser)
+            --RemoveAll(PicUser)
 
+            if (mask) then
+                PicUser:setMask( nil )
+                mask = nil
+                RemoveAll(ProfileFrame)
+            end
+            PicUser:removeSelf( )
+            PicUser = nil
+            
             PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 195, cy - 80, true )
             PicUser:scale(0.2  , 0.2  )
             PicUser.name = "PIC"
@@ -711,9 +719,14 @@ function scene:hide(event)
         RemoveAll(FrameCountry)
         RemoveAll(FrameBirth)
 
-        RemoveAll(mask)
-        RemoveAll(ProfileFrame)
+        --RemoveAll(mask)
+        --RemoveAll(ProfileFrame)
 
+        if (mask) then
+                PicUser:setMask( nil )
+                mask = nil
+                RemoveAll(ProfileFrame)
+            end
 
         RemoveAll(CountryPickerWheel)
         RemoveAll(BirthPickerWheel)
