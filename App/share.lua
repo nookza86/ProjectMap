@@ -21,6 +21,8 @@ local backgroundALpha
 local CheckSelectImg = false
 local myText
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
+local IMG_SCALE = 1.2
+local mask = graphics.newMask( "rr-512.png" )
 
 local function RemoveAll( event )
 	if(event) then
@@ -131,7 +133,13 @@ local function loadImageListener( event )
 			UserImage1.alpha = 0
        		transition.to( UserImage1, { alpha=1.0 } )
        		LOADING_IMG_1 = true
-
+			UserImage1:setMask( mask )
+					
+					UserImage1.maskX = 1
+					--UserImage1.maskY = 1
+					--UserImage1.maskRotation = 20
+					UserImage1.maskScaleX = IMG_SCALE
+					UserImage1.maskScaleY = IMG_SCALE
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_2.jpg") then
@@ -148,6 +156,14 @@ local function loadImageListener( event )
 			UserImage2.alpha = 0
        		transition.to( UserImage2, { alpha=1.0 } )
        		LOADING_IMG_2 = true
+
+       		UserImage2:setMask( mask )
+					
+					UserImage2.maskX = 1
+					--UserImage2.maskY = 1
+					--UserImage2.maskRotation = 20
+					UserImage2.maskScaleX = IMG_SCALE
+					UserImage2.maskScaleY = IMG_SCALE
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -164,6 +180,14 @@ local function loadImageListener( event )
 			UserImage3.alpha = 0
        		transition.to( UserImage3, { alpha=1.0 } )
        		LOADING_IMG_3 = true
+
+       		UserImage3:setMask( mask )
+					
+					UserImage3.maskX = 1
+					--UserImage3.maskY = 1
+					--UserImage3.maskRotation = 20
+					UserImage3.maskScaleX = IMG_SCALE
+					UserImage3.maskScaleY = IMG_SCALE
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -180,6 +204,14 @@ local function loadImageListener( event )
 			UserImage4.alpha = 0
        		transition.to( UserImage4, { alpha=1.0 } )
        		LOADING_IMG_4 = true
+
+       		UserImage4:setMask( mask )
+					
+					UserImage4.maskX = 1
+					--UserImage4.maskY = 1
+					--UserImage4.maskRotation = 20
+					UserImage4.maskScaleX = IMG_SCALE
+					UserImage4.maskScaleY = IMG_SCALE
 		end
 		
 	end
@@ -358,6 +390,15 @@ function scene:show(event)
 					UserImage1.alpha = 0
 		       		transition.to( UserImage1, { alpha=1.0 } )
 		       		LOADING_IMG_1 = true
+
+		       		UserImage1:setMask( mask )
+					
+					UserImage1.maskX = 1
+					--UserImage1.maskY = 1
+					--UserImage1.maskRotation = 20
+					UserImage1.maskScaleX = IMG_SCALE
+					UserImage1.maskScaleY = IMG_SCALE
+
 				else
 					randomFlag(row.diary_pic1)
 				end
@@ -382,6 +423,14 @@ function scene:show(event)
 					UserImage2.alpha = 0
 		       		transition.to( UserImage2, { alpha=1.0 } )
 		       		LOADING_IMG_2 = true
+
+		       		UserImage2:setMask( mask )
+					
+					UserImage2.maskX = 1
+					--UserImage2.maskY = 1
+					--UserImage2.maskRotation = 20
+					UserImage2.maskScaleX = IMG_SCALE
+					UserImage2.maskScaleY = IMG_SCALE
 				else
 				randomFlag(row.diary_pic2)
 			end
@@ -405,6 +454,14 @@ function scene:show(event)
 					UserImage3.alpha = 0
 		       		transition.to( UserImage3, { alpha=1.0 } )
 		       		LOADING_IMG_3 = true
+
+		       		UserImage3:setMask( mask )
+					
+					UserImage3.maskX = 1
+					--UserImage3.maskY = 1
+					--UserImage3.maskRotation = 20
+					UserImage3.maskScaleX = IMG_SCALE
+					UserImage3.maskScaleY = IMG_SCALE
 				else
 				randomFlag(row.diary_pic3)
 			end
@@ -428,6 +485,14 @@ function scene:show(event)
 					UserImage4.alpha = 0
 		       		transition.to( UserImage4, { alpha=1.0 } )
 		       		LOADING_IMG_4 = true
+
+		       		UserImage4:setMask( mask )
+					
+					UserImage4.maskX = 1
+					--UserImage4.maskY = 1
+					--UserImage4.maskRotation = 20
+					UserImage4.maskScaleX = IMG_SCALE
+					UserImage4.maskScaleY = IMG_SCALE
 				else
 				randomFlag(row.diary_pic4)
 			end
