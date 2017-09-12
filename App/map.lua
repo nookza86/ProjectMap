@@ -1,5 +1,6 @@
 local composer = require("composer")
 local widget = require("widget" )
+local toast = require('plugin.toast')
 local scene = composer.newScene()
 local params
 
@@ -21,14 +22,14 @@ function scene:show(event)
 			local options = {params = {PlaceName = "Chalong Temple"}}
 			composer.gotoScene("HomePlace", options)
 
-		elseif(params.PlaceName == "BangPae") then
+		elseif(params.PlaceName == "Bang Pae Waterfall") then
 			system.openURL( "https://www.google.com/maps/place/%E0%B8%99%E0%B9%89%E0%B8%B3%E0%B8%95%E0%B8%81%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%9B/@8.0441569,98.4489292,13.75z/data=!4m5!3m4!1s0x30503606d3242a97:0xcbb7565e7ef6c5cf!8m2!3d8.0392798!4d98.3913003" )
-			local options = {params = {PlaceName = "BangPae"}}
+			local options = {params = {PlaceName = "Bang Pae Waterfall"}}
 			composer.gotoScene("HomePlace", options)
 
-		elseif(params.PlaceName == "Big buddha") then
+		elseif(params.PlaceName == "Big Buddha") then
 			system.openURL( "https://www.google.com/maps/place/The+Big+Buddha+Phuket/@7.8276567,98.3105492,17z/data=!3m1!4b1!4m5!3m4!1s0x30502f60cf972939:0x7fcb3b1b04652c5c!8m2!3d7.8276567!4d98.3127379" )
-			local options = {params = {PlaceName = "Big buddha"}}
+			local options = {params = {PlaceName = "Big Buddha"}}
 		composer.gotoScene("HomePlace", options)
 
 		elseif(params.PlaceName == "Kata Beach") then

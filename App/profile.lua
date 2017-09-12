@@ -2,24 +2,45 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require("createAcc")
 require("get-data")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local Bg, cx, cy, cw, ch
-local TitleImage, UsernameImage, CountryImage, UserImage
+local NameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
-local TextName, TextCountry
+local TextName, TextCountry, ProfileFrame, mask
 
 local function RemoveAll( event )
 	if(event) then
-		print( "deletePic in profile"  )
+		--print( "deletePic in profile"  )
 		event:removeSelf( )
 		event = nil
 		
 	end
+end
+
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
+ 
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+        	
+            return true
+        end
+    end
+ 
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
 end
 
 local function Check( event )
@@ -94,17 +115,68 @@ end
 local function loadImageListener( event )
 	if(not event.isError) then
 		print( event.response.filename, event.response.baseDirectory )
-
-			UserImage1 = display.newImage( 
+        	UserImage = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 200,
-							cy + 40 
+							cx - 180,
+							cy - 75 
 							)
-			UserImage1:scale( 0.2, 0.2 )
+				--UserImage:scale( 0.2, 0.2 )
+				UserImage.name = "profile"
+				
+
+	       if UserImage.width > UserImage.height then
+			--UserImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / UserImage.contentWidth
+		local yScale = ch / UserImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 512
+		local maxHeight = 512
+
+		UserImage:scale( scale, scale )
+		--UserImage.x = cx
+		--UserImage.y = cy + 100
+		
+		--rescale width
+		if ( UserImage.width > maxWidth ) then
+		   local ratio = maxWidth / UserImage.width
+		   UserImage.width = maxWidth
+		   UserImage.height = UserImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( UserImage.height > maxHeight ) then
+		   local ratio = maxHeight / UserImage.height
+		   UserImage.height = maxHeight
+		   UserImage.width = UserImage.width * ratio
+		end
+
+		 mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			UserImage:setMask( mask )
+			
+			UserImage.maskX = 1
+			--UserImage.maskY = 1
+			--UserImage.maskRotation = 20
+			UserImage.maskScaleX = 2
+			UserImage.maskScaleY = 2
+
+			print( UserImage.width, UserImage.height )
+
+	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
+	ProfileFrame.x = UserImage.x 
+	ProfileFrame.y = UserImage.y + 6
+	ProfileFrame.name = "profile"
 	
 	end
 	native.setActivityIndicator( false )
+
 end
 
 local function LoadUserImg( no )
@@ -115,7 +187,7 @@ network.download( url ,
 	loadImageListener,
 	{},
 	no,
-	system.DocumentsDirectory
+	system.ApplicationSupportDirectory
 	)
 
 end
@@ -123,6 +195,23 @@ end
 function scene:create(event)
 	local sceneGroup = self.view
 	print("Scene #Profile : create")
+end
+
+local function FindImg( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
 end
 
 function scene:show(event)
@@ -135,67 +224,159 @@ function scene:show(event)
 	--params = event.params
 	if (phase == "will") then
 		native.setActivityIndicator( true )
-		Bg = display.newImageRect("Phuket/Profile/bg1.png", cw, ch )
+		Bg = display.newImageRect("Phuket/Profile/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
 
-		TitleImage = display.newImageRect( "Phuket/Profile/profile.png", 369/2.5, 83/2.5 )
-		TitleImage.x = cx 
-		TitleImage.y = cy - 135
-
+--[[
 		UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 		UserImage.x = cx - 180
 		UserImage.y = cy - 55
+]]
+		NameImage = display.newImageRect( "Phuket/Profile/name.png", 226/3, 77/3 )
+		NameImage.x = cx
+		NameImage.y = cy - 80
 
-		UsernameImage = display.newImageRect( "Phuket/Profile/user.png", 400/3, 80/3 )
-		UsernameImage.x = UserImage.x + 180
-		UsernameImage.y = UserImage.y - 30
+		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 449/3, 92/3 )
+		CountryImage.x = NameImage.x
+		CountryImage.y = NameImage.y + 40
 
-		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 486/3, 55/3 )
-		CountryImage.x = UsernameImage.x
-		CountryImage.y = UsernameImage.y + 40
+		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Light", 16 )
+		--TextName:setFillColor( 1, 0, 0 )
 
-		TextName = display.newText( "", UserImage.x + 350, UserImage.y - 30, native.systemFont, 16 )
-		TextName:setFillColor( 1, 0, 0 )
 
-		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, native.systemFont, 16 )
-		TextCountry:setFillColor( 1, 0, 0 )
+		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, "Cloud-Light", 16 )
+		--TextCountry:setFillColor( 1, 0, 0 )
 
 		for row in db:nrows("SELECT img, fname, lname, country FROM personel;") do
 			TextName.text = row.fname .. " " .. row.lname  
 			TextCountry.text = row.country   
-
+			Filename = row.img
 			if (row.img == "") then
 			    UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 				UserImage.x = cx - 180
 				UserImage.y = cy - 55           
-			else  
+			elseif (FindImg( Filename ) == true) then  
+				UserImage = display.newImage( 
+							row.img, 
+							system.DocumentsDirectory,
+							cx - 180,
+							cy - 75 
+							)
+				--UserImage:scale( 0.2, 0.2 )
+				UserImage.name = "profile"
+				
+
+	       if UserImage.width > UserImage.height then
+			--UserImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / UserImage.contentWidth
+		local yScale = ch / UserImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 512
+		local maxHeight = 512
+
+		UserImage:scale( scale, scale )
+		--UserImage.x = cx
+		--UserImage.y = cy + 100
+		
+		--rescale width
+		if ( UserImage.width > maxWidth ) then
+		   local ratio = maxWidth / UserImage.width
+		   UserImage.width = maxWidth
+		   UserImage.height = UserImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( UserImage.height > maxHeight ) then
+		   local ratio = maxHeight / UserImage.height
+		   UserImage.height = maxHeight
+		   UserImage.width = UserImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			UserImage:setMask( mask )
+			
+			UserImage.maskX = 1
+			--UserImage.maskY = 1
+			--UserImage.maskRotation = 20
+			UserImage.maskScaleX = 1.5
+			UserImage.maskScaleY = 1.5
+
+			print( UserImage.width, UserImage.height )
+
+	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
+	ProfileFrame.x = UserImage.x 
+	ProfileFrame.y = UserImage.y + 6
+	ProfileFrame.name = "profile"
+native.setActivityIndicator( false )
+			else
 				LoadUserImg(row.img)
 			end                       
+		end
+
+		local sqlUnlock = "SELECT att_no FROM unattractions;"
+		local CheckTrophyKata = 0
+		local CheckTrophyKamala = 0
+		local CheckTrophyChalong = 0
+		local CheckTrophyKaron = 0
+		local CheckTrophyPatong = 0
+		local CheckTrophyBigbuddha = 0
+		local CheckTrophyBangpae = 0
+
+		for row in db:nrows(sqlUnlock) do
+			if (row.att_no == 1) then
+				CheckTrophyBangpae = 1
+
+			elseif (row.att_no == 2) then
+				CheckTrophyBigbuddha = 1
+
+			elseif (row.att_no == 3) then
+				CheckTrophyChalong = 1
+
+			elseif (row.att_no == 4) then
+				CheckTrophyKamala = 1
+
+			elseif (row.att_no == 5) then
+				CheckTrophyKaron = 1
+
+			elseif (row.att_no == 6) then
+				CheckTrophyKata = 1
+
+			elseif (row.att_no == 7) then
+				CheckTrophyPatong = 1
+
+			end
 		end
 
 		
 
 		KataImage = widget.newButton(
     	{
-	        width = 532/3.5,
-	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/kata_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/kata_0.png",
+	        width = 463/3.5,
+	        height = 117/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/kata_".. CheckTrophyKata ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/kata_".. CheckTrophyKata ..".png",
 	        id = "kata",
 	        onEvent = Check
     	}
 			)
 		KataImage.x = cx - 180 
-		KataImage.y = cy + 40
+		KataImage.y = cy + 25
 
 		KamalaImage = widget.newButton(
     	{
-	        width = 564/3.5,
-	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/kamala_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/kamala_0.png",
+	        width = 522/3.5,
+	        height = 118/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/kamala_".. CheckTrophyKamala ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/kamala_".. CheckTrophyKamala ..".png",
 	        id = "kamala",
 	        onEvent = Check
     	}
@@ -205,10 +386,10 @@ function scene:show(event)
 
 		ChalongImage = widget.newButton(
     	{
-	        width = 621/3.5,
-	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/chalong_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/chalong_0.png",
+	        width = 522/3.5,
+	        height = 117/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/chalong_".. CheckTrophyChalong ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/chalong_".. CheckTrophyChalong ..".png",
 	        id = "watchalong",
 	        onEvent = Check
     	}
@@ -218,23 +399,23 @@ function scene:show(event)
 
 		KaronImage = widget.newButton(
     	{
-	        width = 532/3.5,
-	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/karon_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/karon_0.png",
+	        width = 453/3.5,
+	        height = 117/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/karon_".. CheckTrophyKaron ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/karon_".. CheckTrophyKaron ..".png",
 	        id = "karon",
 	        onEvent = Check
     	}
 			)
 		KaronImage.x = KataImage.x 
-		KaronImage.y = KataImage.y + 40
+		KaronImage.y = KataImage.y + 45
 
 		PatongImage = widget.newButton(
     	{
-	        width = 565/3.5,
-	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/patong_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/patong_0.png",
+	        width = 476/3.5,
+	        height = 118/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/patong_".. CheckTrophyPatong ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/patong_".. CheckTrophyPatong ..".png",
 	        id = "patong",
 	        onEvent = Check
     	}
@@ -244,10 +425,10 @@ function scene:show(event)
 
 		BigbuddhaImage = widget.newButton(
     	{
-	        width = 556/3.5,
-	        height = 127/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_0.png",
+	        width = 465/3.5,
+	        height = 119/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_".. CheckTrophyBigbuddha ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_".. CheckTrophyBigbuddha ..".png",
 	        id = "bigbuddha",
 	        onEvent = Check
     	}
@@ -257,17 +438,17 @@ function scene:show(event)
 
 		BangpaeImage = widget.newButton(
     	{
-	        width = 767/3.5,
-	        height = 126/3.5,
-	        defaultFile = "Phuket/Profile/NameActraction/bangpae_0.png",
-	        overFile = "Phuket/Profile/NameActractionPress/bangpae_0.png",
+	        width = 684/3.5,
+	        height = 114/3.5,
+	        defaultFile = "Phuket/Profile/NameActraction/bangpae_".. CheckTrophyBangpae ..".png",
+	        overFile = "Phuket/Profile/NameActractionPress/bangpae_".. CheckTrophyBangpae ..".png",
 	        id = "bangpae",
 	        onEvent = Check
     	}
 			)
 		BangpaeImage.x = PatongImage.x
-		BangpaeImage.y = PatongImage.y + 40
-
+		BangpaeImage.y = PatongImage.y + 45
+--[[
 		SettingBtn = widget.newButton(
     	{
 	        width = 70/1.5,
@@ -280,19 +461,19 @@ function scene:show(event)
 			)
 		SettingBtn.x = cx - 230
 		SettingBtn.y = cy + 130
-
+]]
 		OkBtn = widget.newButton(
     	{
-	        width = 100/1.5,
-	        height = 50/1.5,
+	        width = 130/3,
+	        height = 101/3,
 	        defaultFile = "Phuket/Button/Button/ok.png",
 	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "ok",
 	        onEvent = Check
     	}
 			)
-		OkBtn.x = cx + 230
-		OkBtn.y = cy + 130
+		OkBtn.x = cx + 225
+		OkBtn.y = cy + 115
 
 		print("Scene #Profile : show (will)")
 	
@@ -308,10 +489,14 @@ function scene:hide(event)
 	local phase = event.phase
 	if (phase == "will") then
 		RemoveAll(Bg)
-		RemoveAll(TitleImage)
-		RemoveAll(UsernameImage)
+
+		UserImage:setMask( nil )
+		mask = nil
+
+		RemoveAll(NameImage)
 		RemoveAll(CountryImage)
 		RemoveAll(UserImage)
+
 		RemoveAll(KataImage)
 		RemoveAll(KamalaImage)
 		RemoveAll(ChalongImage)
@@ -319,10 +504,12 @@ function scene:hide(event)
 		RemoveAll(PatongImage)
 		RemoveAll(BigbuddhaImage)
 		RemoveAll(BangpaeImage)
-		RemoveAll(SettingBtn)
+
 		RemoveAll(OkBtn)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
+		RemoveAll(ProfileFrame)
+
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		
@@ -339,5 +526,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene

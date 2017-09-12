@@ -2,10 +2,11 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn
 local Recommend, TextDesField
-local AttImg
+local AttImg, NearAtt, FrameAttImg
 local NumberOfRecPlace = {}
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -22,6 +23,26 @@ local function RemoveAll( event )
 	end
 end
 
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
+ 
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+        	
+            return true
+        end
+    end
+ 
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
+end
+
 function scene:create(event)
 	local sceneGroup = self.view
 	print("Scene #informatiom : create")
@@ -30,6 +51,12 @@ end
 local function Check( event )
 	print( event.target.id )
 	print( event.phase )
+
+	if(event.target.id == "img") then
+		local options = {params = {PlaceName = params.PlaceName}}
+			print( "Go to scene #HomePlace " .. params.PlaceName )
+			composer.gotoScene("informationImg",options)
+	end
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
 			local options = {params = {PlaceName = params.PlaceName}}
@@ -40,10 +67,9 @@ local function Check( event )
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("informationImg",options)
-
 		else
-			local options = {params = {PlaceName = event.target.id}}
-			composer.gotoScene("HomePlace",options)
+ 			local options = {params = {PlaceName = event.target.id}}
+ 			composer.gotoScene("HomePlace",options)
 		end
 	end
 end
@@ -88,6 +114,15 @@ local function RecommendPlace( PlaceNamee )
 	return CountRec
 end
 
+local function DescripField(  )
+	local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+	--	print(sql)
+		for row in db:nrows(sql) do
+			TextDesField.text = row.descriptions
+			--print(row.descriptions )
+		end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -103,30 +138,27 @@ function scene:show(event)
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
 		
-		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/3.3, 637/3.3)
-		BgText.x = cx + 80
+		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4.5, 637/5)
+		BgText.x = cx + 90
 		BgText.y = cy - 30
 		
 
-		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
+		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30 , BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = false
-	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
+	    TextDesField.font = native.newFont( "Cloud-Light", 12 )
+	   -- TextDesField.size = nil
+	    --TextDesField:resizeHeightToFitFont()
 
-		local sql = "SELECT descriptions FROM attractions WHERE att_name = '".. params.PlaceName .."';"
-	--	print(sql)
-		for row in db:nrows(sql) do
-			TextDesField.text = row.descriptions
-			--print(row.descriptions )
-		end
-
+		
+		 timer.performWithDelay( 300, DescripField )
 		--TextDesField.isFontSizeScaled = true
 
 		BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -135,13 +167,13 @@ function scene:show(event)
 			)
 		
 		BackBtn.x = cx - 240
-		BackBtn.y = cy + 100
+		BackBtn.y = cy - 110
 
 		NumberOfRecPlace = RecommendPlace(params.PlaceName)
 		
 		--print( NumberOfRecPlace )
-		local PositionX = cx + 60
-		local PositionY = cy + 90
+		local PositionX = cx 
+		local PositionY = cy + 60
 		Recommend = {}
 		for i=1, #NumberOfRecPlace do
 				Recommend[i] = widget.newButton(
@@ -155,24 +187,39 @@ function scene:show(event)
 	    	}
 				)
 			if (i == 3) then
-				PositionX = cx + 60
-				PositionY = cy + 130
+				PositionX = cx + 70
+				PositionY = cy + 100
 				print( "if 3" )
 			end
 
 			Recommend[i].x = PositionX 
 			Recommend[i].y = PositionY 
-			Recommend[i]:scale(0.5,0.5)
+			Recommend[i]:scale(0.4,0.4)
 			PositionX = PositionX + 150
 			
 		end
+		
 
 		AttImg = display.newImageRect( "Phuket/Information/".. params.PlaceName .."/1.jpg", cw, ch)
-		AttImg.x = cx - 200
-		AttImg.y = cy 
-		AttImg:scale( 0.2, 0.2 ) 
+		AttImg.x = cx - 135
+		AttImg.y = cy - 30
+		AttImg:scale( 0.3, 0.3 ) 
 		AttImg:addEventListener("touch", Check)
 		AttImg.id = "img"
+
+		FrameAttImg = display.newImageRect( "Phuket/Information/frame_pic.png", cw, ch)
+		FrameAttImg.x = AttImg.x
+		FrameAttImg.y = AttImg.y
+		FrameAttImg:scale( 0.31, 0.32 ) 
+
+
+
+		print( AttImg.width, AttImg.height )
+
+		NearAtt = display.newImageRect( "Phuket/Information/text_nearby.png", 362, 137)
+		NearAtt.x = cx - 130
+		NearAtt.y = cy + 85
+		NearAtt:scale( 0.25, 0.25 ) 
 
 		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
@@ -190,6 +237,8 @@ function scene:hide(event)
 		RemoveAll(BackBtn)
 		RemoveAll(TextDesField)
 		RemoveAll(AttImg)
+		RemoveAll(NearAtt)
+		RemoveAll(FrameAttImg)
 
 	for i=1, #NumberOfRecPlace do
 		Recommend[i]:removeSelf( )
@@ -211,5 +260,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene

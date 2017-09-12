@@ -2,6 +2,7 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require ("cal")
 require("createAcc")
 require("get-data")
@@ -13,6 +14,8 @@ local myMap = native.newMapView( 20, 20, 1, 1 )
 local params, cx, cy, cw, ch
 local Bg, BgBtn, BackBtn, TitleImage
 local InformationBtn, MapBtn, ShareBtn, DiaryBtn
+local IsUnlock = false
+local IsDiary = false
 
 ------
 local filename = system.pathForFile( "distance.json", system.ResourceDirectory )
@@ -28,6 +31,26 @@ local function RemoveAll( event )
 		event = nil
 		
 	end
+end
+
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
+ 
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+        	
+            return true
+        end
+    end
+ 
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
 end
 
 function scene:create(event)
@@ -49,12 +72,27 @@ local function Check( event )
 			composer.gotoScene("map", options)
 
 		elseif (event.target.id == "ShareBtn") then
-			print( "Go to scene #Share " .. params.PlaceName )
-			composer.gotoScene("share", options)
+
+			if (IsDiary) then
+				print( "Go to scene #Share " .. params.PlaceName )
+				composer.gotoScene("share", options)
+			else
+				native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
+				return
+			end
+
+			
 
 		elseif (event.target.id == "DiaryBtn") then
-			print( "Go to scene #Diary " .. params.PlaceName )
-			composer.gotoScene("Diary", options)
+			--IsUnlock=true
+			if (IsUnlock) then
+				print( "Go to scene #Diary " .. params.PlaceName )
+				composer.gotoScene("Diary", options)
+			else
+				native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
+				return
+			end
+			
 
 		elseif (event.target.id == "BackBtn") then
 			composer.gotoScene("overview")
@@ -65,7 +103,7 @@ end
 local function GoS(  )
 
 	local options = {params = {PlaceName = params.PlaceName}}
-			composer.gotoScene("HomePlace", options)
+			composer.gotoScene("overview", options)
 			native.setActivityIndicator( false )
 end
 
@@ -90,13 +128,17 @@ local function UnlockListener(  )
         local unattractions = {}
 
         unattractions["member_no"] = member_no
-        unattractions["att_no"] = NoAtt
+        unattractions["att_no"] = att_no
 
         local unattractionsSendData = json.encode( unattractions )
-
+        --print( "BBBBBBBBBBBBBBBBBBBBBBBB" .. unattractionsSendData )
         UnAttSend(unattractionsSendData)
 		native.setActivityIndicator( true )
-		timer.performWithDelay( 5000, CallDrop )
+		timer.performWithDelay( 1000, CallDrop )
+
+		toast.show(params.PlaceName .." Unlock!")
+
+
         timer.performWithDelay( 5000, GoS )         
 end
 
@@ -122,26 +164,33 @@ local function CalDis( currentLatitude, currentLongitude )
 			local user = {}
 			user.latitude = currentLatitude
 			user.longitude = currentLongitude
-
+			--user.latitude = 7.827689
+			--user.longitude = 98.312640
 		   	for idx, val in ipairs(decoded.rule[RuleNo]["information"]) do
 				
 				point1.latitude = val.latitude1
 			    point1.longitude = val.longitude1
 			    point2.latitude = val.latitude2
 			    point2.longitude = val.longitude2
+			    --point 1 จุดศูนกลาง
 			    d = sphericalDistanceBetween( point1, point2 )
 			    Userd = sphericalDistanceBetween( point1, user )
-
 			    ---- Check distance User and Attraction -----
+
 			    if(Userd <= d) then
 			    	InArea = true
-			    	UnlockListener(  )
+			    	break
 			    else
 			    	InArea = false
 			    end
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    native.showAlert( "You Are Here", text, { "OK" } )
+			    toast.show("Not in area")
 			    print( "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea))
+			end
+
+			if (InArea == true) then
+				UnlockListener(  )
 			end
 		
 	end -- decode
@@ -171,7 +220,7 @@ end
 
 local function CheckLocation( event )
  	-- Do not continue if a MapView has not been created.
-
+if(event.phase == "ended") then
  	if isRechable() == false then 
  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
  		return
@@ -201,6 +250,7 @@ local function CheckLocation( event )
 		-- Look up nearest address to this location (this is returned as a "mapAddress" event, handled above)
 		--myMap:nearestAddress( currentLatitude, currentLongitude, mapAddressHandler )
 	end
+end
 end
 --
 local function locationHandler( event )
@@ -250,7 +300,7 @@ function scene:show(event)
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 		--Bg:scale( 0.3, 0.3 ) 
-
+--[[
 		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
 		
 		if(params.PlaceName == "Bang Pae Waterfall") then
@@ -260,33 +310,48 @@ function scene:show(event)
 		else
 			TitleImage:scale( 0.5, 0.5 )
 		end
-
+]]
 		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-		print( sqlUnlock )
-	
+
+
 		for row in db:nrows(sqlUnlock) do
 			if (row.Catt_no == 0) then
 				LocationBtn = widget.newButton(
 			{
-				left = cx - 120,
-				top = cy,
-				width = 100,
-				height = 40,
-				label = "Location",
-				onEvent = CheckLocation,
-				shape = "Rect",
-				labelColor = {default={1,1,1}, over={0,0,0,0.5}},
-				fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
+				left = cx - 250,
+				top = cy - 70,
+				--left = cx - 250,
+				--top = cy + 80,
+				width = 172/4,
+				height = 177/4,
+				defaultFile = "Phuket/Button/Button/scan.png",
+	        	overFile = "Phuket/Button/ButtonPress/scan.png",
+				onEvent = CheckLocation
+					
 			}
 		)
 			end
+			
 		
+		end
+
+		local sqlUnlock3 = "SELECT un_id FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		IsUnlock = false
+		for row in db:nrows(sqlUnlock3) do
+			IsUnlock = true
+		end
+
+		local sqlUnlock4 = "SELECT diary_id FROM `diary` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		IsDiary = false
+
+		for row in db:nrows(sqlUnlock4) do
+			IsDiary = true
 		end
 
 		InformationBtn = widget.newButton(
     	{
-	        width = 250/1.5,
-	        height = 60/1.5,
+	        width = 400/2.5,
+	        height = 108/2.5,
 	        defaultFile = "Phuket/Button/Button/information.png",
 	        overFile = "Phuket/Button/ButtonPress/information.png",
 	        id = "InformationBtn",
@@ -294,12 +359,12 @@ function scene:show(event)
     	}
 			)
 		InformationBtn.x = cx + 170 
-		InformationBtn.y = cy - 90
+		InformationBtn.y = cy - 80
 
 		MapBtn = widget.newButton(
     	{
-	        width = 250/1.5,
-	        height = 60/1.5,
+	        width = 400/2.5,
+	        height = 108/2.5,
 	        defaultFile = "Phuket/Button/Button/map.png",
 	        overFile = "Phuket/Button/ButtonPress/map.png",
 	        id = "MapBtn",
@@ -311,8 +376,8 @@ function scene:show(event)
 
 		DiaryBtn = widget.newButton(
     	{
-	        width = 250/1.5,
-	        height = 60/1.5,
+	        width = 400/2.5,
+	        height = 108/2.5,
 	        defaultFile = "Phuket/Button/Button/diary.png",
 	        overFile = "Phuket/Button/ButtonPress/diary.png",
 	        id = "DiaryBtn",
@@ -324,8 +389,8 @@ function scene:show(event)
 
 		ShareBtn = widget.newButton(
     	{
-	        width = 250/1.5,
-	        height = 60/1.5,
+	        width = 400/2.5,
+	        height = 108/2.5,
 	        defaultFile = "Phuket/Button/Button/share.png",
 	        overFile = "Phuket/Button/ButtonPress/share.png",
 	        id = "ShareBtn",
@@ -339,16 +404,18 @@ function scene:show(event)
 
 		BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
 	        onEvent = Check
     	}
 			)
-		BackBtn.x = (cx + 170) - 400
-		BackBtn.y = cy + 110
+		--BackBtn.x = (cx + 170) - 400
+		--BackBtn.y = cy + 110
+		BackBtn.x = cx - 230
+		BackBtn.y = cy - 110
 		
 
 	elseif (phase == "did") then
@@ -369,7 +436,11 @@ function scene:hide(event)
 		RemoveAll(ShareBtn)
 		RemoveAll(DiaryBtn)
 		RemoveAll(BackBtn)
-		RemoveAll(TitleImage)
+		--RemoveAll(TitleImage)
+
+		if (LocationBtn) then
+			RemoveAll(LocationBtn)
+		end
 
 		print("Scene #HomePlace : hide (will)")
 	elseif (phase == "did") then
@@ -386,5 +457,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene

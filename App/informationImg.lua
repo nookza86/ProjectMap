@@ -5,7 +5,7 @@ local params, cx, cy, cw, ch
 display.setStatusBar(display.HiddenStatusBar)
 local slideView = require("Zunware_SlideView")
 local BackBtn, topImages, a
-
+local myRectangle
 local function RemoveAll( event )
 	if(event) then
 		--print( "deletePic in scene #Information " .. params.PlaceName  )
@@ -42,6 +42,8 @@ function scene:show(event)
 	    cy = display.contentCenterY
 	    cw = display.contentWidth
 	    ch = display.contentHeight
+ myRectangle = display.newRect( cx, cy, cw, ch )
+myRectangle:setFillColor( black )
 
 	    topImages = {
 			"Phuket/Information/".. params.PlaceName .."/1.jpg",
@@ -56,8 +58,8 @@ function scene:show(event)
 
 	BackBtn = widget.newButton(
     	{
-	        width = 43,
-	        height = 43,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/back.png",
 	        overFile = "Phuket/Button/ButtonPress/back.png",
 	        id = "BackBtn",
@@ -65,8 +67,8 @@ function scene:show(event)
     	}
 			)
 		
-		BackBtn.x = cx - 240
-		BackBtn.y = cy + 100	
+		BackBtn.x = cx - 230
+		BackBtn.y = cy - 110	
 		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
 
@@ -82,9 +84,11 @@ function scene:hide(event)
 		--RemoveAll(a)
 		--RemoveAll(topImages)
 		
-		a:removeSelf( )
-		a = nil
+		
+		RemoveAll( myRectangle )
 		topImages = nil
+		a = nil
+		
 		
 		print("Scene #informatiom : hide (will)")
 	elseif (phase == "did") then

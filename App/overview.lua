@@ -2,25 +2,27 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
+local toast = require('plugin.toast')
 require ("cal")
 require ("Network-Check")
-local scrollView, island
-local screenW, screenH
-local PlaceGroup, ButtonGroup, TextGroup
+require ("image_proportion")
+local island
+local PlaceGroup, ButtonGroup
 local cx, cy
-local currentLocation, currentLatitude, currentLongitude,YourLocation
 local watchalong, bangpae, bigbuddha, kata, karon, kamala1, kamala2, kamala3, patong
 local cocoKataImage, cocokaronImage
-local ChairPatong, TreeImage, LagoonImage, cocoLagoonImage, TribeBangpareImage
+local TreeImage, LagoonImage, cocoLagoonImage, TribeBangpareImage
 local CloudBigBudda, CloudTree, CloudWatChalong, CloudRight, CloudCenter, CloudCenterRight
 local ProfileImage
 local BangPaeLabel, BigBuddhaLabel, ChalongLabel, KamalaLabel, KaronLabel, KataLabel, PatongLabel
 local RecButton, RecBg, CloseBtn, backgroundALpha
+local Bird1, Bird2
 local CheckInList, IsClick
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
-local myMap = native.newMapView( 20, 20, 1, 1 )
+local DisableBTN, EnableBTN
+local LOAD_IMG
 
 ------------------------------------------
 local UnlockBangPaeLabel, UnlockBigBuddhaLabel, UnlockChalongLabel, UnlockKamalaLabel, UnlockKaronLabel, UnlockKataLabel, UnlockPatongLabel
@@ -40,171 +42,198 @@ local RecNational = {}
 
 local function RemoveAll( event )
 	if(event) then
-		print( "deletePic "  )
+		--print( "deletePic "  )
 		event:removeSelf( )
 		event = nil
 		
 	end
 end
 
-local function check( event )
-	local obj = event.target.name
-
-	print( obj )
-	
-	if(obj == "Chalong Temple") then
-		
-		local options = {params = {PlaceName = "Chalong Temple"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Bang Pae Waterfall") then
-	
-		local options = {params = {PlaceName = "Bang Pae Waterfall"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Big Buddha") then
-		
-		local options = {params = {PlaceName = "Big Buddha"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Kata Beach") then
-		
-		local options = {params = {PlaceName = "Kata Beach"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Karon Beach") then
-		
-		local options = {params = {PlaceName = "Karon Beach"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Kamala Beach") then
-		
-		local options = {params = {PlaceName = "Kamala Beach"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "Patong Beach") then
-		
-		local options = {params = {PlaceName = "Patong Beach"}}
-		composer.gotoScene("HomePlace", options)
-
-	elseif(obj == "profile") then
-		
-		local options = {params = {PlaceName = "Patong Beach"}}
-		composer.gotoScene("profile")
-
-	elseif(obj == "CloseBtn") then
-		IsClick = false
-		RemoveAll(RecBg)
-		RemoveAll(CloseBtn)
-		RemoveAll(backgroundALpha)
-		for i=1, CountRec do
-			print( CountRec )
-			RecNational[i]:removeSelf( )
-			RecNational[i] = nil
-		end
-		
-
+local function showAlertListener( event )
+	print( event.action )
+	if (event.action == "clicked") then
+		print( event.index )
+		--native.showAlert( "Error", event.index, { "OK" } )
+ 	if (event.index == 1) then
+ 			os.exit( )
+ 		end
 	end
 end
 
--- A function to handle the "mapAddress" event (also known as "reverse geocoding", ie: coordinates -> string).
-local mapAddressHandler = function( event )
-	if event.isError then
-		-- Failed to receive location information.
-		native.showAlert( "Error", event.errorMessage, { "OK" } )
-	else
-		-- Location information received. Display it.
-		local locationText =
-				"Latitude: " .. currentLatitude .. 
-				", Longitude: " .. currentLongitude ..
-				", Address: " .. ( event.streetDetail or "" ) ..
-				" " .. ( event.street or "" ) ..
-				", " .. ( event.city or "" ) ..
-				", " .. ( event.region or "" ) ..
-				", " .. ( event.country or "" ) ..
-				", " .. ( event.postalCode or "" )
-		native.showAlert( "You Are Here", locationText, { "OK" } )
-		YourLocation.text = locationText
-		
-	end
-end
-
-local function CheckLocation1( event )
+local function onKeyEvent( event )
+    -- Print which key was pressed down/up
+    local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
+    print( message )
+   -- native.showAlert( "Error", message, { "OK" } )
  
-    -- Fetch the user's current location
-	-- Note: in Xcode Simulator, the current location defaults to Apple headquarters in Cupertino, CA
-	currentLocation = myMap:getUserLocation()
-	if currentLocation.errorCode then
-		if currentLocation.errorCode ~= 0 then -- errorCode 0 is: Pending User Authorization!
-			currentLatitude = 0
-			currentLongitude = 0
-			native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
-		end
-	else
-		-- Current location data was received.
-		-- Move map so that current location is at the center.
-		currentLatitude = currentLocation.latitude
-		currentLongitude = currentLocation.longitude
-		myMap:setRegion( currentLatitude, currentLongitude, 0.01, 0.01, true )
-		
-		-- Look up nearest address to this location (this is returned as a "mapAddress" event, handled above)
-		myMap:nearestAddress( currentLatitude, currentLongitude, mapAddressHandler )
-	end
-end
---
-local function locationHandler( event )
- 
-    if ( event.isError ) then
-        print( "Map Error: " .. event.errorMessage )
-        native.showAlert( "Error", event.errorMessage, { "OK" } )
-    else
-        print( "The specified string is at: " .. event.latitude .. "," .. event.longitude )
-        --native.showAlert( "Error", event.latitude .." long :" .. event.longitude, { "OK" } )
-        --myMap:setCenter( event.latitude, event.longitude )
-        myMap:nearestAddress( event.latitude, event.longitude, mapAddressHandler )
+    -- If the "back" key was pressed on Android or Windows Phone, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+        	native.showAlert( "Do you want to exit?", "" ,{ "OK" , "Cancel"} , showAlertListener )
+            --return true
+        end
     end
  
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
 end
 
-local function CheckLocation( event )
- 	
- 	local point1 = {}
- 	local point2 = {}
- 	point1.latitude = 7.827657
- 	point1.longitude = 98.312738
 
-	point2.latitude = 7.827357
- 	point2.longitude = 98.312627
 
- 	local d = sphericalDistanceBetween( point1, point2 )
- 	print( d )
-  -- myMap:requestLocation( "วัดไชยธาราราม", locationHandler )
-
-end
-
-function scene:create(event)
-	local sceneGroup = self.view
-	print("Scene #Overview : create")
-end
-
-local function Check( event )
-	--composer.gotoScene("overview", {effect = "fade", time = 500})
-	IsClick = true
+local function check( event )
+	local obj = event.target.name
+	
+	print( obj )
 	if (event.phase == "ended") then
-		backgroundALpha = display.newRect(0,0,570,360)
-		backgroundALpha.x = display.contentWidth / 2
-		backgroundALpha.y = display.contentHeight / 2
-		backgroundALpha:setFillColor( black )
-		backgroundALpha.alpha = 0.5
+		
+		if(obj == "Chalong Temple") then
+			
+			local options = {params = {PlaceName = "Chalong Temple"}}
+			composer.gotoScene("HomePlace", options)
 
-		RecBg = display.newImageRect( "Phuket/Overview/rec.png", 1152 / 3, 787/ 3 )
-		RecBg.x = display.contentCenterX
-		RecBg.y = display.contentCenterY
+		elseif(obj == "Bang Pae Waterfall") then
+		
+			local options = {params = {PlaceName = "Bang Pae Waterfall"}}
+			composer.gotoScene("HomePlace", options)
 
-		CloseBtn = widget.newButton(
+		elseif(obj == "Big Buddha") then
+			
+			local options = {params = {PlaceName = "Big Buddha"}}
+			composer.gotoScene("HomePlace", options)
+
+		elseif(obj == "Kata Beach") then
+			
+			local options = {params = {PlaceName = "Kata Beach"}}
+			composer.gotoScene("HomePlace", options)
+
+		elseif(obj == "Karon Beach") then
+			
+			local options = {params = {PlaceName = "Karon Beach"}}
+			composer.gotoScene("HomePlace", options)
+
+		elseif(obj == "Kamala Beach") then
+			
+			local options = {params = {PlaceName = "Kamala Beach"}}
+			composer.gotoScene("HomePlace", options)
+
+		elseif(obj == "Patong Beach") then
+			
+			local options = {params = {PlaceName = "Patong Beach"}}
+			composer.gotoScene("HomePlace", options)
+
+		elseif(obj == "profile") then
+			
+			local options = {params = {PlaceName = "Patong Beach"}}
+			composer.gotoScene("profile")
+
+		elseif(obj == "CloseBtn") then
+			--RecButton:setEnabled( true )
+			EnableBTN(  )
+			IsClick = false
+			RemoveAll(RecBg)
+			RemoveAll(CloseBtn)
+			RemoveAll(backgroundALpha)
+			for i=1, CountRec do
+				print( CountRec )
+				RecNational[i]:removeSelf( )
+				RecNational[i] = nil
+			end
+			
+		end
+	end
+end
+
+
+local function loadImageListener( event )
+	if(not event.isError) then
+		print( event.response.filename, event.response.baseDirectory )
+			--RemoveAll(UserImage)
+			ProfileImage = display.newImage( 
+							event.response.filename, 
+							event.response.baseDirectory,
+							cx - 250,
+							cy - 130 
+							)
+			
+			ProfileImage.name = "profile"
+			ProfileImage:addEventListener( "touch", check )
+
+        if ProfileImage.width > ProfileImage.height then
+			--ProfileImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / ProfileImage.contentWidth
+		local yScale = ch / ProfileImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 256
+		local maxHeight = 256
+
+		ProfileImage:scale( scale, scale )
+		--ProfileImage.x = cx
+		--ProfileImage.y = cy + 100
+		
+		--rescale width
+		if ( ProfileImage.width > maxWidth ) then
+		   local ratio = maxWidth / ProfileImage.width
+		   ProfileImage.width = maxWidth
+		   ProfileImage.height = ProfileImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( ProfileImage.height > maxHeight ) then
+		   local ratio = maxHeight / ProfileImage.height
+		   ProfileImage.height = maxHeight
+		   ProfileImage.width = ProfileImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			ProfileImage:setMask( mask )
+			
+			ProfileImage.maskX = 1
+			--ProfileImage.maskY = 1
+			--ProfileImage.maskRotation = 20
+			ProfileImage.maskScaleX = 1
+			ProfileImage.maskScaleY = 1.1
+
+			print( ProfileImage.width, ProfileImage.height )
+
+			ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3, 187/3 )
+	ProfileFrame.x = ProfileImage.x 
+	ProfileFrame.y = ProfileImage.y + 3
+	ProfileFrame.name = "profile"
+	LOAD_IMG = true
+	
+	end
+	--native.setActivityIndicator( false )
+
+end
+
+local function LoadUserImg( no )
+	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. no 
+	print( url )
+network.download( url , 
+	"GET", 
+	loadImageListener,
+	{},
+	no,
+	system.DocumentsDirectory
+	)
+
+end
+
+
+local function WaitForTran(  )
+	CloseBtn = widget.newButton(
     	{
-	        width = 50,
-	        height = 25,
+	        width = 130/2.5,
+	        height = 101/2.5,
 	        defaultFile = "Phuket/Button/Button/ok.png",
 	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "CloseBtn",
@@ -213,17 +242,22 @@ local function Check( event )
 			)
 		CloseBtn.name = "CloseBtn"
 		CloseBtn.x = RecBg.x 
-		CloseBtn.y = RecBg.y + 100
+		CloseBtn.y = RecBg.y + 90
+		CloseBtn.alpha = 0
+       	transition.to( CloseBtn, { alpha=1.0 } )
 
 		local PositionX = 0
 		local PositionY = 0
 
 		if (CountRec > 3) then
-			 PositionX = display.contentCenterX - 100
-			 PositionY = display.contentCenterY - 40
+			 PositionX = display.contentCenterX - 90
+			 PositionY = display.contentCenterY - 60
+		elseif (CountRec == 1) then
+			 PositionX = display.contentCenterX 
+			 PositionY = display.contentCenterY 
 		else
 			 PositionX = display.contentCenterX 
-			 PositionY = display.contentCenterY - 40
+			 PositionY = display.contentCenterY - 60
 		end
 
 		for idx, val in ipairs(decoded["rule"][RuleOtherNo]["recommend"]) do
@@ -244,16 +278,36 @@ local function Check( event )
 			RecNational[idx].name = val 
 			RecNational[idx].x = PositionX 
 			RecNational[idx].y = PositionY 
-			RecNational[idx]:scale(0.5,0.5)
+			RecNational[idx]:scale(0.45,0.45)
 			PositionY = PositionY + 50
 
 			if (idx == 3) then
-				PositionX = cx + 80
-				PositionY = display.contentCenterY - 40
+				PositionX = cx + 90
+				PositionY = display.contentCenterY - 60
 				print( "if > 3" )
 			end
 
-		end
+		end	
+end
+
+local function Check( event )
+	IsClick = true
+	if (event.phase == "ended") then
+	DisableBTN()
+		backgroundALpha = display.newRect(0,0,570,360)
+		backgroundALpha.x = display.contentWidth / 2
+		backgroundALpha.y = display.contentHeight / 2
+		backgroundALpha:setFillColor( black )
+		backgroundALpha.alpha = 0.5
+
+		RecBg = display.newImageRect( "Phuket/Overview/rec.png", cw, ch )
+		RecBg.x = display.contentCenterX
+		RecBg.y = -100
+
+		transition.moveTo( RecBg, {  y=display.contentCenterY, time=500} )
+
+		timer.performWithDelay( 600, WaitForTran, 1 )
+		
 
 	end
 end
@@ -265,8 +319,9 @@ local function RecommendPlace(  )
 		for row in db:nrows(sql) do
 			nationality = row.country
 		end
-		--nationality = "Australia"
+		nationality = "Australia"
 		--nationality = "Canada"
+		--nationality = "India"
 		print( nationality )
 		if not decoded then
 		    print( "Decode failed at "..tostring(pos)..": "..tostring(msg) )
@@ -290,17 +345,17 @@ local function RecommendPlace(  )
 	if (CheckInList) then
 		RecButton = widget.newButton(
     	{
-	        width = 295 / 4,
-	        height = 211 / 4,
-	        defaultFile = "Phuket/Overview/buttonrec.png",
-	        overFile = "Phuket/Overview/buttonrec.png",
+	        width = 268 / 4,
+	        height = 228 / 4,
+	        defaultFile = "Phuket/Overview/Rec_button1.png",
+	        overFile = "Phuket/Overview/Rec_button2.png",
 	        id = "RecButton",
 	        onEvent = Check
     	}
 			)
 		
 		RecButton.x = cx + 230
-		RecButton.y = cy - 120
+		RecButton.y = cy + 110
 		for idx, val in ipairs(decoded["rule"][RuleOtherNo]["recommend"]) do
 			CountRec = CountRec + 1
 		end
@@ -314,6 +369,65 @@ local function RecommendPlace(  )
 
 	end -- decode
 	
+end
+
+function EnableBTN(  )
+	RecButton:setEnabled( true )
+	ChalongLabel:addEventListener( "touch", check )
+	BangPaeLabel:addEventListener( "touch", check )
+	BigBuddhaLabel:addEventListener( "touch", check )
+	KataLabel:addEventListener( "touch", check )
+	KaronLabel:addEventListener( "touch", check )
+	ProfileImage:addEventListener( "touch", check )
+	PatongLabel:addEventListener( "touch", check )
+	KamalaLabel:addEventListener( "touch", check )
+	
+end
+
+function DisableBTN(  )
+	RecButton:setEnabled( false )
+	ChalongLabel:removeEventListener( "touch", check )
+	BangPaeLabel:removeEventListener( "touch", check )
+	BigBuddhaLabel:removeEventListener( "touch", check )
+	KataLabel:removeEventListener( "touch", check )
+	KaronLabel:removeEventListener( "touch", check )
+	ProfileImage:removeEventListener( "touch", check )
+	PatongLabel:removeEventListener( "touch", check )
+	KamalaLabel:removeEventListener( "touch", check )
+	
+end
+
+local function listener( event )
+    if (LOAD_IMG == true ) then
+    	 timer.cancel( event.source )
+    	 native.setActivityIndicator( false )
+    	 print( "LOADING DONE" )
+    	else
+    		print( "LOADING IMG" )
+    end
+end
+
+local function USERIMG_FINING( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
+end
+
+function scene:create(event)
+	local sceneGroup = self.view
+	print("Scene #Overview : create")
+
 end
 
 function scene:show(event)	
@@ -335,21 +449,98 @@ print( display.pixelHeight / display.actualContentHeight )
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-		print("Scene #Overview : show (will)")
+		print("Scene #Overview : show (will)")	
 
-	YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
+		LOAD_IMG = false
+		native.setActivityIndicator( true )
+		timer.performWithDelay( 1000, listener, 0 )
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
 	island.x = cx
 	island.y = cy
 
-	ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
-	ProfileImage.x = cx - 250
-	ProfileImage.y = cy - 130
-	ProfileImage.name = "profile"
+	for row in db:nrows("SELECT img FROM personel;") do
+		local Check = USERIMG_FINING( row.img )
+
+		--native.showAlert( "No Internet",tostring( Check ), { "OK" } )
+			if (row.img == "") then
+			    ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
+				ProfileImage.x = cx - 250
+				ProfileImage.y = cy - 130
+				ProfileImage.name = "profile"  
+				LOAD_IMG = true      
+				--native.showAlert( "No Internet","1", { "OK" } )
+			elseif (Check == true) then  
+				--native.showAlert( "No Internet","2", { "OK" } )
+				ProfileImage = display.newImage( 
+							row.img, 
+							system.DocumentsDirectory,
+							cx - 250,
+							cy - 130 
+							)
+				--ProfileImage:scale( 0.2, 0.2 )
+				ProfileImage.name = "profile"
+				ProfileImage:addEventListener( "touch", check )
+
+	       if ProfileImage.width > ProfileImage.height then
+			--ProfileImage:rotate( -90 )			-- rotate for landscape
+			print( "Rotated" )
+		end
+		
+		-- Scale image to fit content scaled screen
+		local xScale = cw / ProfileImage.contentWidth
+		local yScale = ch / ProfileImage.contentHeight
+		local scale = math.max( xScale, yScale ) * .75
+		
+		local maxWidth = 256
+		local maxHeight = 256
+
+		ProfileImage:scale( scale, scale )
+		--ProfileImage.x = cx
+		--ProfileImage.y = cy + 100
+		
+		--rescale width
+		if ( ProfileImage.width > maxWidth ) then
+		   local ratio = maxWidth / ProfileImage.width
+		   ProfileImage.width = maxWidth
+		   ProfileImage.height = ProfileImage.height * ratio
+		end
+		 
+		--rescale height
+		if ( ProfileImage.height > maxHeight ) then
+		   local ratio = maxHeight / ProfileImage.height
+		   ProfileImage.height = maxHeight
+		   ProfileImage.width = ProfileImage.width * ratio
+		end
+
+		 local mask = graphics.newMask( "cc.png" )
+		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+			 
+			ProfileImage:setMask( mask )
+			
+			ProfileImage.maskX = 1
+			--ProfileImage.maskY = 1
+			--ProfileImage.maskRotation = 20
+			ProfileImage.maskScaleX = 0.75
+			ProfileImage.maskScaleY = 0.75
+
+			print( ProfileImage.width, ProfileImage.height )
+
+			ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3.5, 187/3.5 )
+			ProfileFrame.x = ProfileImage.x 
+			ProfileFrame.y = ProfileImage.y + 3
+			ProfileFrame.name = "profile"
+	      	LOAD_IMG = true
+
+			
+		else
+			--native.showAlert( "No Internet","3", { "OK" } )
+				LoadUserImg(row.img)
+			end                       
+		end
 
 	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
-	watchalong.x = island.x - 10
+	watchalong.x = island.x + 10
 	watchalong.y = island.y
 	watchalong.name = "Chalong Temple"
 
@@ -358,16 +549,12 @@ print( display.pixelHeight / display.actualContentHeight )
 	ChalongLabel.y = watchalong.y + 30
 	ChalongLabel.name = "Chalong Temple"
 
-	UnlockChalongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockChalongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockChalongLabel.x = watchalong.x
 	UnlockChalongLabel.y = watchalong.y - 5
 
-	--CloudWatChalong = display.newImageRect( "Phuket/Overview/cloud.png", 338/10, 135/10 )
-	--CloudWatChalong.x = watchalong.x - 35
-	--CloudWatChalong.y = watchalong.y - 10
-
 	bangpae = display.newImageRect( "Phuket/Overview/bangpae.png", 596/6, 531/6)
-	bangpae.x = island.x + 80
+	bangpae.x = island.x + 100
 	bangpae.y = island.y + 10
 	bangpae.name = "Bang Pae Waterfall"
 
@@ -376,7 +563,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	BangPaeLabel.y = bangpae.y + 55
 	BangPaeLabel.name = "Bang Pae Waterfall"
 
-	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/8, 514/8)
+	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBangPaeLabel.x = bangpae.x
 	UnlockBangPaeLabel.y = bangpae.y + 15
 	
@@ -385,7 +572,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	TribeBangpareImage.y = bangpae.y + 30
 	
 	bigbuddha = display.newImageRect( "Phuket/Overview/bigbuddha.png", 365/4, 227/4 )
-	bigbuddha.x = island.x - 120
+	bigbuddha.x = island.x - 100
 	bigbuddha.y = island.y + 10
 	bigbuddha.name = "Big Buddha"
 
@@ -394,7 +581,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	BigBuddhaLabel.y = bigbuddha.y + 30
 	BigBuddhaLabel.name = "Big Buddha"
 
-	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBigBuddhaLabel.x = bigbuddha.x
 	UnlockBigBuddhaLabel.y = bigbuddha.y - 5
 
@@ -403,7 +590,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudBigBudda.y = bigbuddha.y - 10
 
 	kata = display.newImageRect( "Phuket/Overview/kata.png", 466/7, 214/7 )
-	kata.x = island.x - 220
+	kata.x = island.x - 200
 	kata.y = island.y - 10
 	kata.name = "Kata Beach"
 
@@ -412,7 +599,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	KataLabel.y = kata.y + 20
 	KataLabel.name = "Kata Beach"
 
-	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKataLabel.x = kata.x
 	UnlockKataLabel.y = kata.y - 15
 
@@ -422,18 +609,18 @@ print( display.pixelHeight / display.actualContentHeight )
 	cocoKataImage.rotation = -15
 
 	kamala1 = display.newImageRect( "Phuket/Overview/kamala_1.png", 356/17, 236/17 )
-	kamala1.x = island.x + 40
+	kamala1.x = island.x + 50
 	kamala1.y = island.y - 130
 	kamala1.name = "Kamala Beach"
 
 	KamalaLabel = display.newImageRect( "Phuket/label/kamala.png", 414/6, 82/6 )
 	KamalaLabel.x = kamala1.x
-	KamalaLabel.y = kamala1.y + 20
+	KamalaLabel.y = kamala1.y + 30
 	KamalaLabel.name = "Kamala Beach"
 
-	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKamalaLabel.x = kamala1.x
-	UnlockKamalaLabel.y = kamala1.y - 10
+	UnlockKamalaLabel.y = kamala1.y - 5
 
 	kamala2 = display.newImageRect( "Phuket/Overview/kamala_2.png", 213/17, 89/17 )
 	kamala2.x = kamala1.x - 20
@@ -446,7 +633,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	kamala3.name = "Kamala Beach"
 
 	karon = display.newImageRect( "Phuket/Overview/karon.png", 472/9, 385/9 )
-	karon.x = island.x - 110
+	karon.x = island.x - 90
 	karon.y = island.y - 50
 	karon.name = "Karon Beach"
 	karon.xScale = -1
@@ -457,12 +644,12 @@ print( display.pixelHeight / display.actualContentHeight )
 	KaronLabel.y = karon.y + 20
 	KaronLabel.name = "Karon Beach"
 
-	UnlockKaronLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockKaronLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKaronLabel.x = karon.x
 	UnlockKaronLabel.y = karon.y - 15
 
-	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/10, 258/10 )
-	patong.x = island.x - 50
+	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/11, 258/11 )
+	patong.x = island.x - 40
 	patong.y = island.y - 80
 	patong.name = "Patong Beach"
 
@@ -471,21 +658,16 @@ print( display.pixelHeight / display.actualContentHeight )
 	PatongLabel.y = patong.y + 30
 	PatongLabel.name = "Patong Beach"
 
-	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/10, 514/10)
+	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockPatongLabel.x = patong.x
 	UnlockPatongLabel.y = patong.y - 5
 
 	cocokaronImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocokaronImage.x = karon.x + 5
 	cocokaronImage.y = karon.y - 20
---[[
-	ChairPatong = display.newImageRect( "Phuket/Overview/chair.png", 323/13, 548/13 )
-	ChairPatong.x = island.x - 75
-	ChairPatong.y = island.y - 60
-	ChairPatong.xScale = -1
-]]
+
 	TreeImage = display.newImageRect( "Phuket/Overview/tree.png", 291/6, 161/6 )
-	TreeImage.x = island.x - 20
+	TreeImage.x = island.x 
 	TreeImage.y = island.y - 120
 
 	CloudTree = display.newImageRect( "Phuket/Overview/cloud.png", 338/8, 135/8 )
@@ -493,7 +675,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudTree.y = TreeImage.y + 10
 
 	LagoonImage = display.newImageRect( "Phuket/Overview/lagoon.png", 1116/14, 763/14 )
-	LagoonImage.x = island.x + 80
+	LagoonImage.x = island.x + 100
 	LagoonImage.y = island.y - 70
 
 	cocoLagoonImage = display.newImageRect( "Phuket/Overview/coco.png", 340/10, 622/10 )
@@ -504,9 +686,17 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudRight.x = island.x + 200
 	CloudRight.y = island.y + 10
 
+	Bird2 = display.newImageRect( "Phuket/Overview/bird.png", 167/6, 49/6 )
+	Bird2.x = CloudRight.x 
+	Bird2.y = CloudRight.y
+
 	CloudCenter = display.newImageRect( "Phuket/Overview/cloud.png", 338/4, 135/4 )
 	CloudCenter.x = island.x + 50
 	CloudCenter.y = island.y - 30
+
+	Bird1 = display.newImageRect( "Phuket/Overview/bird.png", 167/6, 49/6 )
+	Bird1.x = CloudCenter.x 
+	Bird1.y = CloudCenter.y
 
 	CloudCenterRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/5, 135/6 )
 	CloudCenterRight.x = island.x + 150
@@ -514,60 +704,16 @@ print( display.pixelHeight / display.actualContentHeight )
 
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
+	--IsClick = false
 	RecommendPlace(  )
 
-	LocationBtn = widget.newButton(
-		{
-	left = cx + 150,
-	top = 100,
-	width = 100,
-	height = 40,
-	label = "Location",
-	onEvent = CheckLocation,
-	shape = "Rect",
-	labelColor = {default={1,1,1}, over={0,0,0,0.5}},
-	fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
-		}
-	)
-	--[[watchalong:addEventListener( "touch", check )
-	bangpae:addEventListener( "touch", check )
-	bigbuddha:addEventListener( "touch", check )
-	kata:addEventListener( "touch", check )
-	karon:addEventListener( "touch", check )
-	ProfileImage:addEventListener( "touch", check )
-	patong:addEventListener( "touch", check )
-	kamala1:addEventListener( "touch", check )
-	kamala2:addEventListener( "touch", check )
-	kamala3:addEventListener( "touch", check )
-]]
 	ChalongLabel:addEventListener( "touch", check )
 	BangPaeLabel:addEventListener( "touch", check )
 	BigBuddhaLabel:addEventListener( "touch", check )
 	KataLabel:addEventListener( "touch", check )
 	KaronLabel:addEventListener( "touch", check )
-	ProfileImage:addEventListener( "touch", check )
 	PatongLabel:addEventListener( "touch", check )
 	KamalaLabel:addEventListener( "touch", check )
-	
-
-	screenW = display.contentWidth
-	screenH = display.contentHeight
---[[
-	scrollView = widget.newScrollView(
-	{
-		top = 0,
-		left = 0,
-		width = screenW,
-		height = screenH,
-		scrollWidth = island.width,
-		scrollHeight = island.height,
-		hideBackground = true,
-		hideScrollBar = true,
-		isBounceEnabled = false,
-		--verticalScrollDisabled = true
-		}
-	)
-]]
 	
 	---------------------------------- Group Place -----------------------------------------
 	PlaceGroup:insert(island)
@@ -585,7 +731,6 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(karon)
 	PlaceGroup:insert(KaronLabel)
 	PlaceGroup:insert(cocoKataImage)
-	--PlaceGroup:insert(ChairPatong)
 	PlaceGroup:insert(patong)
 	PlaceGroup:insert(PatongLabel)
 	PlaceGroup:insert(kamala1)
@@ -600,34 +745,25 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(CloudRight)
 	PlaceGroup:insert(CloudCenter)
 	PlaceGroup:insert(CloudCenterRight)
-	PlaceGroup:insert(ProfileImage)
+
+	
 
 	ButtonGroup = display.newGroup()
 	----------------------------------- Group Button -----------------------------------------
-	ButtonGroup:insert(LocationBtn)
+
 	if (CheckInList) then
 		ButtonGroup:insert(RecButton)
 	end
 		
+
+	CheckUnlockBangPaeLabel = true
+	CheckUnlockBigBuddhaLabel = true
+	CheckUnlockChalongLabel = true
+	CheckUnlockKamalaLabel = true
+	CheckUnlockKaronLabel = true
+	CheckUnlockKataLabel = true
+	CheckUnlockPatongLabel = true
 	
-	
-
-	TextGroup = display.newGroup()
-	----------------------------------- Group Text -----------------------------------------
-
-	TextGroup:insert(YourLocation)
-
-	----------------------------------- scrollView -----------------------------------------
-	--scrollView:insert(PlaceGroup)
-	--scrollView:insert(ButtonGroup)
-	--scrollView:insert(TextGroup)
-
-	--scrollView:scrollToPosition{
-	--x = -(island.width / 2) + (screenW / 2),
-	--y = -((island.height / 2) - (screenH/ 2)),
-	--time = 500
-	--}
-
 	local sqlUnlock = "SELECT att_no FROM unattractions;"
 	--local sqlUnlock = "SELECT count(att_no) as Catt_no FROM unattractions;"
 	local CountAtt = 0
@@ -637,7 +773,7 @@ print( display.pixelHeight / display.actualContentHeight )
 				CheckUnlockBangPaeLabel = false
 			elseif (row.att_no == 2) then
 				RemoveAll(UnlockBigBuddhaLabel)
-				CheckUnlockBangPaeLabel = false
+				CheckUnlockBigBuddhaLabel = false
 			elseif (row.att_no == 3) then
 				RemoveAll(UnlockChalongLabel)
 				CheckUnlockChalongLabel = false
@@ -656,17 +792,6 @@ print( display.pixelHeight / display.actualContentHeight )
 			end
 		end
 
-
---[[
-		if (row.att_no == 1) then
-				print( "no 1" )
-			else
-				UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/8, 514/8)
-				UnlockPatongLabel.x = bangpae.x
-				UnlockPatongLabel.y = bangpae.y
-				PlaceGroup:insert(UnlockPatongLabel)
-			end
-]]
 	elseif (phase == "did") then
 		print("Scene Overview : show (did)")
 		--timer.performWithDelay(3000, showScene)
@@ -694,7 +819,6 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(karon)
 	PlaceGroup:remove(KaronLabel)
 	PlaceGroup:remove(cocoKataImage)
-	--PlaceGroup:remove(ChairPatong)
 	PlaceGroup:remove(patong)
 	PlaceGroup:remove(PatongLabel)
 	PlaceGroup:remove(TreeImage)
@@ -704,13 +828,11 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(CloudRight)
 	PlaceGroup:remove(CloudCenter)
 	PlaceGroup:remove(CloudCenterRight)
-	PlaceGroup:remove(ProfileImage)
 	PlaceGroup:remove(kamala1)
 	PlaceGroup:remove(kamala2)
 	PlaceGroup:remove(kamala3)
 	PlaceGroup:remove(KamalaLabel)
 
-	ButtonGroup:remove(LocationBtn)
 
 	if (CheckInList) then
 		ButtonGroup:remove(RecButton)
@@ -729,10 +851,6 @@ composer.removeScene( "overview" )
 		end
 	end
 
-	
-
-	TextGroup:remove(YourLocation)
-
 	RemoveAll(island)
 	RemoveAll(watchalong)
 	RemoveAll(bangpae)
@@ -743,7 +861,6 @@ composer.removeScene( "overview" )
 	RemoveAll(cocokaronImage)
 	RemoveAll(karon)
 	RemoveAll(cocoKataImage)
-	--RemoveAll(ChairPatong)
 	RemoveAll(TreeImage)
 	RemoveAll(CloudTree)
 	RemoveAll(LagoonImage)
@@ -751,9 +868,10 @@ composer.removeScene( "overview" )
 	RemoveAll(CloudRight)
 	RemoveAll(CloudCenter)
 	RemoveAll(CloudCenterRight)
-	RemoveAll(LocationBtn)
-	RemoveAll(YourLocation)
+	ProfileImage:setMask( nil )
+	mask = nil
 	RemoveAll(ProfileImage)
+	RemoveAll(ProfileFrame)
 	RemoveAll(kamala1)
 	RemoveAll(kamala2)
 	RemoveAll(kamala3)
@@ -765,6 +883,8 @@ composer.removeScene( "overview" )
 	RemoveAll(KamalaLabel)
 	RemoveAll(BangPaeLabel)
 	RemoveAll(PatongLabel)
+	RemoveAll(Bird1)
+	RemoveAll(Bird2)
 
 
 	if (CheckUnlockBangPaeLabel) then
@@ -795,14 +915,6 @@ composer.removeScene( "overview" )
 		RemoveAll(UnlockPatongLabel)
 	end
 
-	--scrollView:remove(PlaceGroup)
-	--scrollView:remove(ButtonGroup)
-	--scrollView:remove(TextGroup)
-	--	ButtonGroup = nil
-	--	PlaceGroup = nil
-	--	TextGroup = nil
-	--	scrollView = nil
-
 		print("Scene #Overview : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #Overview : hide (did)")
@@ -818,5 +930,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+Runtime:addEventListener( "key", onKeyEvent )
 
 return scene

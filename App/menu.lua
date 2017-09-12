@@ -3,6 +3,8 @@ local widget = require("widget" )
 local json = require ("json")
 local sqlite = require("sqlite3")
 local facebook = require( "plugin.facebook.v4" )
+local toast = require('plugin.toast')
+require ("Network-Check")
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
 local ForgotImage, SignUpImage, EmailImage, PasswordImage, TextFieldImage
@@ -14,6 +16,7 @@ local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local CountGetDatabase = 0
 local GetData
+local INSERT_DATA_1, INSERT_DATA_2, INSERT_DATA_3, INSERT_DATA_4
 local function RemoveAll( event )
 	if(event) then
 		print( "deletePic in scene #Menu " )
@@ -22,7 +25,25 @@ local function RemoveAll( event )
 		
 	end
 end
+--[[
+local function yourFunctionWhenOrientationChanges (event)
 
+local currentOrientation = event.type
+	--print( currentOrientation )
+
+-- Determine current orientation
+-- Use string.find(currentOrientation, 'landscape')
+-- Use string.find(currentOrientation, 'portrait')
+
+if (currentOrientation == "landscapeLeft") then
+	myText.rotation = 180 
+elseif (currentOrientation == "landscapeRight") then
+	myText.rotation = -180
+end
+
+	
+end
+]]
 local function GetDataListener( event )
     if ( event.isError ) then
         print( "Network error!" )
@@ -43,7 +64,7 @@ local function GetDataListener( event )
 
 				db:exec( insertQuery )
 				--print(insertQuery)
-				
+				INSERT_DATA_1 = true
 	       end
 	       GetData(2)
         	
@@ -64,6 +85,7 @@ local function GetDataListener( event )
 
 				db:exec( insertQuery )
 				--print(insertQuery)
+				INSERT_DATA_2 = true
 				
 	       end
 	       GetData(3)
@@ -77,6 +99,7 @@ local function GetDataListener( event )
 
 				db:exec( insertQuery )
 				--print(insertQuery)
+				INSERT_DATA_3 = true
 				
 	       end
 	   end
@@ -181,9 +204,27 @@ local function InsertData(  )
 
 	db:exec( insertQuery )
 	--print(insertQuery)
+	INSERT_DATA_4 = true
 
  end
 
+local function GoS(  )
+			composer.gotoScene("overview")
+			--native.setActivityIndicator( false )
+end
+
+local function listener( event )
+    if (INSERT_DATA_1 == true and INSERT_DATA_2 == true and INSERT_DATA_3 == true and INSERT_DATA_4 == true) then
+    	 timer.cancel( event.source )
+    	 composer.gotoScene("overview")
+    	 print( "LOADING DONE" )
+    	else
+    		print( "1 : " .. tostring( INSERT_DATA_1 ) )
+    		print( "2 : " .. tostring( INSERT_DATA_2 ) )
+    		print( "3 : " .. tostring( INSERT_DATA_3 ) )
+    		print( "4 : " .. tostring( INSERT_DATA_4 ) )
+    end
+end
 
 local function networkListener( event )
     if ( event.isError ) then
@@ -194,27 +235,30 @@ local function networkListener( event )
         print( "RESPONSE: " .. event.response )
         decodedData = (json.decode( myNewData ))
 
-        native.setActivityIndicator( false )
-
         ErrorCheck = decodedData["error"]
        -- ActiveCheck = decodedData["user"]["active"]
 
     	if( ErrorCheck == true) then
     		local alert = native.showAlert( "Error", "Try again.", { "OK" })
         	print( "Try again." )
-
+        	native.setActivityIndicator( false )
         elseif ( decodedData["user"]["active"] == 'no') then
         	local alert = native.showAlert( "Error", "Please Activate.", { "OK" })
         	print( "Need Activate." )
-
+        	native.setActivityIndicator( false )
         else
-        	--local alert = native.showAlert( "Welcome", decodedData["user"]["fname"], { "OK" })
+        	--local alert = native.showAlert( "Welcome", decodedData["user"]["first_name"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["first_name"] )
 
-        	InsertData(  )     	
-        	GetData(1)
-        	
-        	composer.gotoScene("overview")
+        INSERT_DATA_1 = false
+	    INSERT_DATA_2 = false
+	    INSERT_DATA_3 = false
+	    INSERT_DATA_4 = false
+		native.setActivityIndicator( true )
+		timer.performWithDelay( 1000, listener, 0 )
+
+        InsertData(  )     	
+        GetData(1)	
 
     	end
 
@@ -258,7 +302,14 @@ end
 
 local function Check( event )
 	print( event.target.id )
-
+--[[
+	if isRechable() == true then 
+		print( "Internet access" )
+	else 
+  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+  		return
+	end
+]]
 	if(event.target.id == "LoginWithFaceBookBtn") then
 		composer.gotoScene( "overview" )
 	end
@@ -279,6 +330,8 @@ local function Check( event )
 
 		elseif (event.target.id == "SignUp") then
 			composer.gotoScene("register")
+		elseif (event.target.id == "Forgot") then
+			composer.gotoScene("forgot")
 		end
 	end
 
@@ -326,7 +379,7 @@ function scene:show(event)
 	    PasswordTxf = native.newTextField( cx , cy + 80, 200, 25 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
-	    PasswordTxf.text = "123456789"
+	    PasswordTxf.text = "111111111"
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 
@@ -345,8 +398,8 @@ function scene:show(event)
 
 	 LoginBtn = widget.newButton(
     	{
-	        width = 150/2,
-	        height = 45/2,
+	        width = 291/4,
+	        height = 108/4,
 	        defaultFile = "Phuket/Button/Button/login.png",
 	        overFile = "Phuket/Button/ButtonPress/login.png",
 	        id = "login",
@@ -354,13 +407,13 @@ function scene:show(event)
     	}
 			)
 		
-		LoginBtn.x = cx - 55
+		LoginBtn.x = cx 
 		LoginBtn.y = cy + 115
-
+--[[
 	 LoginWithFaceBookBtn = widget.newButton(
     	{
-	        width = 250 / 2.5,
-	        height = 60/ 2.5,
+	        width = 451 / 4.5,
+	        height = 121/ 4.5,
 	        defaultFile = "Phuket/Button/Button/login_w_fb.png",
 	        overFile = "Phuket/Button/ButtonPress/login_w_fb.png",
 	        id = "LoginWithFaceBookBtn",
@@ -370,10 +423,12 @@ function scene:show(event)
 		
 		LoginWithFaceBookBtn.x = LoginBtn.x + 95
 		LoginWithFaceBookBtn.y = LoginBtn.y  
-
+]]
 	ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5 )
 	ForgotImage.x = display.contentCenterX - 40
 	ForgotImage.y = display.contentCenterY + 145
+	ForgotImage.id = "Forgot"
+	ForgotImage:addEventListener( "touch", Check )
 
 	SignUpImage = display.newImageRect("Phuket/menu/signup.png", 200/3.5, 60/3.5 )
 	SignUpImage.x = ForgotImage.x + 90
@@ -396,7 +451,7 @@ function scene:hide(event)
 	if (phase == "will") then
 		RemoveAll(myText)
 		RemoveAll(LoginBtn)
-		RemoveAll(LoginWithFaceBookBtn)
+		--RemoveAll(LoginWithFaceBookBtn)
 		RemoveAll(ForgotImage)
 		RemoveAll(EmailTxf)
 		RemoveAll(SignUpImage)
@@ -422,5 +477,7 @@ scene:addEventListener("create", scene)
 scene:addEventListener("show", scene)
 scene:addEventListener("hide", scene)
 scene:addEventListener("destroy", scene)
+
+--Runtime:addEventListener( "orientation", yourFunctionWhenOrientationChanges )
 
 return scene

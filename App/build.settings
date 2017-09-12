@@ -18,7 +18,7 @@ settings =
 	--
 	android =
 	{
-		facebookAppId = "1242067789163598",
+		facebookAppId = "1238897426147301", -- 1242067789163598
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
@@ -75,6 +75,9 @@ settings =
 			publisherId = "com.coronalabs",
 			supportedPlatforms = { iphone=true, android=true, ["android-kindle"]=true }
 		},
+		
+    	['plugin.toast'] = {publisherId = 'com.spiralcodestudio'}
+
 	},
 
 	--
