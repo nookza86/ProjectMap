@@ -5,10 +5,11 @@ require_once 'include/dbconn.php';
 //include ("$root/admin/api/android_login_api/include/dbconn.php");
 
 if (isset($_POST['unattractionsSendData'])) { 
-  $DiaryData = json_decode($_POST['unattractionsSendData'], true);
+  $UnlockData = json_decode($_POST['unattractionsSendData'], true);
 
-  $member_no = $unattractionsSendData["member_no"];
-  $att_no = $unattractionsSendData['att_no'];
+  $member_no = $UnlockData["member_no"];
+  $att_no = $UnlockData['att_no'];
+
 
   $sql = "INSERT INTO `unattractions`(`member_no`, `att_no`, `last_update`) VALUES ('$member_no','$att_no', NOW());";
   //echo($sql);

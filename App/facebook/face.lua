@@ -34,9 +34,9 @@ local appFont = "HelveticaNeue-Light"
 local debugOutput = true  -- Set true to enable console print output
 
 -- Create status text objects
-local statusHeader = display.newText( mainGroup, "Status", display.contentCenterX, 50, appFont, 20 )
-local statusMessage = display.newText( mainGroup, "(not connected)", display.contentCenterX, 75, appFont, 16 )
-statusMessage:setFillColor( 0.7 )
+--local statusHeader = display.newText( mainGroup, "Status", display.contentCenterX, 50, appFont, 20 )
+--local statusMessage = display.newText( mainGroup, "(not connected)", display.contentCenterX, 75, appFont, 16 )
+--statusMessage:setFillColor( 0.7 )
 
 -- State variables for Facebook commands we're executing
 local requestedFBCommand
@@ -83,7 +83,7 @@ end
 
 
 -- Runs the desired Facebook command
-local function processFBCommand()
+local function processFBCommand(ccaption, AttNo, memNo, filename)
 
 	local response = {}
 
@@ -105,6 +105,7 @@ local function processFBCommand()
 			caption = "Link caption",
 			description = "Corona is great for developing mobile apps with the same codebase.",
 			picture = "http://www.coronalabs.com/links/demo/Corona90x90.png",
+			--picture = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."",
 			message = "Check it out!",
 		}
 		response = facebook.request( "me/feed", "POST", attachment )  -- Posting the photo
@@ -112,10 +113,11 @@ local function processFBCommand()
 	-- This code posts a photo from the Internet to your Facebook wall
 	elseif requestedFBCommand == POST_PHOTO then
 		local attachment = {
-			caption = "Photo Caption",
-			url = "http://www.coronalabs.com/links/demo/Corona90x90.png",
+			caption = ccaption,
+			url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."",
 		}
-		response = facebook.request( "me/photos", "POST", attachment )		-- posting the photo
+		response = facebook.request( "me/photos", "POST", attachment )	
+		--response = facebook.request( "me/feed", "POST", attachment )		-- posting the photo
 
 	-- This displays a Facebook dialog to requests friends to play with you
 	elseif requestedFBCommand == SHOW_REQUEST_DIALOG then
@@ -134,17 +136,29 @@ local function processFBCommand()
 			picture = "https://coronalabs.com/wp-content/uploads/2014/11/Corona-Icon.png",
 		}
 		response = facebook.showDialog( "link", linkData )
+		--response = facebook.request( "me/feed", "POST", linkData )
 
 	-- This displays a Facebook dialog for posting photos to your photo album
 	elseif requestedFBCommand == SHARE_PHOTO_DIALOG then
 		-- Create table with photo data to share
+
+--[[
 		local photoData = {
 			photos = {
-				{ url = "https://coronalabs.com/wp-content/uploads/2014/11/Corona-Icon.png", },
-				{ url = "https://www.coronalabs.com/links/demo/Corona90x90.png", },
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/1/1_1_1.jpg", },
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."", },
 			},
 		}
-		response = facebook.showDialog( "photo", photoData )		
+]]
+		
+		local photoData = {
+			photos = {
+				{ url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/".. AttNo .."/".. filename .."" }
+			},
+		}
+		
+		response = facebook.showDialog( "photo", photoData )
+		--response = facebook.request( "me/feed", "POST", photoData )		
 
 	-- Request the current logged in user's info
 	elseif requestedFBCommand == GET_USER_INFO then
@@ -166,7 +180,7 @@ local function needPublishActionsPermission()
 end
 
 
-local function enforceFacebookLoginAndPermissions()
+local function enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	if facebook.isActive then
 		local accessToken = facebook.getCurrentAccessToken()
 		if accessToken == nil then
@@ -180,8 +194,8 @@ local function enforceFacebookLoginAndPermissions()
 		else
 			print( "Already logged in with necessary permissions" )
 			printTable( accessToken )
-			statusMessage.text = "Logged in"
-			processFBCommand()
+			--statusMessage.text = "Logged in"
+			processFBCommand(caption, AttNo, memNo, filename)
 		end
 	else
 		print( "Please wait for facebook to finish initializing before checking the current access token" );
@@ -220,7 +234,7 @@ local function listener( event )
 	-- Note that if the app is already logged in, we will still get a "login" phase
     if ( "session" == event.type ) then
 
-		statusMessage.text = event.phase  -- "login", "loginFailed", "loginCancelled", or "logout"
+		--statusMessage.text = event.phase  -- "login", "loginFailed", "loginCancelled", or "logout"
 		print( "Session status: " .. event.phase )
 
 		if ( event.phase ~= "login" ) then
@@ -244,25 +258,25 @@ local function listener( event )
 			print( "Facebook Command: " .. commandProcessedByFB )
 
 			if ( commandProcessedByFB == POST_MSG ) then
-				statusMessage.text = "Message posted"
+				--statusMessage.text = "Message posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == POST_LINK ) then
-				statusMessage.text = "Link posted"
+				--statusMessage.text = "Link posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == POST_PHOTO ) then
-				statusMessage.text = "Photo posted"
+				--statusMessage.text = "Photo posted"
 				printTable( response )
 			elseif ( commandProcessedByFB == GET_USER_INFO ) then
-				statusMessage.text = response.name
+				--statusMessage.text = response.name
 				printTable( response )
 			else
 				statusMessage.text = "(unknown)"
 			end
         elseif tostring( event.response ) == "Duplicate status message" then
-        	statusMessage.text = "Caught duplicate status message!"
+        	--statusMessage.text = "Caught duplicate status message!"
 			printTable( event.response )
         else
-			statusMessage.text = "Post failed"
+			--statusMessage.text = "Post failed"
 			printTable( event.response )
 		end
 
@@ -270,7 +284,7 @@ local function listener( event )
 		-- Advance the Facebook command state as this command has been processed by Facebook
 		commandProcessedByFB = requestedFBCommand
 
-		statusMessage.text = event.response
+		--statusMessage.text = event.response
     end
 end
 
@@ -279,38 +293,38 @@ end
 facebook.setFBConnectListener( listener )
 
 
-function buttonOnRelease( event )
+function buttonOnRelease( command, caption, AttNo, memNo, filename )
 
-	local id = event
+	local id = command
 	print( id )
 
 	if id == "login" then
 		requestedFBCommand = LOGIN
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postMessage" then
 		requestedFBCommand = POST_MSG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postLink" then
 		requestedFBCommand = POST_LINK
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "postPhoto" then
 		requestedFBCommand = POST_PHOTO
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "showRequestDialog" then
 		requestedFBCommand = SHOW_REQUEST_DIALOG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "shareLinkDialog" then
 		requestedFBCommand = SHARE_LINK_DIALOG
-		enforceFacebookLoginAndPermissions()
+		enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 	elseif id == "sharePhotoDialog" then
 		requestedFBCommand = SHARE_PHOTO_DIALOG
 		-- This can only be done if the Facebook app in installed, so verify that first
 		if not facebook.isFacebookAppEnabled() then
-			statusMessage.text = "Facebook app needed to share photos"
+			--statusMessage.text = "Facebook app needed to share photos"
 			commandProcessedByFB = requestedFBCommand
 		else
 			-- Now enforce the state of our connection with Facebook to run this command
-			enforceFacebookLoginAndPermissions()
+			enforceFacebookLoginAndPermissions(caption, AttNo, memNo, filename)
 		end
 	elseif id == "getUser" then
 		requestedFBCommand = GET_USER_INFO
@@ -318,11 +332,11 @@ function buttonOnRelease( event )
 	elseif id == "publishInstall" then
 		requestedFBCommand = PUBLISH_INSTALL
 		facebook.publishInstall()
-		statusMessage.text = "App install status posted"
+		--statusMessage.text = "App install status posted"
 		commandProcessedByFB = requestedFBCommand
 	elseif id == "isFacebookAppEnabled" then
 		requestedFBCommand = IS_FACEBOOK_APP_ENABLED
-		statusMessage.text = "Facebook app enabled: " .. tostring(facebook.isFacebookAppEnabled())
+		--statusMessage.text = "Facebook app enabled: " .. tostring(facebook.isFacebookAppEnabled())
 		commandProcessedByFB = requestedFBCommand
 	else  -- Logout
 		requestedFBCommand = LOGOUT
@@ -514,7 +528,7 @@ local isFacebookAppEnabledButton = widget.newButton(
 mainGroup:insert( isFacebookAppEnabledButton )
 
 -- Log out button
-local logoutButton = widget.newButton(
+local logoutButton = widget.newButton( 
 	{
 		label = "Log out",
 		id = "logout",

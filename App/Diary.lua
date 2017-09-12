@@ -538,7 +538,11 @@ function scene:show(event)
 	LOADING_IMG_2 = false
 	LOADING_IMG_3 = false
 	LOADING_IMG_4 = false
+<<<<<<< HEAD
 	native.setActivityIndicator( false )
+=======
+	native.setActivityIndicator( true )
+>>>>>>> origin/master
 	timer.performWithDelay( 1000, listener, 0 )
 
 	if (phase == "will") then
@@ -567,7 +571,11 @@ function scene:show(event)
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 
 	    Text = display.newImageRect( "Phuket/Diary/text.png", 658/4, 367/4)
+<<<<<<< HEAD
 		Text.x = cx + 95
+=======
+		Text.x = cx + 105
+>>>>>>> origin/master
 		Text.y = cy + 42
 
 	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
@@ -684,7 +692,11 @@ function scene:show(event)
  	
 -- Create two associated radio buttons (inserted into the same display group)
 	ImpressionRadioButton = {}
+<<<<<<< HEAD
 	local position = cx + 120
+=======
+	local position = cx + 130
+>>>>>>> origin/master
 	local initialSwitch = false
 	for i=1,5 do
 		if (i == DB_impression) then
@@ -714,7 +726,11 @@ function scene:show(event)
 	end
 
 	BeautyRadioButton = {}
+<<<<<<< HEAD
 	position = cx + 120
+=======
+	position = cx + 130
+>>>>>>> origin/master
 	initialSwitch = false
 	for i=1,5 do
 		if (i == DB_beauty) then
@@ -744,7 +760,11 @@ function scene:show(event)
 	end
 
 	CleanRadioButton = {}
+<<<<<<< HEAD
 	position = cx + 120
+=======
+	position = cx + 130
+>>>>>>> origin/master
 	initialSwitch = false
 	for i=1,5 do
 		if (i == DB_clean) then

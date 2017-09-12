@@ -30,6 +30,7 @@ local function yourFunctionWhenOrientationChanges (event)
 
 local currentOrientation = event.type
 	--print( currentOrientation )
+<<<<<<< HEAD
 
 -- Determine current orientation
 -- Use string.find(currentOrientation, 'landscape')
@@ -41,6 +42,19 @@ elseif (currentOrientation == "landscapeRight") then
 	myText.rotation = -180
 end
 
+=======
+
+-- Determine current orientation
+-- Use string.find(currentOrientation, 'landscape')
+-- Use string.find(currentOrientation, 'portrait')
+
+if (currentOrientation == "landscapeLeft") then
+	myText.rotation = 180 
+elseif (currentOrientation == "landscapeRight") then
+	myText.rotation = -180
+end
+
+>>>>>>> origin/master
 	
 end
 ]]
@@ -210,6 +224,7 @@ local function InsertData(  )
 
 local function GoS(  )
 			composer.gotoScene("overview")
+<<<<<<< HEAD
 			--native.setActivityIndicator( false )
 end
 
@@ -224,6 +239,9 @@ local function listener( event )
     		print( "3 : " .. tostring( INSERT_DATA_3 ) )
     		print( "4 : " .. tostring( INSERT_DATA_4 ) )
     end
+=======
+			native.setActivityIndicator( false )
+>>>>>>> origin/master
 end
 
 local function networkListener( event )
@@ -250,6 +268,7 @@ local function networkListener( event )
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["first_name"], { "OK" })
         	print( "Welcome " .. decodedData["user"]["first_name"] )
 
+<<<<<<< HEAD
         INSERT_DATA_1 = false
 	    INSERT_DATA_2 = false
 	    INSERT_DATA_3 = false
@@ -259,6 +278,12 @@ local function networkListener( event )
 
         InsertData(  )     	
         GetData(1)	
+=======
+        	InsertData(  )     	
+        	GetData(1)
+        	timer.performWithDelay( 5000, GoS ) 
+        	
+>>>>>>> origin/master
 
     	end
 

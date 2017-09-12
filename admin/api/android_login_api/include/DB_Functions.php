@@ -22,7 +22,7 @@ class DB_Functions {
          
     }
 
-    public function SendEmailActivation($email, $uuid, $member_no)
+    public function SendEmailActivation($email, $uuid, $member_no )
     {
         $strTo = $email;
         $strSubject = "Activate Member Account";
@@ -38,6 +38,24 @@ class DB_Functions {
         $flgSend = mail($strTo,$strSubject,$strMessage,$strHeader);   
     }
  
+    /**
+     * Storing new user
+     * returns user details
+     */
+    public function UpdatePasswordUser($pass,  $member_no, $uniqid, $encrypted_password, $salt) {
+
+        $stmt = $this->conn->prepare("UPDATE `members` SET `encrypted_password` = ?, `salt` = ? WHERE member_no = ? and uniqid = ?");
+
+        $stmt->bind_param("ssss", $encrypted_password, $salt, $member_no, $uniqid);
+        $result = $stmt->execute();
+        $stmt->close();
+        if ($result) {
+            echo "Finish";
+        }else{
+            echo "try agin";
+        }
+    }
+
     /**
      * Storing new user
      * returns user details
