@@ -119,11 +119,7 @@ local function loadImageListener( event )
 							event.response.filename, 
 							event.response.baseDirectory,
 							cx - 180,
-<<<<<<< HEAD
 							cy - 75 
-=======
-							cy - 55 
->>>>>>> origin/master
 							)
 				--UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
@@ -233,18 +229,11 @@ function scene:show(event)
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
 
-<<<<<<< HEAD
-=======
-		TitleImage = display.newImageRect( "Phuket/Profile/profile.png", 369/2.5, 83/2.5 )
-		TitleImage.x = cx 
-		TitleImage.y = cy - 135
->>>>>>> origin/master
 --[[
 		UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 		UserImage.x = cx - 180
 		UserImage.y = cy - 55
 ]]
-<<<<<<< HEAD
 		NameImage = display.newImageRect( "Phuket/Profile/name.png", 226/3, 77/3 )
 		NameImage.x = cx
 		NameImage.y = cy - 80
@@ -252,20 +241,10 @@ function scene:show(event)
 		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 449/3, 92/3 )
 		CountryImage.x = NameImage.x
 		CountryImage.y = NameImage.y + 40
-=======
-		UsernameImage = display.newImageRect( "Phuket/Profile/user.png", 400/3, 80/3 )
-		UsernameImage.x = cx
-		UsernameImage.y = cy - 80
->>>>>>> origin/master
 
 		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Light", 16 )
 		--TextName:setFillColor( 1, 0, 0 )
 
-<<<<<<< HEAD
-=======
-		TextName = display.newText( "", cx + 180 , cy - 80, native.systemFont, 16 )
-		TextName:setFillColor( 1, 0, 0 )
->>>>>>> origin/master
 
 		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, "Cloud-Light", 16 )
 		--TextCountry:setFillColor( 1, 0, 0 )
@@ -283,11 +262,7 @@ function scene:show(event)
 							row.img, 
 							system.DocumentsDirectory,
 							cx - 180,
-<<<<<<< HEAD
 							cy - 75 
-=======
-							cy - 55 
->>>>>>> origin/master
 							)
 				--UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
@@ -385,13 +360,8 @@ native.setActivityIndicator( false )
 
 		KataImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 463/3.5,
 	        height = 117/3.5,
-=======
-	        width = 532/3.5,
-	        height = 126/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/kata_".. CheckTrophyKata ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/kata_".. CheckTrophyKata ..".png",
 	        id = "kata",
@@ -403,13 +373,8 @@ native.setActivityIndicator( false )
 
 		KamalaImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 522/3.5,
 	        height = 118/3.5,
-=======
-	        width = 564/3.5,
-	        height = 126/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/kamala_".. CheckTrophyKamala ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/kamala_".. CheckTrophyKamala ..".png",
 	        id = "kamala",
@@ -421,13 +386,8 @@ native.setActivityIndicator( false )
 
 		ChalongImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 522/3.5,
 	        height = 117/3.5,
-=======
-	        width = 621/3.5,
-	        height = 126/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/chalong_".. CheckTrophyChalong ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/chalong_".. CheckTrophyChalong ..".png",
 	        id = "watchalong",
@@ -439,13 +399,8 @@ native.setActivityIndicator( false )
 
 		KaronImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 453/3.5,
 	        height = 117/3.5,
-=======
-	        width = 532/3.5,
-	        height = 127/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/karon_".. CheckTrophyKaron ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/karon_".. CheckTrophyKaron ..".png",
 	        id = "karon",
@@ -457,13 +412,8 @@ native.setActivityIndicator( false )
 
 		PatongImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 476/3.5,
 	        height = 118/3.5,
-=======
-	        width = 565/3.5,
-	        height = 127/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/patong_".. CheckTrophyPatong ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/patong_".. CheckTrophyPatong ..".png",
 	        id = "patong",
@@ -475,13 +425,8 @@ native.setActivityIndicator( false )
 
 		BigbuddhaImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 465/3.5,
 	        height = 119/3.5,
-=======
-	        width = 556/3.5,
-	        height = 127/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/bigbuddha_".. CheckTrophyBigbuddha ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/bigbuddha_".. CheckTrophyBigbuddha ..".png",
 	        id = "bigbuddha",
@@ -493,13 +438,8 @@ native.setActivityIndicator( false )
 
 		BangpaeImage = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 684/3.5,
 	        height = 114/3.5,
-=======
-	        width = 767/3.5,
-	        height = 126/3.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Profile/NameActraction/bangpae_".. CheckTrophyBangpae ..".png",
 	        overFile = "Phuket/Profile/NameActractionPress/bangpae_".. CheckTrophyBangpae ..".png",
 	        id = "bangpae",
@@ -507,11 +447,7 @@ native.setActivityIndicator( false )
     	}
 			)
 		BangpaeImage.x = PatongImage.x
-<<<<<<< HEAD
 		BangpaeImage.y = PatongImage.y + 45
-=======
-		BangpaeImage.y = PatongImage.y + 40
->>>>>>> origin/master
 --[[
 		SettingBtn = widget.newButton(
     	{
@@ -528,13 +464,8 @@ native.setActivityIndicator( false )
 ]]
 		OkBtn = widget.newButton(
     	{
-<<<<<<< HEAD
 	        width = 130/3,
 	        height = 101/3,
-=======
-	        width = 130/2.5,
-	        height = 101/2.5,
->>>>>>> origin/master
 	        defaultFile = "Phuket/Button/Button/ok.png",
 	        overFile = "Phuket/Button/ButtonPress/ok.png",
 	        id = "ok",
@@ -564,12 +495,7 @@ function scene:hide(event)
 
 		RemoveAll(NameImage)
 		RemoveAll(CountryImage)
-<<<<<<< HEAD
 		RemoveAll(UserImage)
-=======
-
-			RemoveAll(UserImage)
->>>>>>> origin/master
 
 		RemoveAll(KataImage)
 		RemoveAll(KamalaImage)
@@ -578,24 +504,12 @@ function scene:hide(event)
 		RemoveAll(PatongImage)
 		RemoveAll(BigbuddhaImage)
 		RemoveAll(BangpaeImage)
-<<<<<<< HEAD
 
 		RemoveAll(OkBtn)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
 		RemoveAll(ProfileFrame)
 
-=======
-		--RemoveAll(SettingBtn)
-		RemoveAll(OkBtn)
-		RemoveAll(TextName)
-		RemoveAll(TextCountry)
-		RemoveAll(UserImage1)
-		RemoveAll(ProfileFrame)
-
-		 RemoveAll(mask)
-        RemoveAll(ProfileFrame)
->>>>>>> origin/master
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		

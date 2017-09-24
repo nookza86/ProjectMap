@@ -6,14 +6,8 @@ local toast = require('plugin.toast')
 require ("cal")
 require ("Network-Check")
 require ("image_proportion")
-<<<<<<< HEAD
 local island
 local PlaceGroup, ButtonGroup
-=======
-local scrollView, island
-local screenW, screenH
-local PlaceGroup, ButtonGroup, TextGroup
->>>>>>> origin/master
 local cx, cy
 local watchalong, bangpae, bigbuddha, kata, karon, kamala1, kamala2, kamala3, patong
 local cocoKataImage, cocokaronImage
@@ -27,13 +21,8 @@ local CheckInList, IsClick
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
-<<<<<<< HEAD
 local DisableBTN, EnableBTN
 local LOAD_IMG
-=======
-local myMap = native.newMapView( 20, 20, 1, 1 )
-local DisableBTN, EnableBTN
->>>>>>> origin/master
 
 ------------------------------------------
 local UnlockBangPaeLabel, UnlockBigBuddhaLabel, UnlockChalongLabel, UnlockKamalaLabel, UnlockKaronLabel, UnlockKataLabel, UnlockPatongLabel
@@ -183,7 +172,6 @@ local function loadImageListener( event )
 		
 		local maxWidth = 256
 		local maxHeight = 256
-<<<<<<< HEAD
 
 		ProfileImage:scale( scale, scale )
 		--ProfileImage.x = cx
@@ -224,78 +212,7 @@ local function loadImageListener( event )
 	
 	end
 	--native.setActivityIndicator( false )
-=======
 
-		ProfileImage:scale( scale, scale )
-		--ProfileImage.x = cx
-		--ProfileImage.y = cy + 100
-		
-		--rescale width
-		if ( ProfileImage.width > maxWidth ) then
-		   local ratio = maxWidth / ProfileImage.width
-		   ProfileImage.width = maxWidth
-		   ProfileImage.height = ProfileImage.height * ratio
-		end
-		 
-		--rescale height
-		if ( ProfileImage.height > maxHeight ) then
-		   local ratio = maxHeight / ProfileImage.height
-		   ProfileImage.height = maxHeight
-		   ProfileImage.width = ProfileImage.width * ratio
-		end
-
-		 local mask = graphics.newMask( "cc.png" )
-		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
-			 
-			ProfileImage:setMask( mask )
-			
-			ProfileImage.maskX = 1
-			--ProfileImage.maskY = 1
-			--ProfileImage.maskRotation = 20
-			ProfileImage.maskScaleX = 1
-			ProfileImage.maskScaleY = 1.1
-
-			print( ProfileImage.width, ProfileImage.height )
-
-			ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3, 187/3 )
-	ProfileFrame.x = ProfileImage.x 
-	ProfileFrame.y = ProfileImage.y + 3
-	ProfileFrame.name = "profile"
-	
-	end
-	--native.setActivityIndicator( false )
-
-end
-
-local function LoadUserImg( no )
-	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. no 
-	print( url )
-network.download( url , 
-	"GET", 
-	loadImageListener,
-	{},
-	no,
-	system.ApplicationSupportDirectory
-	)
-
-end
->>>>>>> origin/master
-
-local function FindImg( Filename )
-	local lfs = require( "lfs" )
- 	--print( "FINDING : " ..Filename )
-	-- Get raw path to the app documents directory
-	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
-	 
-	for file in lfs.dir( doc_path ) do
-	    -- "file" is the current file or directory name
-	    
-	    if (file == Filename) then
-	    	print( "Found file: " .. file )
-	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
-	    	return true
-	    end
-	end
 end
 
 local function LoadUserImg( no )
@@ -311,10 +228,7 @@ network.download( url ,
 
 end
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 local function WaitForTran(  )
 	CloseBtn = widget.newButton(
     	{
@@ -467,6 +381,16 @@ function EnableBTN(  )
 	ProfileImage:addEventListener( "touch", check )
 	PatongLabel:addEventListener( "touch", check )
 	KamalaLabel:addEventListener( "touch", check )
+
+	watchalong:addEventListener( "touch", check )
+	bangpae:addEventListener( "touch", check )
+	bigbuddha:addEventListener( "touch", check )
+	kata:addEventListener( "touch", check )
+	karon:addEventListener( "touch", check )
+	patong:addEventListener( "touch", check )
+	kamala1:addEventListener( "touch", check )
+	kamala2:addEventListener( "touch", check )
+	kamala3:addEventListener( "touch", check )
 	
 end
 
@@ -480,10 +404,19 @@ function DisableBTN(  )
 	ProfileImage:removeEventListener( "touch", check )
 	PatongLabel:removeEventListener( "touch", check )
 	KamalaLabel:removeEventListener( "touch", check )
+
+	watchalong:removeEventListener( "touch", check )
+	bangpae:removeEventListener( "touch", check )
+	bigbuddha:removeEventListener( "touch", check )
+	kata:removeEventListener( "touch", check )
+	karon:removeEventListener( "touch", check )
+	patong:removeEventListener( "touch", check )
+	kamala1:removeEventListener( "touch", check )
+	kamala2:removeEventListener( "touch", check )
+	kamala3:removeEventListener( "touch", check )
 	
 end
 
-<<<<<<< HEAD
 local function listener( event )
     if (LOAD_IMG == true ) then
     	 timer.cancel( event.source )
@@ -517,8 +450,6 @@ function scene:create(event)
 
 end
 
-=======
->>>>>>> origin/master
 function scene:show(event)	
 	cx = display.contentCenterX
 	cy = display.contentCenterY
@@ -540,41 +471,27 @@ print( display.pixelHeight / display.actualContentHeight )
 	if (phase == "will") then
 		print("Scene #Overview : show (will)")	
 
-<<<<<<< HEAD
 		LOAD_IMG = false
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, listener, 0 )
-=======
-	--YourLocation = display.newText( "YourLocation", cx + 100, cy + 120, "Cloud-Bold", 14 )
-	--toast.show('Non-intrusive notification message!')  
->>>>>>> origin/master
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
 	island.x = cx
 	island.y = cy
 
 	for row in db:nrows("SELECT img FROM personel;") do
-<<<<<<< HEAD
 		local Check = USERIMG_FINING( row.img )
 
 		--native.showAlert( "No Internet",tostring( Check ), { "OK" } )
-=======
->>>>>>> origin/master
 			if (row.img == "") then
 			    ProfileImage = display.newImageRect( "Phuket/Overview/profilebut.png", 424/10, 430/10 )
 				ProfileImage.x = cx - 250
 				ProfileImage.y = cy - 130
-<<<<<<< HEAD
 				ProfileImage.name = "profile"  
 				LOAD_IMG = true      
 				--native.showAlert( "No Internet","1", { "OK" } )
 			elseif (Check == true) then  
 				--native.showAlert( "No Internet","2", { "OK" } )
-=======
-				ProfileImage.name = "profile"        
-			elseif (FindImg( row.img ) == true) then  
-
->>>>>>> origin/master
 				ProfileImage = display.newImage( 
 							row.img, 
 							system.DocumentsDirectory,
@@ -629,7 +546,6 @@ print( display.pixelHeight / display.actualContentHeight )
 
 			print( ProfileImage.width, ProfileImage.height )
 
-<<<<<<< HEAD
 			ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3.5, 187/3.5 )
 			ProfileFrame.x = ProfileImage.x 
 			ProfileFrame.y = ProfileImage.y + 3
@@ -642,26 +558,6 @@ print( display.pixelHeight / display.actualContentHeight )
 				LoadUserImg(row.img)
 			end                       
 		end
-=======
-	ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190/3.5, 187/3.5 )
-	ProfileFrame.x = ProfileImage.x 
-	ProfileFrame.y = ProfileImage.y + 3
-	ProfileFrame.name = "profile"
-	      
-			
-			
-			
-			else
-				LoadUserImg(row.img)
-			end                       
-		end
-
-
-
-				
-
-
->>>>>>> origin/master
 
 	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
 	watchalong.x = island.x + 10
@@ -831,35 +727,6 @@ print( display.pixelHeight / display.actualContentHeight )
 	--IsClick = false
 	RecommendPlace(  )
 
-<<<<<<< HEAD
-=======
---[[
-	LocationBtn = widget.newButton(
-		{
-	left = cx + 150,
-	top = 100,
-	width = 100,
-	height = 40,
-	label = "Location",
-	onEvent = CheckLocation,
-	shape = "Rect",
-	labelColor = {default={1,1,1}, over={0,0,0,0.5}},
-	fillColor = {default={0.4,0.4,0.4}, over={0.8,0.8,0.8}},	
-		}
-	)
-	]]
-	--[[watchalong:addEventListener( "touch", check )
-	bangpae:addEventListener( "touch", check )
-	bigbuddha:addEventListener( "touch", check )
-	kata:addEventListener( "touch", check )
-	karon:addEventListener( "touch", check )
-	ProfileImage:addEventListener( "touch", check )
-	patong:addEventListener( "touch", check )
-	kamala1:addEventListener( "touch", check )
-	kamala2:addEventListener( "touch", check )
-	kamala3:addEventListener( "touch", check )
-]]
->>>>>>> origin/master
 	ChalongLabel:addEventListener( "touch", check )
 	BangPaeLabel:addEventListener( "touch", check )
 	BigBuddhaLabel:addEventListener( "touch", check )
@@ -867,6 +734,17 @@ print( display.pixelHeight / display.actualContentHeight )
 	KaronLabel:addEventListener( "touch", check )
 	PatongLabel:addEventListener( "touch", check )
 	KamalaLabel:addEventListener( "touch", check )
+
+	watchalong:addEventListener( "touch", check )
+	bangpae:addEventListener( "touch", check )
+	bigbuddha:addEventListener( "touch", check )
+	kata:addEventListener( "touch", check )
+	karon:addEventListener( "touch", check )
+	patong:addEventListener( "touch", check )
+	kamala1:addEventListener( "touch", check )
+	kamala2:addEventListener( "touch", check )
+	kamala3:addEventListener( "touch", check )
+	
 	
 	---------------------------------- Group Place -----------------------------------------
 	PlaceGroup:insert(island)
@@ -898,46 +776,17 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(CloudRight)
 	PlaceGroup:insert(CloudCenter)
 	PlaceGroup:insert(CloudCenterRight)
-<<<<<<< HEAD
 
-=======
-	--PlaceGroup:insert(ProfileImage)
->>>>>>> origin/master
 	
 
 	ButtonGroup = display.newGroup()
 	----------------------------------- Group Button -----------------------------------------
-<<<<<<< HEAD
 
-=======
-	--ButtonGroup:insert(LocationBtn)
->>>>>>> origin/master
 	if (CheckInList) then
 		ButtonGroup:insert(RecButton)
 	end
 		
-<<<<<<< HEAD
 
-=======
-	
-	
-
-	TextGroup = display.newGroup()
-	----------------------------------- Group Text -----------------------------------------
-
-	--TextGroup:insert(YourLocation)
-
-	----------------------------------- scrollView -----------------------------------------
-	--scrollView:insert(PlaceGroup)
-	--scrollView:insert(ButtonGroup)
-	--scrollView:insert(TextGroup)
-
-	--scrollView:scrollToPosition{
-	--x = -(island.width / 2) + (screenW / 2),
-	--y = -((island.height / 2) - (screenH/ 2)),
-	--time = 500
-	--}
->>>>>>> origin/master
 	CheckUnlockBangPaeLabel = true
 	CheckUnlockBigBuddhaLabel = true
 	CheckUnlockChalongLabel = true
@@ -1010,19 +859,11 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(CloudRight)
 	PlaceGroup:remove(CloudCenter)
 	PlaceGroup:remove(CloudCenterRight)
-<<<<<<< HEAD
-=======
-	--PlaceGroup:remove(ProfileImage)
->>>>>>> origin/master
 	PlaceGroup:remove(kamala1)
 	PlaceGroup:remove(kamala2)
 	PlaceGroup:remove(kamala3)
 	PlaceGroup:remove(KamalaLabel)
 
-<<<<<<< HEAD
-=======
-	--ButtonGroup:remove(LocationBtn)
->>>>>>> origin/master
 
 	if (CheckInList) then
 		ButtonGroup:remove(RecButton)
@@ -1041,13 +882,6 @@ composer.removeScene( "overview" )
 		end
 	end
 
-<<<<<<< HEAD
-=======
-	
-
-	--TextGroup:remove(YourLocation)
-
->>>>>>> origin/master
 	RemoveAll(island)
 	RemoveAll(watchalong)
 	RemoveAll(bangpae)
@@ -1065,13 +899,8 @@ composer.removeScene( "overview" )
 	RemoveAll(CloudRight)
 	RemoveAll(CloudCenter)
 	RemoveAll(CloudCenterRight)
-<<<<<<< HEAD
 	ProfileImage:setMask( nil )
 	mask = nil
-=======
-	RemoveAll(LocationBtn)
---	RemoveAll(YourLocation)
->>>>>>> origin/master
 	RemoveAll(ProfileImage)
 	RemoveAll(ProfileFrame)
 	RemoveAll(kamala1)

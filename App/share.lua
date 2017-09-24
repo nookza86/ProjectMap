@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 local mui = require( "materialui.mui" )
 local toast = require('plugin.toast')
+require("FitImage")
 require("createAcc")
 require("get-data")
 require ("Network-Check")
@@ -21,8 +22,12 @@ local backgroundALpha
 local CheckSelectImg = false
 local myText
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
+local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
+local FitFrameImage
 local IMG_SCALE = 1.2
-local mask = graphics.newMask( "rr-512.png" )
+--local mask = graphics.newMask( "rr-512.png" )
+local mask = graphics.newMask( "Phuket/share/addpicture.png" )
+
 
 local function RemoveAll( event )
 	if(event) then
@@ -117,7 +122,7 @@ end
 local function loadImageListener( event )
 
 	if(not event.isError) then
-		
+		--print( event.response.target.width )
 		print( event.response.filename, event.response.baseDirectory )
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_1.jpg") then
 			
@@ -127,12 +132,14 @@ local function loadImageListener( event )
 							cx - 200,
 							cy + 30 
 							)
-			UserImage1:scale( 0.15, 0.15 )
+			--UserImage1:scale( 0.15, 0.15 )
 			UserImage1.id = event.response.filename
 			UserImage1:addEventListener( "touch", SelectImg )
 			UserImage1.alpha = 0
-       		transition.to( UserImage1, { alpha=1.0 } )
+       		--transition.to( UserImage1, { alpha=1.0 } )
        		LOADING_IMG_1 = true
+       		--FitFrameImage( UserImage1 )	
+       		--[[
 			UserImage1:setMask( mask )
 					
 					UserImage1.maskX = 1
@@ -140,6 +147,7 @@ local function loadImageListener( event )
 					--UserImage1.maskRotation = 20
 					UserImage1.maskScaleX = IMG_SCALE
 					UserImage1.maskScaleY = IMG_SCALE
+					]]
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_2.jpg") then
@@ -150,13 +158,14 @@ local function loadImageListener( event )
 							cx - 70,
 							cy + 30 
 							)
-			UserImage2:scale( 0.15, 0.15 )
+			--UserImage2:scale( 0.15, 0.15 )
 			UserImage2.id = event.response.filename
 			UserImage2:addEventListener( "touch", SelectImg )
 			UserImage2.alpha = 0
-       		transition.to( UserImage2, { alpha=1.0 } )
+       		--transition.to( UserImage2, { alpha=1.0 } )
        		LOADING_IMG_2 = true
-
+       		--FitFrameImage( UserImage2 )	
+--[[
        		UserImage2:setMask( mask )
 					
 					UserImage2.maskX = 1
@@ -164,6 +173,7 @@ local function loadImageListener( event )
 					--UserImage2.maskRotation = 20
 					UserImage2.maskScaleX = IMG_SCALE
 					UserImage2.maskScaleY = IMG_SCALE
+					]]
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -174,13 +184,14 @@ local function loadImageListener( event )
 							cx + 60,
 							cy + 30 
 							)
-			UserImage3:scale( 0.15, 0.15 )
+			--UserImage3:scale( 0.15, 0.15 )
 			UserImage3.id = event.response.filename
 			UserImage3:addEventListener( "touch", SelectImg )
 			UserImage3.alpha = 0
-       		transition.to( UserImage3, { alpha=1.0 } )
+       		--transition.to( UserImage3, { alpha=1.0 } )
        		LOADING_IMG_3 = true
-
+       		--FitFrameImage( UserImage3 )	
+--[[
        		UserImage3:setMask( mask )
 					
 					UserImage3.maskX = 1
@@ -188,6 +199,7 @@ local function loadImageListener( event )
 					--UserImage3.maskRotation = 20
 					UserImage3.maskScaleX = IMG_SCALE
 					UserImage3.maskScaleY = IMG_SCALE
+					]]
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -198,13 +210,14 @@ local function loadImageListener( event )
 							cx + 190,
 							cy + 30 
 							)
-			UserImage4:scale( 0.15, 0.15 )
+			--UserImage4:scale( 0.15, 0.15 )
 			UserImage4.id = event.response.filename
 			UserImage4:addEventListener( "touch", SelectImg )
 			UserImage4.alpha = 0
-       		transition.to( UserImage4, { alpha=1.0 } )
+       		--transition.to( UserImage4, { alpha=1.0 } )
        		LOADING_IMG_4 = true
-
+       		--FitFrameImage( UserImage4 )	
+--[[
        		UserImage4:setMask( mask )
 					
 					UserImage4.maskX = 1
@@ -212,6 +225,7 @@ local function loadImageListener( event )
 					--UserImage4.maskRotation = 20
 					UserImage4.maskScaleX = IMG_SCALE
 					UserImage4.maskScaleY = IMG_SCALE
+					]]
 		end
 		
 	end
@@ -220,7 +234,7 @@ end
 
 
 
-local function randomFlag( event )
+local function LoadDirayImage( event )
 	if isRechable() == false then 
  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
  		return
@@ -300,8 +314,17 @@ end
 local function listener( event )
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
     	 timer.cancel( event.source )
+    	 FitFrameImage( UserImage1 )	
+    	 FitFrameImage( UserImage2 )	
+    	 FitFrameImage( UserImage3 )	
+    	 FitFrameImage( UserImage4 )
+    	 transition.to( UserImage1, { alpha=1.0 } )
+    	 transition.to( UserImage2, { alpha=1.0 } )
+    	 transition.to( UserImage3, { alpha=1.0 } )
+    	 transition.to( UserImage4, { alpha=1.0 } )	
     	 native.setActivityIndicator( false )
     	 print( "LOADING DONE" )
+
     	else
     		print( "LOADING IMG" )
     end
@@ -321,6 +344,38 @@ local function FindImg( Filename )
 	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
 	    	return true
 	    end
+	end
+end
+
+function FitFrameImage( ImageObj )
+
+	local Fit_1 = fitImage( ImageObj, 125, 125, true )
+	ImageObj:scale( Fit_1, Fit_1 )
+	print( "In FitFrameImage Filename: " .. ImageObj.id )
+
+	if (ImageObj.id == NoAtt .. "_" .. member_no .. "_1.jpg") then
+		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", UserImage1.width, UserImage1.height )
+		FrameUserImage1.x = UserImage1.x
+		FrameUserImage1.y = UserImage1.y
+		FrameUserImage1:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_2.jpg") then
+		FrameUserImage2 = display.newImageRect( "Phuket/share/frame2.png", UserImage2.width, UserImage2.height )
+		FrameUserImage2.x = UserImage2.x
+		FrameUserImage2.y = UserImage2.y
+		FrameUserImage2:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_3.jpg") then
+		FrameUserImage3 = display.newImageRect( "Phuket/share/frame2.png", UserImage3.width, UserImage3.height )
+		FrameUserImage3.x = UserImage3.x
+		FrameUserImage3.y = UserImage3.y
+		FrameUserImage3:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_4.jpg") then
+		FrameUserImage4 = display.newImageRect( "Phuket/share/frame2.png", UserImage4.width, UserImage4.height )
+		FrameUserImage4.x = UserImage4.x
+		FrameUserImage4.y = UserImage4.y
+		FrameUserImage4:scale( Fit_1, Fit_1 )
 	end
 end
 
@@ -384,13 +439,23 @@ function scene:show(event)
 							cx - 200,
 							cy + 30 
 							)
-					UserImage1:scale( 0.15, 0.15 )
+					--UserImage1:scale( 0.15, 0.15 )
 					UserImage1.id = Filename
 					UserImage1:addEventListener( "touch", SelectImg )
 					UserImage1.alpha = 0
-		       		transition.to( UserImage1, { alpha=1.0 } )
+		       		--transition.to( UserImage1, { alpha=1.0 } )
 		       		LOADING_IMG_1 = true
+		       		--FitFrameImage( UserImage1 )	
+--[[
+		       		local Fit_1 = fitImage( UserImage1, 125, 125, true )
+		       		UserImage1:scale( Fit_1, Fit_1 )
 
+		       		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", UserImage1.width, UserImage1.height )
+		       		FrameUserImage1.x = UserImage1.x
+		       		FrameUserImage1.y = UserImage1.y
+		       		FrameUserImage1:scale( Fit_1, Fit_1 )
+
+		       					
 		       		UserImage1:setMask( mask )
 					
 					UserImage1.maskX = 1
@@ -398,11 +463,11 @@ function scene:show(event)
 					--UserImage1.maskRotation = 20
 					UserImage1.maskScaleX = IMG_SCALE
 					UserImage1.maskScaleY = IMG_SCALE
-
+]]
 				else
-					randomFlag(row.diary_pic1)
+					LoadDirayImage(row.diary_pic1)
 				end
-				--randomFlag(row.diary_pic1)
+				--LoadDirayImage(row.diary_pic1)
 			end
 -----------------------------------------2---------------------------------------------
 			if (row.diary_pic2 ~= "") then
@@ -417,13 +482,14 @@ function scene:show(event)
 							cx - 70,
 							cy + 30  
 							)
-					UserImage2:scale( 0.15, 0.15 )
+					--UserImage2:scale( 0.15, 0.15 )
 					UserImage2.id = Filename
 					UserImage2:addEventListener( "touch", SelectImg )
 					UserImage2.alpha = 0
-		       		transition.to( UserImage2, { alpha=1.0 } )
+		       		--transition.to( UserImage2, { alpha=1.0 } )
 		       		LOADING_IMG_2 = true
-
+		       		--FitFrameImage( UserImage2 )	
+--[[
 		       		UserImage2:setMask( mask )
 					
 					UserImage2.maskX = 1
@@ -431,8 +497,9 @@ function scene:show(event)
 					--UserImage2.maskRotation = 20
 					UserImage2.maskScaleX = IMG_SCALE
 					UserImage2.maskScaleY = IMG_SCALE
+					]]
 				else
-				randomFlag(row.diary_pic2)
+				LoadDirayImage(row.diary_pic2)
 			end
 		end
 -----------------------------------------3---------------------------------------------
@@ -448,13 +515,14 @@ function scene:show(event)
 							cx + 60,
 							cy + 30 
 							)
-					UserImage3:scale( 0.15, 0.15 )
+					--UserImage3:scale( 0.15, 0.15 )
 					UserImage3.id = Filename
 					UserImage3:addEventListener( "touch", SelectImg )
 					UserImage3.alpha = 0
-		       		transition.to( UserImage3, { alpha=1.0 } )
+		       		--transition.to( UserImage3, { alpha=1.0 } )
 		       		LOADING_IMG_3 = true
-
+		       		--FitFrameImage( UserImage3 )	
+		       		--[[
 		       		UserImage3:setMask( mask )
 					
 					UserImage3.maskX = 1
@@ -462,8 +530,9 @@ function scene:show(event)
 					--UserImage3.maskRotation = 20
 					UserImage3.maskScaleX = IMG_SCALE
 					UserImage3.maskScaleY = IMG_SCALE
+					]]
 				else
-				randomFlag(row.diary_pic3)
+				LoadDirayImage(row.diary_pic3)
 			end
 		end
 -----------------------------------------4---------------------------------------------
@@ -479,13 +548,14 @@ function scene:show(event)
 							cx + 190,
 							cy + 30  
 							)
-					UserImage4:scale( 0.15, 0.15 )
+					--UserImage4:scale( 0.15, 0.15 )
 					UserImage4.id = Filename
 					UserImage4:addEventListener( "touch", SelectImg )
 					UserImage4.alpha = 0
-		       		transition.to( UserImage4, { alpha=1.0 } )
+		       		--transition.to( UserImage4, { alpha=1.0 } )
 		       		LOADING_IMG_4 = true
-
+		       		--FitFrameImage( UserImage4 )	
+		       		--[[
 		       		UserImage4:setMask( mask )
 					
 					UserImage4.maskX = 1
@@ -493,8 +563,9 @@ function scene:show(event)
 					--UserImage4.maskRotation = 20
 					UserImage4.maskScaleX = IMG_SCALE
 					UserImage4.maskScaleY = IMG_SCALE
+					]]
 				else
-				randomFlag(row.diary_pic4)
+				LoadDirayImage(row.diary_pic4)
 			end
 
 		end
@@ -588,7 +659,10 @@ function scene:hide(event)
 		if (CheckImg4 == true) then
 			UserImage4:removeEventListener( "touch", SelectImg )
 		end
-
+		RemoveAll(FrameUserImage1)
+		RemoveAll(FrameUserImage2)
+		RemoveAll(FrameUserImage3)
+		RemoveAll(FrameUserImage4)
 		RemoveAll(Bg)
 		RemoveAll(Tett)
 		RemoveAll(BackBtn)
