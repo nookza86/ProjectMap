@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
+require("FitImage")
 require("createAcc")
 require("get-data")
 require ("Network-Check")
@@ -25,6 +26,8 @@ local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local DiaryGroup = display.newGroup()
 local myText ,scrollView, Text
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
+local FitFrameImage
+local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -354,37 +357,40 @@ local sessionComplete = function(event)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
    			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 190, cy - 30, true )
-   			ImageUser1:scale(scale / 2, scale / 2 )
+   			--ImageUser1:scale(scale / 2, scale / 2 )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
-   			
+   			FitFrameImage( ImageUser1 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2") then
    			PhotoPickerCheck2 = true
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
    			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 70, cy - 30, true )
-   			ImageUser2:scale(scale / 2, scale / 2 )
+   			--ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
+   			FitFrameImage( ImageUser2 )
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3") then
    			PhotoPickerCheck3 = true
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
    			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 190, cy + 70, true )
-   			ImageUser3:scale(scale / 2, scale / 2 )
+   			--ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
+   			FitFrameImage( ImageUser3 )
 
    		else
    			PhotoPickerCheck4 = true
    			ImageUser4:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser4)
    			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 70, cy + 70, true )
-   			ImageUser4:scale(scale / 2, scale / 2 )
+   			--ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
+   			FitFrameImage( ImageUser4 )
 
    		end
 
@@ -427,11 +433,11 @@ local function loadImageListener( event )
 							cx - 190,
 							cy - 30 
 							)
-			ImageUser1:scale( 0.15, 0.15 )
+			--ImageUser1:scale( 0.15, 0.15 )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			ImageUser1.alpha = 0
-       		transition.to( ImageUser1, { alpha=1.0 } )
+       		--transition.to( ImageUser1, { alpha=1.0 } )
 			LOADING_IMG_1 = true
 			--DiaryGroup:insert(ImageUser1)
 
@@ -446,11 +452,11 @@ local function loadImageListener( event )
 							cx - 70,
 							cy - 30 
 							)
-			ImageUser2:scale( 0.15, 0.15 )
+			--ImageUser2:scale( 0.15, 0.15 )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			ImageUser2.alpha = 0
-       		transition.to( ImageUser2, { alpha=1.0 } )
+       		--transition.to( ImageUser2, { alpha=1.0 } )
 			LOADING_IMG_2 = true
 			--DiaryGroup:insert(ImageUser2)
 		end
@@ -463,11 +469,11 @@ local function loadImageListener( event )
 							cx - 190,
 							cy + 70 
 							)
-			ImageUser3:scale( 0.15, 0.15 )
+			--ImageUser3:scale( 0.15, 0.15 )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			ImageUser3.alpha = 0
-       		transition.to( ImageUser3, { alpha=1.0 } )
+       		--transition.to( ImageUser3, { alpha=1.0 } )
 			LOADING_IMG_3 = true
 			--DiaryGroup:insert(ImageUser3)
 			
@@ -481,11 +487,11 @@ local function loadImageListener( event )
 							cx - 70,
 							cy + 70 
 							)
-			ImageUser4:scale( 0.15, 0.15 )
+			--ImageUser4:scale( 0.15, 0.15 )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			ImageUser4.alpha = 0
-       		transition.to( ImageUser4, { alpha=1.0 } )
+       		--transition.to( ImageUser4, { alpha=1.0 } )
 			LOADING_IMG_4 = true
 			--DiaryGroup:insert(ImageUser4)
 		end
@@ -519,10 +525,50 @@ local function listener( event )
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
     	 timer.cancel( event.source )
     	 native.setActivityIndicator( false )
+    	 FitFrameImage( ImageUser1 )	
+    	 FitFrameImage( ImageUser2 )	
+    	 FitFrameImage( ImageUser3 )	
+    	 FitFrameImage( ImageUser4 )
+    	 transition.to( ImageUser1, { alpha=1.0 } )
+    	 transition.to( ImageUser2, { alpha=1.0 } )
+    	 transition.to( ImageUser3, { alpha=1.0 } )
+    	 transition.to( ImageUser4, { alpha=1.0 } )	
     	 print( "LOADING DONE" )
     	else
     		print( "LOADING IMG" )
     end
+end
+
+function FitFrameImage( ImageObj )
+
+	local Fit_1 = fitImage( ImageObj, 125, 125, true )
+	ImageObj:scale( Fit_1, Fit_1 )
+	print( "In FitFrameImage Filename: " .. ImageObj.name )
+
+	if (ImageObj.name == NoAtt .. "_" .. NoMember .. "_1.jpg") then
+		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", ImageUser1.width, ImageUser1.height )
+		FrameUserImage1.x = ImageUser1.x
+		FrameUserImage1.y = ImageUser1.y
+		FrameUserImage1:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_2.jpg") then
+		FrameUserImage2 = display.newImageRect( "Phuket/share/frame2.png", ImageUser2.width, ImageUser2.height )
+		FrameUserImage2.x = ImageUser2.x
+		FrameUserImage2.y = ImageUser2.y
+		FrameUserImage2:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_3.jpg") then
+		FrameUserImage3 = display.newImageRect( "Phuket/share/frame2.png", ImageUser3.width, ImageUser3.height )
+		FrameUserImage3.x = ImageUser3.x
+		FrameUserImage3.y = ImageUser3.y
+		FrameUserImage3:scale( Fit_1, Fit_1 )
+
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_4.jpg") then
+		FrameUserImage4 = display.newImageRect( "Phuket/share/frame2.png", ImageUser4.width, ImageUser4.height )
+		FrameUserImage4.x = ImageUser4.x
+		FrameUserImage4.y = ImageUser4.y
+		FrameUserImage4:scale( Fit_1, Fit_1 )
+	end
 end
 
 function scene:show(event)
