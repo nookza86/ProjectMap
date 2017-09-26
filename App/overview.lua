@@ -148,6 +148,7 @@ end
 
 local function loadImageListener( event )
 	if(not event.isError) then
+		native.setActivityIndicator( true )
 		print( event.response.filename, event.response.baseDirectory )
 			--RemoveAll(UserImage)
 			ProfileImage = display.newImage( 
@@ -211,7 +212,7 @@ local function loadImageListener( event )
 	LOAD_IMG = true
 	
 	end
-	--native.setActivityIndicator( false )
+	native.setActivityIndicator( false )
 
 end
 
@@ -472,7 +473,7 @@ print( display.pixelHeight / display.actualContentHeight )
 		print("Scene #Overview : show (will)")	
 
 		LOAD_IMG = false
-		native.setActivityIndicator( true )
+		
 		timer.performWithDelay( 1000, listener, 0 )
 
 	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)

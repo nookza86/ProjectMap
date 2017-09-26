@@ -114,6 +114,7 @@ end
 
 local function loadImageListener( event )
 	if(not event.isError) then
+		native.setActivityIndicator( true )
 		print( event.response.filename, event.response.baseDirectory )
         	UserImage = display.newImage( 
 							event.response.filename, 
@@ -223,7 +224,7 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
-		native.setActivityIndicator( true )
+		--native.setActivityIndicator( true )
 		Bg = display.newImageRect("Phuket/Profile/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 

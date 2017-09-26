@@ -60,8 +60,9 @@ local function loadImageListener( event )
          
     elseif ( event.phase == "ended" ) then
         print( "Download complete, total bytes transferred: " .. event.bytesTransferred )
+        progressView:setProgress( 1 )
         INSERT_DATA_4 = true
-		progressView:setProgress( 1 )
+		
     end
 
 end
@@ -272,10 +273,10 @@ function scene:show(event)
 
   
 
-		transition.to( Glass, { time=800, x=Glass.x + 150, y=Glass.y } )
-		transition.to( Glass, { time=200, delay=800, x=Glass.x + 150, y=Glass.y + 20 } )
-		transition.to( Glass, { time=600, delay=1000, x=Glass.x - 40, y=Glass.y + 55 } )
-		transition.to( Glass, { time=800, delay=1600, x=Glass.x + 150, y=Glass.y + 55 } )
+		transition.to( Glass, { time=600, x=Glass.x + 150, y=Glass.y } )
+		transition.to( Glass, { time=200, delay=600, x=Glass.x + 150, y=Glass.y + 20 } )
+		transition.to( Glass, { time=600, delay=800, x=Glass.x - 40, y=Glass.y + 55 } )
+		transition.to( Glass, { time=600, delay=1400, x=Glass.x + 150, y=Glass.y + 55 } )
 
 		local options = {
     width = 192,
@@ -336,8 +337,10 @@ function scene:hide(event)
 	local phase = event.phase
 	if (phase == "will") then
 		RemoveAll(Bg)
+		RemoveAll(Glass)
 		RemoveAll(Title)
 		RemoveAll(progressView)
+
 		print("Scene #Loading : hide (will)")
 	elseif (phase == "did") then
 		return

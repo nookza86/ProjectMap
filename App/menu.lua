@@ -103,6 +103,7 @@ end
 
 local function listener( event )
     if (INSERT_DATA_4 == true) then
+    	native.setActivityIndicator( false )
     	 timer.cancel( event.source )
     	 composer.gotoScene("loading")
     	 print( "LOADING DONE" )

@@ -520,50 +520,58 @@ network.download( url ,
 	)
 
 end
-
+local IsDone = false
 local function listener( event )
+
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
-    	 timer.cancel( event.source )
-    	 native.setActivityIndicator( false )
-    	 FitFrameImage( ImageUser1 )	
-    	 FitFrameImage( ImageUser2 )	
-    	 FitFrameImage( ImageUser3 )	
-    	 FitFrameImage( ImageUser4 )
-    	 transition.to( ImageUser1, { alpha=1.0 } )
-    	 transition.to( ImageUser2, { alpha=1.0 } )
-    	 transition.to( ImageUser3, { alpha=1.0 } )
-    	 transition.to( ImageUser4, { alpha=1.0 } )	
-    	 print( "LOADING DONE" )
+    	 if (IsDone == false) then
+    	 	timer.cancel( event.source )
+	    	 native.setActivityIndicator( false )
+	    	 FitFrameImage( ImageUser1 )	
+	    	 FitFrameImage( ImageUser2 )	
+	    	 FitFrameImage( ImageUser3 )	
+	    	 FitFrameImage( ImageUser4 )
+	    	 transition.to( ImageUser1, { alpha=1.0 } )
+	    	 transition.to( ImageUser2, { alpha=1.0 } )
+	    	 transition.to( ImageUser3, { alpha=1.0 } )
+	    	 transition.to( ImageUser4, { alpha=1.0 } )	
+	    	 print( "LOADING DONE" )
+	    	 IsDone = true
+    	 end
+
     	else
     		print( "LOADING IMG" )
     end
 end
 
 function FitFrameImage( ImageObj )
+	if (ImageObj == nil or ImageObj.height == nil or ImageObj.width == nil) then
+		return
+	end
 
 	local Fit_1 = fitImage( ImageObj, 125, 125, true )
 	ImageObj:scale( Fit_1, Fit_1 )
 	print( "In FitFrameImage Filename: " .. ImageObj.name )
 
-	if (ImageObj.name == NoAtt .. "_" .. NoMember .. "_1.jpg") then
+	if (ImageObj.name == NoAtt .. "_" .. NoMember .. "_1.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_1") then
 		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", ImageUser1.width, ImageUser1.height )
 		FrameUserImage1.x = ImageUser1.x
 		FrameUserImage1.y = ImageUser1.y
 		FrameUserImage1:scale( Fit_1, Fit_1 )
 
-	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_2.jpg") then
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_2.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_2") then
 		FrameUserImage2 = display.newImageRect( "Phuket/share/frame2.png", ImageUser2.width, ImageUser2.height )
 		FrameUserImage2.x = ImageUser2.x
 		FrameUserImage2.y = ImageUser2.y
 		FrameUserImage2:scale( Fit_1, Fit_1 )
 
-	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_3.jpg") then
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_3.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_3") then
 		FrameUserImage3 = display.newImageRect( "Phuket/share/frame2.png", ImageUser3.width, ImageUser3.height )
 		FrameUserImage3.x = ImageUser3.x
 		FrameUserImage3.y = ImageUser3.y
 		FrameUserImage3:scale( Fit_1, Fit_1 )
 
-	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_4.jpg") then
+	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_4.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_4") then
 		FrameUserImage4 = display.newImageRect( "Phuket/share/frame2.png", ImageUser4.width, ImageUser4.height )
 		FrameUserImage4.x = ImageUser4.x
 		FrameUserImage4.y = ImageUser4.y
@@ -584,7 +592,7 @@ function scene:show(event)
 	LOADING_IMG_2 = false
 	LOADING_IMG_3 = false
 	LOADING_IMG_4 = false
-	native.setActivityIndicator( false )
+	native.setActivityIndicator( true )
 	timer.performWithDelay( 1000, listener, 0 )
 
 	if (phase == "will") then
@@ -630,11 +638,7 @@ function scene:show(event)
 			
 		end
 		print( DB_diary_pic1,DB_diary_pic2,DB_diary_pic3,DB_diary_pic4 )
---[[
-		ScoreImage = display.newImageRect( "Phuket/Diary/score.png", 300/2, 80/2 )
-		ScoreImage.x = cx 
-		ScoreImage.y = cy + 70
-]]
+
 		local sql = "SELECT id FROM personel;"
 		NoMember = ""
 		for row in db:nrows(sql) do
@@ -909,21 +913,33 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-		--ImageUser1:removeEventListener( "touch", AddImgListener )
-		--ImageUser2:removeEventListener( "touch", AddImgListener )
-		--ImageUser3:removeEventListener( "touch", AddImgListener )
-		--ImageUser4:removeEventListener( "touch", AddImgListener )
+		ImageUser1:removeEventListener( "touch", AddImgListener )
+		ImageUser2:removeEventListener( "touch", AddImgListener )
+		ImageUser3:removeEventListener( "touch", AddImgListener )
+		ImageUser4:removeEventListener( "touch", AddImgListener )
 
 		scrollView:remove( ImpressionRadioGroup )
 		scrollView:remove( BeautyRadioGroup )
 		scrollView:remove( CleanRadioGroup )
-		scrollView:remove( ImageUser1 )
-		scrollView:remove( ImageUser2 )
-		scrollView:remove( ImageUser3 )
-		scrollView:remove( ImageUser4 )
+
+		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
+				scrollView:remove( ImageUser1 )
+		end
+		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
+			scrollView:remove( ImageUser2 )
+		end
+		if (DB_diary_pic3 == nil or DB_diary_pic3 == "") then
+			scrollView:remove( ImageUser3 )
+		end
+		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
+			scrollView:remove( ImageUser4 )
+		end
 		scrollView:remove( SaveBtn )
 		scrollView:remove( BackBtn )
-
+		RemoveAll(FrameUserImage1)
+		RemoveAll(FrameUserImage2)
+		RemoveAll(FrameUserImage3)
+		RemoveAll(FrameUserImage4)
 		RemoveAll( Bg )
 		RemoveAll( BgText )
 		RemoveAll(TextDesField)
@@ -942,6 +958,7 @@ function scene:hide(event)
 		BeautyRadioGroup:remove( BeautyRadioButton[i] )	
 		CleanRadioGroup:remove( CleanRadioButton[i] )
 	end
+	IsDone = false
 
 
 		print("Scene #Diary : hide (will)")

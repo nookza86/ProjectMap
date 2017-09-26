@@ -1,4 +1,8 @@
 function fitImage( displayObject, fitWidth, fitHeight, enlarge )
+
+	if (displayObject == nil or displayObject.height == nil or displayObject.width == nil) then
+		return
+	end
 	--
 	-- first determine which edge is out of bounds
 	--
