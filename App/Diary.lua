@@ -29,6 +29,11 @@ local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
 local FitFrameImage
 local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
 
+local IsImg1Landscape = false
+local IsImg2Landscape = false
+local IsImg3Landscape = false
+local IsImg3Landscape = false
+
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
 local centerX = display.contentCenterX
@@ -42,6 +47,24 @@ local photo		-- holds the photo object
 local PhotoName
 local PHOTO_FUNCTION = media.PhotoLibrary 		-- or media.SavedPhotosAlbum
 -----------------------------------------------------------------------------
+cx = display.contentCenterX
+cy = display.contentCenterY
+cw = display.contentWidth
+ch = display.contentHeight
+----------------------
+local ImagePosition_X_1 = cx - 190
+local ImagePosition_Y_1 = cy - 40
+
+local ImagePosition_X_2 = cx - 70
+local ImagePosition_Y_2 = cy - 40
+
+local ImagePosition_X_3 = cx - 190
+local ImagePosition_Y_3 = cy + 70
+
+local ImagePosition_X_4 = cx - 70
+local ImagePosition_Y_4 = cy + 70
+----------------------
+
 local function RemoveAll( event )
 	if(event) then
 		--print( "deletePic in scene #Diary " .. params.PlaceName  )
@@ -352,45 +375,53 @@ local sessionComplete = function(event)
 		end
 
 		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-   		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1") then
+   		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
    			PhotoPickerCheck1 = true
+   			RemoveAll(FrameUserImage1)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
-   			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 190, cy - 30, true )
+   			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_1, ImagePosition_Y_1, true )
    			--ImageUser1:scale(scale / 2, scale / 2 )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser1 )
+   			--TextDesField.text = "1"
 
-   		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2") then
+   		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then
    			PhotoPickerCheck2 = true
+   			RemoveAll(FrameUserImage2)
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
-   			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 70, cy - 30, true )
+   			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_2, ImagePosition_Y_2, true )
    			--ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser2 )
+   			--TextDesField.text = "2"
 
-   		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3") then
+   		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
    			PhotoPickerCheck3 = true
+   			RemoveAll(FrameUserImage3)
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
-   			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 190, cy + 70, true )
+   			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_3, ImagePosition_Y_3, true )
    			--ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser3 )
+   			--TextDesField.text = "3"
 
    		else
    			PhotoPickerCheck4 = true
+   			RemoveAll(FrameUserImage4)
    			ImageUser4:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser4)
-   			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 70, cy + 70, true )
+   			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_4, ImagePosition_Y_4, true )
    			--ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser4 )
+   			--TextDesField.text = "4"
 
    		end
 
@@ -416,6 +447,7 @@ end
 function AddImgListener( event )
 	PhotoName = event.target.name
 	print( PhotoName )
+	--TextDesField.text = PhotoName
 	--myText.text = PhotoName
 	media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
 
@@ -430,8 +462,8 @@ local function loadImageListener( event )
 			ImageUser1 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 190,
-							cy - 30 
+							ImagePosition_X_1,
+							ImagePosition_Y_1 
 							)
 			--ImageUser1:scale( 0.15, 0.15 )
 			ImageUser1.name = event.response.filename
@@ -449,8 +481,8 @@ local function loadImageListener( event )
 			ImageUser2 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 70,
-							cy - 30 
+							ImagePosition_X_2,
+							ImagePosition_Y_2 
 							)
 			--ImageUser2:scale( 0.15, 0.15 )
 			ImageUser2.name = event.response.filename
@@ -466,8 +498,8 @@ local function loadImageListener( event )
 			ImageUser3 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 190,
-							cy + 70 
+							ImagePosition_X_3,
+							ImagePosition_Y_3 
 							)
 			--ImageUser3:scale( 0.15, 0.15 )
 			ImageUser3.name = event.response.filename
@@ -484,8 +516,8 @@ local function loadImageListener( event )
 			ImageUser4 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 70,
-							cy + 70 
+							ImagePosition_X_4,
+							ImagePosition_Y_4 
 							)
 			--ImageUser4:scale( 0.15, 0.15 )
 			ImageUser4.name = event.response.filename
@@ -521,6 +553,7 @@ network.download( url ,
 
 end
 local IsDone = false
+
 local function listener( event )
 
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
@@ -531,6 +564,14 @@ local function listener( event )
 	    	 FitFrameImage( ImageUser2 )	
 	    	 FitFrameImage( ImageUser3 )	
 	    	 FitFrameImage( ImageUser4 )
+
+--[[
+	    	 if (IsImg1Landscape == true) then
+	    	 	if (IsImg2Landscape == true) then
+	    	 		
+	    	 	end
+	    	 end
+]]
 	    	 transition.to( ImageUser1, { alpha=1.0 } )
 	    	 transition.to( ImageUser2, { alpha=1.0 } )
 	    	 transition.to( ImageUser3, { alpha=1.0 } )
@@ -548,45 +589,94 @@ function FitFrameImage( ImageObj )
 	if (ImageObj == nil or ImageObj.height == nil or ImageObj.width == nil) then
 		return
 	end
+	local maxWidth = 340
+	local maxHeight = 300
 
-	local Fit_1 = fitImage( ImageObj, 125, 125, true )
-	ImageObj:scale( Fit_1, Fit_1 )
-	print( "In FitFrameImage Filename: " .. ImageObj.name )
+	if (ImageObj.width > ImageObj.height) then
+		maxWidth = 300
+		maxHeight = 260
+	end
+
+	local Fit_X_MAX = 125
+	local Fit_Y_MAX = 125
+
+	--rescale width
+	if ( ImageObj.width > maxWidth ) then
+		 local ratio = maxWidth / ImageObj.width
+		 ImageObj.width = maxWidth
+		 ImageObj.height = ImageObj.height * ratio
+	end
+		 
+		--rescale height
+	if ( ImageObj.height > maxHeight ) then
+	     local ratio = maxHeight / ImageObj.height
+	     ImageObj.height = maxHeight
+	     ImageObj.width = ImageObj.width * ratio
+	end	
+
+	local Frame = ""
+	local Fit_Y = 0
+	local Fit_X = fitImage( ImageObj, Fit_X_MAX, Fit_Y_MAX, true )
+	ImageObj:scale( Fit_X - 0.1, Fit_X - 0.1)
+	Fit_Y = Fit_X
+	
+	if (ImageObj.width > ImageObj.height) then
+		--Frame = "Phuket/Frame/frame_1.png"
+		Fit_X = Fit_X 
+		Fit_Y = Fit_Y 
+	else
+		--Frame = "Phuket/Frame/frame_2.png"
+		Fit_X = Fit_X - 0.05
+		Fit_Y = Fit_Y - 0.05
+	end
+	
+	Frame = "Phuket/Frame/frame_1.png"
+
+	print( "In FitFrameImage Filename: " .. ImageObj.name .. " use "..Frame )
 
 	if (ImageObj.name == NoAtt .. "_" .. NoMember .. "_1.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_1") then
-		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", ImageUser1.width, ImageUser1.height )
+		FrameUserImage1 = display.newImageRect( Frame, maxWidth, maxHeight )
 		FrameUserImage1.x = ImageUser1.x
 		FrameUserImage1.y = ImageUser1.y
-		FrameUserImage1:scale( Fit_1, Fit_1 )
+		FrameUserImage1:scale( Fit_X, Fit_Y)
+		if (ImageObj.width > ImageObj.height) then
+			IsImg1Landscape = true
+		end
 
 	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_2.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_2") then
-		FrameUserImage2 = display.newImageRect( "Phuket/share/frame2.png", ImageUser2.width, ImageUser2.height )
+		FrameUserImage2 = display.newImageRect( Frame, maxWidth, maxHeight )
 		FrameUserImage2.x = ImageUser2.x
 		FrameUserImage2.y = ImageUser2.y
-		FrameUserImage2:scale( Fit_1, Fit_1 )
+		FrameUserImage2:scale( Fit_X, Fit_Y )
+		if (ImageObj.width > ImageObj.height) then
+			IsImg2Landscape = true
+		end
 
 	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_3.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_3") then
-		FrameUserImage3 = display.newImageRect( "Phuket/share/frame2.png", ImageUser3.width, ImageUser3.height )
+		FrameUserImage3 = display.newImageRect( Frame, maxWidth, maxHeight )
 		FrameUserImage3.x = ImageUser3.x
 		FrameUserImage3.y = ImageUser3.y
-		FrameUserImage3:scale( Fit_1, Fit_1 )
+		FrameUserImage3:scale( Fit_X, Fit_Y )
+		if (ImageObj.width > ImageObj.height) then
+			IsImg3Landscape = true
+		end
 
 	elseif (ImageObj.name == NoAtt .. "_" .. NoMember .. "_4.jpg" or ImageObj.name == NoAtt .. "_" .. NoMember .. "_4") then
-		FrameUserImage4 = display.newImageRect( "Phuket/share/frame2.png", ImageUser4.width, ImageUser4.height )
+		FrameUserImage4 = display.newImageRect( Frame, maxWidth, maxHeight )
 		FrameUserImage4.x = ImageUser4.x
 		FrameUserImage4.y = ImageUser4.y
-		FrameUserImage4:scale( Fit_1, Fit_1 )
+		FrameUserImage4:scale( Fit_X, Fit_Y )
+		if (ImageObj.width > ImageObj.height) then
+			IsImg4Landscape = true
+		end
 	end
+
 end
 
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	params = event.params
-	cx = display.contentCenterX
-    cy = display.contentCenterY
-    cw = display.contentWidth
-    ch = display.contentHeight
 
     LOADING_IMG_1 = false
 	LOADING_IMG_2 = false
@@ -655,8 +745,8 @@ function scene:show(event)
 
 		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
 			ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15, 1280/15 )
-			ImageUser1.x = cx - 190
-			ImageUser1.y = cy - 30
+			ImageUser1.x = ImagePosition_X_1
+			ImageUser1.y = ImagePosition_Y_1
 			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			PhotoPickerCheck1 = false
@@ -669,7 +759,7 @@ function scene:show(event)
 		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
 			ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15 ,1280/15 )
 			ImageUser2.x = cx - 80
-			ImageUser2.y = cy - 30
+			ImageUser2.y = ImagePosition_Y_2
 			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			PhotoPickerCheck2 = false
@@ -681,8 +771,8 @@ function scene:show(event)
 
 		if (DB_diary_pic3 == nil or DB_diary_pic3 == "") then
 			ImageUser3 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15, 1280/15 )
-			ImageUser3.x = cx - 190
-			ImageUser3.y = cy + 70
+			ImageUser3.x = ImagePosition_X_3
+			ImageUser3.y = ImagePosition_Y_3
 			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			PhotoPickerCheck3 = false
@@ -695,7 +785,7 @@ function scene:show(event)
 		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
 			ImageUser4 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15, 1280/15 )
 			ImageUser4.x = cx - 80
-			ImageUser4.y = cy + 70
+			ImageUser4.y = ImagePosition_Y_4
 			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			PhotoPickerCheck4 = false

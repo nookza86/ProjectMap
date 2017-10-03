@@ -2,7 +2,6 @@ local composer = require("composer")
 local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
-local mui = require( "materialui.mui" )
 local toast = require('plugin.toast')
 require("FitImage")
 require("createAcc")
@@ -27,6 +26,24 @@ local FitFrameImage
 local IMG_SCALE = 1.2
 --local mask = graphics.newMask( "rr-512.png" )
 local mask = graphics.newMask( "Phuket/share/addpicture.png" )
+
+cx = display.contentCenterX
+cy = display.contentCenterY
+cw = display.contentWidth
+ch = display.contentHeight
+----------------------
+local ImagePosition_X_1 = cx - 200
+local ImagePosition_Y_1 = cy + 20
+
+local ImagePosition_X_2 = cx - 70
+local ImagePosition_Y_2 = cy + 20
+
+local ImagePosition_X_3 = cx + 60
+local ImagePosition_Y_3 = cy + 20
+
+local ImagePosition_X_4 = cx + 190
+local ImagePosition_Y_4 = cy + 20
+----------------------
 
 
 local function RemoveAll( event )
@@ -129,8 +146,8 @@ local function loadImageListener( event )
 			UserImage1 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 200,
-							cy + 30 
+							ImagePosition_X_1,
+							ImagePosition_Y_1 
 							)
 			--UserImage1:scale( 0.15, 0.15 )
 			UserImage1.id = event.response.filename
@@ -155,8 +172,8 @@ local function loadImageListener( event )
 			UserImage2 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx - 70,
-							cy + 30 
+							ImagePosition_X_2,
+							ImagePosition_Y_2 
 							)
 			--UserImage2:scale( 0.15, 0.15 )
 			UserImage2.id = event.response.filename
@@ -181,8 +198,8 @@ local function loadImageListener( event )
 			UserImage3 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx + 60,
-							cy + 30 
+							ImagePosition_X_3,
+							ImagePosition_Y_3 
 							)
 			--UserImage3:scale( 0.15, 0.15 )
 			UserImage3.id = event.response.filename
@@ -207,8 +224,8 @@ local function loadImageListener( event )
 			UserImage4 = display.newImage( 
 							event.response.filename, 
 							event.response.baseDirectory,
-							cx + 190,
-							cy + 30 
+							ImagePosition_X_4,
+							ImagePosition_Y_4 
 							)
 			--UserImage4:scale( 0.15, 0.15 )
 			UserImage4.id = event.response.filename
@@ -348,34 +365,69 @@ local function FindImg( Filename )
 end
 
 function FitFrameImage( ImageObj )
+	local maxWidth = 331
+	local maxHeight = 441
+	local Fit_X_MAX = 125
+	local Fit_Y_MAX = 125
 
-	local Fit_1 = fitImage( ImageObj, 125, 125, true )
-	ImageObj:scale( Fit_1, Fit_1 )
+	--rescale width
+	if ( ImageObj.width > maxWidth ) then
+		 local ratio = maxWidth / ImageObj.width
+		 ImageObj.width = maxWidth
+		 ImageObj.height = ImageObj.height * ratio
+		-- Fit_X_MAX = 150
+		 --Fit_Y_MAX = 150
+	end
+		 
+		--rescale height
+	if ( ImageObj.height > maxHeight ) then
+	     local ratio = maxHeight / ImageObj.height
+	     ImageObj.height = maxHeight
+	     ImageObj.width = ImageObj.width * ratio
+	     --Fit_X_MAX = 150
+		-- Fit_Y_MAX = 150
+	end	
+
+	local Frame = ""
+	local Fit_Y = 0
+	local Fit_X = fitImage( ImageObj, Fit_X_MAX, Fit_Y_MAX, true )
+
+	ImageObj:scale( Fit_X, Fit_X )
 	print( "In FitFrameImage Filename: " .. ImageObj.id )
+	Fit_Y = Fit_X
+	if (ImageObj.width > ImageObj.height) then
+		Frame = "Phuket/Frame/frame_1.png"
+		Fit_X = Fit_X + 0.04
+		Fit_Y = Fit_Y + 0.05
+	else
+		Frame = "Phuket/Frame/frame_2.png"
+		Fit_X = Fit_X + 0.05
+		Fit_Y = Fit_Y + 0.05
+	end
 
 	if (ImageObj.id == NoAtt .. "_" .. member_no .. "_1.jpg") then
-		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", UserImage1.width, UserImage1.height )
+		FrameUserImage1 = display.newImageRect( Frame, UserImage1.width, UserImage1.height )
 		FrameUserImage1.x = UserImage1.x
 		FrameUserImage1.y = UserImage1.y
-		FrameUserImage1:scale( Fit_1, Fit_1 )
+		FrameUserImage1:scale( Fit_X , Fit_Y )
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_2.jpg") then
-		FrameUserImage2 = display.newImageRect( "Phuket/share/frame2.png", UserImage2.width, UserImage2.height )
+		FrameUserImage2 = display.newImageRect( Frame, UserImage2.width, UserImage2.height )
 		FrameUserImage2.x = UserImage2.x
 		FrameUserImage2.y = UserImage2.y
-		FrameUserImage2:scale( Fit_1, Fit_1 )
+		FrameUserImage2:scale( Fit_X, Fit_Y )
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_3.jpg") then
-		FrameUserImage3 = display.newImageRect( "Phuket/share/frame2.png", UserImage3.width, UserImage3.height )
+		FrameUserImage3 = display.newImageRect( Frame, UserImage3.width, UserImage3.height )
 		FrameUserImage3.x = UserImage3.x
 		FrameUserImage3.y = UserImage3.y
-		FrameUserImage3:scale( Fit_1, Fit_1 )
+		FrameUserImage3:scale( Fit_X, Fit_Y )
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_4.jpg") then
-		FrameUserImage4 = display.newImageRect( "Phuket/share/frame2.png", UserImage4.width, UserImage4.height )
+		FrameUserImage4 = display.newImageRect( Frame, UserImage4.width, UserImage4.height )
 		FrameUserImage4.x = UserImage4.x
 		FrameUserImage4.y = UserImage4.y
-		FrameUserImage4:scale( Fit_1, Fit_1 )
+		FrameUserImage4:scale( Fit_X, Fit_Y )
 	end
 end
 
@@ -390,10 +442,7 @@ function scene:show(event)
 	    LOADING_IMG_4 = false
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, listener, 0 )
-		cx = display.contentCenterX
-	    cy = display.contentCenterY
-	    cw = display.contentWidth
-	    ch = display.contentHeight
+		
 	    CheckImg1 = false
 	    CheckImg2 = false
 	    CheckImg3 = false
@@ -407,7 +456,7 @@ function scene:show(event)
 
 		Tett = display.newImageRect("Phuket/share/text.png", 764/2, 94/2 )
 	    Tett.x = cx 
-		Tett.y = cy  - 70
+		Tett.y = cy  - 80
 
 		local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
 		NoAtt = 0
@@ -436,8 +485,8 @@ function scene:show(event)
 					UserImage1 = display.newImage( 
 							Filename, 
 							system.DocumentsDirectory,
-							cx - 200,
-							cy + 30 
+							ImagePosition_X_1,
+							ImagePosition_Y_1 
 							)
 					--UserImage1:scale( 0.15, 0.15 )
 					UserImage1.id = Filename
@@ -447,13 +496,13 @@ function scene:show(event)
 		       		LOADING_IMG_1 = true
 		       		--FitFrameImage( UserImage1 )	
 --[[
-		       		local Fit_1 = fitImage( UserImage1, 125, 125, true )
-		       		UserImage1:scale( Fit_1, Fit_1 )
+		       		local Fit_X = fitImage( UserImage1, 125, 125, true )
+		       		UserImage1:scale( Fit_X, Fit_X )
 
 		       		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", UserImage1.width, UserImage1.height )
 		       		FrameUserImage1.x = UserImage1.x
 		       		FrameUserImage1.y = UserImage1.y
-		       		FrameUserImage1:scale( Fit_1, Fit_1 )
+		       		FrameUserImage1:scale( Fit_X, Fit_X )
 
 		       					
 		       		UserImage1:setMask( mask )
@@ -479,8 +528,8 @@ function scene:show(event)
 					UserImage2 = display.newImage( 
 							Filename, 
 							system.DocumentsDirectory,
-							cx - 70,
-							cy + 30  
+							ImagePosition_X_2,
+							ImagePosition_Y_2  
 							)
 					--UserImage2:scale( 0.15, 0.15 )
 					UserImage2.id = Filename
@@ -512,8 +561,8 @@ function scene:show(event)
 					UserImage3 = display.newImage( 
 							Filename, 
 							system.DocumentsDirectory,
-							cx + 60,
-							cy + 30 
+							ImagePosition_X_3,
+							ImagePosition_Y_3 
 							)
 					--UserImage3:scale( 0.15, 0.15 )
 					UserImage3.id = Filename
@@ -545,8 +594,8 @@ function scene:show(event)
 					UserImage4 = display.newImage( 
 							Filename, 
 							system.DocumentsDirectory,
-							cx + 190,
-							cy + 30  
+							ImagePosition_X_4,
+							ImagePosition_Y_4  
 							)
 					--UserImage4:scale( 0.15, 0.15 )
 					UserImage4.id = Filename
@@ -575,32 +624,32 @@ end
 		if (CheckImg1 == false) then
 			print( "else1" )
 			UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
-			UserImage1.x = cx - 200
-			UserImage1.y = cy + 30
+			UserImage1.x = ImagePosition_X_1
+			UserImage1.y = ImagePosition_Y_1
 			LOADING_IMG_1 = true
 		end
 
 		if (CheckImg2 == false) then
 			print( "else2" )
 			UserImage2 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
-			UserImage2.x = cx - 70
-			UserImage2.y = cy + 30
+			UserImage2.x = ImagePosition_X_1
+			UserImage2.y = ImagePosition_Y_2
 			LOADING_IMG_2 = true
 		end
 
 		if (CheckImg3 == false) then
 			print( "else3" )
 			UserImage3 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
-			UserImage3.x = cx + 60
-			UserImage3.y = cy + 30
+			UserImage3.x = ImagePosition_X_3
+			UserImage3.y = ImagePosition_Y_3
 			LOADING_IMG_3 = true
 		end
 
 		if (CheckImg4 == false) then
 			print( "else4" )
 			UserImage4 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
-			UserImage4.x = cx + 190
-			UserImage4.y = cy + 30
+			UserImage4.x = ImagePosition_X_4
+			UserImage4.y = ImagePosition_Y_4
 			LOADING_IMG_4 = true
 		end
 		
@@ -630,7 +679,7 @@ end
 			)
 		
 		ShareBtn.x = cx 
-		ShareBtn.y = cy + 110
+		ShareBtn.y = cy + 120
 
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")

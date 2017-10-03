@@ -77,7 +77,8 @@ local function Check( event )
 				print( "Go to scene #Share " .. params.PlaceName )
 				composer.gotoScene("share", options)
 			else
-				native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
+				--native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
+				toast.show("You need to add photo and note first.")
 				return
 			end
 
@@ -89,7 +90,8 @@ local function Check( event )
 				print( "Go to scene #Diary " .. params.PlaceName )
 				composer.gotoScene("Diary", options)
 			else
-				native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
+				--native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
+				toast.show(params.PlaceName .." is lock!")
 				return
 			end
 			
@@ -136,7 +138,7 @@ local function UnlockListener(  )
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, CallDrop )
 
-		toast.show(params.PlaceName .." Unlock!")
+		toast.show(params.PlaceName .." now has Unlock!")
 
 
         timer.performWithDelay( 5000, GoS )         
@@ -300,19 +302,8 @@ function scene:show(event)
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 		--Bg:scale( 0.3, 0.3 ) 
---[[
-		TitleImage = display.newImage("Phuket/Attraction Name/".. params.PlaceName .. ".png", cx - 80, cy - 100 )
-		
-		if(params.PlaceName == "Bang Pae Waterfall") then
-			TitleImage:scale( 0.4, 0.4 )
-		elseif(params.PlaceName == "Kata Beach" or params.PlaceName == "Big buddha") then
-			TitleImage:scale( 0.6, 0.6 )
-		else
-			TitleImage:scale( 0.5, 0.5 )
-		end
-]]
-		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 
+		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 
 		for row in db:nrows(sqlUnlock) do
 			if (row.Catt_no == 0) then

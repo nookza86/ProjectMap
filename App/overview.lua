@@ -390,8 +390,8 @@ function EnableBTN(  )
 	karon:addEventListener( "touch", check )
 	patong:addEventListener( "touch", check )
 	kamala1:addEventListener( "touch", check )
-	kamala2:addEventListener( "touch", check )
-	kamala3:addEventListener( "touch", check )
+	--kamala2:addEventListener( "touch", check )
+	--kamala3:addEventListener( "touch", check )
 	
 end
 
@@ -413,8 +413,8 @@ function DisableBTN(  )
 	karon:removeEventListener( "touch", check )
 	patong:removeEventListener( "touch", check )
 	kamala1:removeEventListener( "touch", check )
-	kamala2:removeEventListener( "touch", check )
-	kamala3:removeEventListener( "touch", check )
+	--kamala2:removeEventListener( "touch", check )
+	--kamala3:removeEventListener( "touch", check )
 	
 end
 
@@ -560,9 +560,9 @@ print( display.pixelHeight / display.actualContentHeight )
 			end                       
 		end
 
-	watchalong = display.newImageRect( "Phuket/Overview/watchalong.png", 334/5, 202/5 )
-	watchalong.x = island.x + 10
-	watchalong.y = island.y
+	watchalong = display.newImageRect( "Phuket/Overview/press.png", 334/5, 202/5 )
+	watchalong.x = island.x + 35
+	watchalong.y = island.y - 5
 	watchalong.name = "Chalong Temple"
 
 	ChalongLabel = display.newImageRect( "Phuket/label/chalong.png", 734/8, 137/8 )
@@ -574,9 +574,9 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockChalongLabel.x = watchalong.x
 	UnlockChalongLabel.y = watchalong.y - 5
 
-	bangpae = display.newImageRect( "Phuket/Overview/bangpae.png", 596/6, 531/6)
-	bangpae.x = island.x + 100
-	bangpae.y = island.y + 10
+	bangpae = display.newImageRect( "Phuket/Overview/press.png", 596/6, 531/6)
+	bangpae.x = island.x + 180
+	bangpae.y = island.y - 15
 	bangpae.name = "Bang Pae Waterfall"
 
 	BangPaeLabel = display.newImageRect( "Phuket/label/bangpae.png", 588/5, 83/5)
@@ -587,14 +587,14 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockBangPaeLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBangPaeLabel.x = bangpae.x
 	UnlockBangPaeLabel.y = bangpae.y + 15
-	
+	--[[
 	TribeBangpareImage = display.newImageRect( "Phuket/Overview/tribe.png", 302/8, 228/8)
 	TribeBangpareImage.x = bangpae.x + 50
 	TribeBangpareImage.y = bangpae.y + 30
-	
-	bigbuddha = display.newImageRect( "Phuket/Overview/bigbuddha.png", 365/4, 227/4 )
-	bigbuddha.x = island.x - 100
-	bigbuddha.y = island.y + 10
+	]]
+	bigbuddha = display.newImageRect( "Phuket/Overview/press.png", 365/4, 227/4 )
+	bigbuddha.x = island.x - 40
+	bigbuddha.y = island.y - 20
 	bigbuddha.name = "Big Buddha"
 
 	BigBuddhaLabel = display.newImageRect( "Phuket/label/bigbuddha.png", 393/5, 82/5 )
@@ -605,14 +605,14 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockBigBuddhaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockBigBuddhaLabel.x = bigbuddha.x
 	UnlockBigBuddhaLabel.y = bigbuddha.y - 5
-
+--[[
 	CloudBigBudda = display.newImageRect( "Phuket/Overview/cloud.png", 338/12, 135/12 )
 	CloudBigBudda.x = bigbuddha.x - 20
 	CloudBigBudda.y = bigbuddha.y - 10
-
-	kata = display.newImageRect( "Phuket/Overview/kata.png", 466/7, 214/7 )
-	kata.x = island.x - 200
-	kata.y = island.y - 10
+]]
+	kata = display.newImageRect( "Phuket/Overview/press.png", 466/7, 214/7 )
+	kata.x = island.x - 180
+	kata.y = island.y - 15
 	kata.name = "Kata Beach"
 
 	KataLabel = display.newImageRect( "Phuket/label/kata.png", 393/5, 82/5 )
@@ -623,13 +623,13 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockKataLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKataLabel.x = kata.x
 	UnlockKataLabel.y = kata.y - 15
-
+--[[
 	cocoKataImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocoKataImage.x = kata.x - 15
 	cocoKataImage.y = kata.y - 20
 	cocoKataImage.rotation = -15
-
-	kamala1 = display.newImageRect( "Phuket/Overview/kamala_1.png", 356/17, 236/17 )
+]]
+	kamala1 = display.newImageRect( "Phuket/Overview/press.png", 356/17, 236/17 )
 	kamala1.x = island.x + 50
 	kamala1.y = island.y - 130
 	kamala1.name = "Kamala Beach"
@@ -642,7 +642,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockKamalaLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockKamalaLabel.x = kamala1.x
 	UnlockKamalaLabel.y = kamala1.y - 5
-
+--[[
 	kamala2 = display.newImageRect( "Phuket/Overview/kamala_2.png", 213/17, 89/17 )
 	kamala2.x = kamala1.x - 20
 	kamala2.y = kamala1.y 
@@ -652,13 +652,13 @@ print( display.pixelHeight / display.actualContentHeight )
 	kamala3.x = kamala2.x + 40
 	kamala3.y = kamala2.y
 	kamala3.name = "Kamala Beach"
-
-	karon = display.newImageRect( "Phuket/Overview/karon.png", 472/9, 385/9 )
-	karon.x = island.x - 90
-	karon.y = island.y - 50
+]]
+	karon = display.newImageRect( "Phuket/Overview/press.png", 472/9, 385/9 )
+	karon.x = island.x - 100
+	karon.y = island.y - 40
 	karon.name = "Karon Beach"
 	karon.xScale = -1
-	cocoKataImage.rotation = -5
+	--cocoKataImage.rotation = -5
 
 	KaronLabel = display.newImageRect( "Phuket/label/karon.png", 393/5.5, 82/5.5 )
 	KaronLabel.x = karon.x 
@@ -669,7 +669,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockKaronLabel.x = karon.x
 	UnlockKaronLabel.y = karon.y - 15
 
-	patong = display.newImageRect( "Phuket/Overview/patong.png", 638/11, 258/11 )
+	patong = display.newImageRect( "Phuket/Overview/press.png", 638/11, 258/11 )
 	patong.x = island.x - 40
 	patong.y = island.y - 80
 	patong.name = "Patong Beach"
@@ -682,7 +682,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	UnlockPatongLabel = display.newImageRect( "Phuket/Overview/lock.png", 514/12, 514/12)
 	UnlockPatongLabel.x = patong.x
 	UnlockPatongLabel.y = patong.y - 5
-
+--[[
 	cocokaronImage = display.newImageRect( "Phuket/Overview/coco.png", 340/9, 622/9 )
 	cocokaronImage.x = karon.x + 5
 	cocokaronImage.y = karon.y - 20
@@ -722,7 +722,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	CloudCenterRight = display.newImageRect( "Phuket/Overview/cloud.png", 338/5, 135/6 )
 	CloudCenterRight.x = island.x + 150
 	CloudCenterRight.y = island.y - 50
-
+]]
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
 	--IsClick = false
@@ -743,8 +743,8 @@ print( display.pixelHeight / display.actualContentHeight )
 	karon:addEventListener( "touch", check )
 	patong:addEventListener( "touch", check )
 	kamala1:addEventListener( "touch", check )
-	kamala2:addEventListener( "touch", check )
-	kamala3:addEventListener( "touch", check )
+	--kamala2:addEventListener( "touch", check )
+	--kamala3:addEventListener( "touch", check )
 	
 	
 	---------------------------------- Group Place -----------------------------------------
@@ -753,23 +753,24 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(ChalongLabel)
 	PlaceGroup:insert(bangpae)
 	PlaceGroup:insert(BangPaeLabel)
-	PlaceGroup:insert(TribeBangpareImage)
+	--PlaceGroup:insert(TribeBangpareImage)
 	PlaceGroup:insert(bigbuddha)
 	PlaceGroup:insert(BigBuddhaLabel)
-	PlaceGroup:insert(CloudBigBudda)
+	--PlaceGroup:insert(CloudBigBudda)
 	PlaceGroup:insert(kata)
 	PlaceGroup:insert(KataLabel)
-	PlaceGroup:insert(cocokaronImage)
+	--PlaceGroup:insert(cocokaronImage)
 	PlaceGroup:insert(karon)
 	PlaceGroup:insert(KaronLabel)
-	PlaceGroup:insert(cocoKataImage)
+	--PlaceGroup:insert(cocoKataImage)
 	PlaceGroup:insert(patong)
 	PlaceGroup:insert(PatongLabel)
 	PlaceGroup:insert(kamala1)
-	PlaceGroup:insert(kamala2)
-	PlaceGroup:insert(kamala3)
+	--PlaceGroup:insert(kamala2)
+	--PlaceGroup:insert(kamala3)
 	PlaceGroup:insert(KamalaLabel)
 	PlaceGroup:insert(KataLabel)
+	--[[
 	PlaceGroup:insert(TreeImage)
 	PlaceGroup:insert(CloudTree)
 	PlaceGroup:insert(LagoonImage)
@@ -777,7 +778,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	PlaceGroup:insert(CloudRight)
 	PlaceGroup:insert(CloudCenter)
 	PlaceGroup:insert(CloudCenterRight)
-
+]]
 	
 
 	ButtonGroup = display.newGroup()
@@ -841,18 +842,19 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(ChalongLabel)
 	PlaceGroup:remove(bangpae)
 	PlaceGroup:remove(BangPaeLabel)
-	PlaceGroup:remove(TribeBangpareImage)
+	--PlaceGroup:remove(TribeBangpareImage)
 	PlaceGroup:remove(bigbuddha)
 	PlaceGroup:remove(BigBuddhaLabel)
-	PlaceGroup:remove(CloudBigBudda)
+	--PlaceGroup:remove(CloudBigBudda)
 	PlaceGroup:remove(kata)
 	PlaceGroup:remove(KataLabel)
-	PlaceGroup:remove(cocokaronImage)
+	--PlaceGroup:remove(cocokaronImage)
 	PlaceGroup:remove(karon)
 	PlaceGroup:remove(KaronLabel)
-	PlaceGroup:remove(cocoKataImage)
+	--PlaceGroup:remove(cocoKataImage)
 	PlaceGroup:remove(patong)
 	PlaceGroup:remove(PatongLabel)
+	--[[
 	PlaceGroup:remove(TreeImage)
 	PlaceGroup:remove(CloudTree)
 	PlaceGroup:remove(LagoonImage)
@@ -860,9 +862,10 @@ composer.removeScene( "overview" )
 	PlaceGroup:remove(CloudRight)
 	PlaceGroup:remove(CloudCenter)
 	PlaceGroup:remove(CloudCenterRight)
+	]]
 	PlaceGroup:remove(kamala1)
-	PlaceGroup:remove(kamala2)
-	PlaceGroup:remove(kamala3)
+	--PlaceGroup:remove(kamala2)
+	--PlaceGroup:remove(kamala3)
 	PlaceGroup:remove(KamalaLabel)
 
 
@@ -886,12 +889,13 @@ composer.removeScene( "overview" )
 	RemoveAll(island)
 	RemoveAll(watchalong)
 	RemoveAll(bangpae)
-	RemoveAll(TribeBangpareImage)
+	--RemoveAll(TribeBangpareImage)
 	RemoveAll(bigbuddha)
-	RemoveAll(CloudBigBudda)
+	--RemoveAll(CloudBigBudda)
 	RemoveAll(kata)
-	RemoveAll(cocokaronImage)
+	--RemoveAll(cocokaronImage)
 	RemoveAll(karon)
+	--[[
 	RemoveAll(cocoKataImage)
 	RemoveAll(TreeImage)
 	RemoveAll(CloudTree)
@@ -900,13 +904,14 @@ composer.removeScene( "overview" )
 	RemoveAll(CloudRight)
 	RemoveAll(CloudCenter)
 	RemoveAll(CloudCenterRight)
+	]]
 	ProfileImage:setMask( nil )
 	mask = nil
 	RemoveAll(ProfileImage)
 	RemoveAll(ProfileFrame)
 	RemoveAll(kamala1)
-	RemoveAll(kamala2)
-	RemoveAll(kamala3)
+	--RemoveAll(kamala2)
+	--RemoveAll(kamala3)
 	RemoveAll(patong)
 	RemoveAll(ChalongLabel)
 	RemoveAll(BigBuddhaLabel)
@@ -915,8 +920,8 @@ composer.removeScene( "overview" )
 	RemoveAll(KamalaLabel)
 	RemoveAll(BangPaeLabel)
 	RemoveAll(PatongLabel)
-	RemoveAll(Bird1)
-	RemoveAll(Bird2)
+	--RemoveAll(Bird1)
+	--RemoveAll(Bird2)
 
 
 	if (CheckUnlockBangPaeLabel) then

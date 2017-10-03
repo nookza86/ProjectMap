@@ -122,6 +122,8 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
+
+         composer.gotoScene("menu")
          --myText.text = event.status .. " " .. event.response
 --[[
          if (event.status == "201") then
