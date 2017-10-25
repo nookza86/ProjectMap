@@ -20,6 +20,10 @@ if (isset($_POST['Number'])) {
       case 3:
           $sql = "SELECT * FROM unattractions WHERE member_no = $mem_no";
           break;
+
+      case 4:
+          $sql = "SELECT * FROM members WHERE member_no = $mem_no";
+          break;
       
       default:
           # code...

@@ -56,9 +56,28 @@ local function GetDataListener( event )
 
 				db:exec( insertQuery )
 				--print(insertQuery)
-				
 	       end
-	   end
+
+	    elseif(CountGetDatabase == 4) then
+
+			for idx4, val4 in ipairs(decodedDatabase) do
+	       		local insertQuery = "INSERT INTO personel VALUES (" ..
+				val4.member_no .. ",'" ..
+				val4.first_name .. "','" ..
+				val4.last_name .. "','" ..
+				val4.email.. "','" .. 
+				val4.gender.. "','" .. 
+				val4.dob.. "','" ..
+				val4.country.. "','" ..
+				val4.userfrom.. "','" ..
+				val4.user_img .. "');"
+				print( insertQuery )
+				db:exec( insertQuery )
+	       end
+
+			return true
+	       
+	    end
        
     end
 end
@@ -103,6 +122,9 @@ function DropTableData( Table )
 
 	elseif (Table == 3) then
 		tablesetup = "DELETE FROM `unattractions`;"
+
+	elseif (Table == 4) then
+		tablesetup = "DELETE FROM `personel`;"
 		
 	end
 	

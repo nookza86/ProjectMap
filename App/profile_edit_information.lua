@@ -7,6 +7,11 @@ local lfs = require( "lfs" )
 local toast = require('plugin.toast')
 require("createAcc")
 require ("Network-Check")
+require ("get-data")
+local sqlite = require("sqlite3")
+local path = system.pathForFile( "data.db", system.DocumentsDirectory )
+local db = sqlite.open(path)
+
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
 local PicUser, PicTitle, PicFirstName, PicLastName, PicPassword, PicConfirmPassword, PicEmail, PicBirthDay, PicGender, PicCountry
 local PictxfFirstName, PictxfLastName, PictxfPassword, PictxfConfirmPassword, PictxfEmail
@@ -71,27 +76,20 @@ local function onKeyEvent( event )
 end
 
 local function Check( event )
-    print( event.phase )
-    if(event.phase == "ended") then
-        composer.gotoScene( "menu" )
 
+    if(event.phase == "ended") then
+        if (event.target.id == "BackBtn") then
+            composer.gotoScene( "profile" )
+        elseif(event.target.id == "UpdateBtn") then
+            print( "update" )
+        end
     end
+    
 end
 
 local function textFieldHandler( event )
-    --print( event.target.name )
-    if(event.target.name == "txfConfirmPassword") then
-        CheckPasswordMatch = false
-        if(txfPassword.text ~= txfConfirmPassword.text ) then
-            CheckPasswordMatch = false
-            print( "Password doesn't match" )
 
-        elseif(txfPassword.text == txfConfirmPassword.text) then
-            CheckPasswordMatch = true
-            print( "Password match" )
-        end
-
-    elseif (event.target.name == "txfEmail" and string.len( txfEmail.text ) > 0) then
+    if (event.target.name == "txfEmail" and string.len( txfEmail.text ) > 0) then
         CheckEmail = false
         if (txfEmail.text:match("[A-Za-z0-9%.%%%+%-]+@[A-Za-z0-9%.%%%+%-]+%.%w%w%w?%w?")) then
             CheckEmail = true
@@ -100,9 +98,8 @@ local function textFieldHandler( event )
             CheckEmail = false
              print("INVALID EMAIL")                
         end
-        --CheckEmail = validemail(txfEmail.text)
-        --print( string.len( txfEmail.text ), CheckEmail )
     end
+
 end
 
 local function uploadListener( event )
@@ -123,24 +120,22 @@ local function uploadListener( event )
          print( "Status:", event.status )
          print( "Response:", event.response )
 
-         composer.gotoScene("menu")
-         --myText.text = event.status .. " " .. event.response
---[[
-         if (event.status == "201") then
-            local UpImg = {}
-
-            UpImg["member_no"] = member_no
-            UpImg["att_no"] = NoAtt
-
-             UpdateImg
+         local Result = DropTableData( 4 )
+         
+         if (Result == true) then
+             composer.gotoScene( "profile" )
          end
-         ]]
       end
    end
 end
 
-local function UploadUserImage( MemNo )
-   
+local function UploadUserImage( )
+    local MemNo = 0
+
+    for row in db:nrows("SELECT id FROM personel;") do
+        MemNo = row.id
+    end
+
     local url = "http://mapofmem.esy.es/admin/api/android_upload_api/register_upload.php"
   
     local method = "PUT"
@@ -165,36 +160,6 @@ local function UploadUserImage( MemNo )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
-local function reNameImg( member_no )
-    -- Get raw path to the app documents directory
-    local doc_path = system.pathForFile( "", system.DocumentsDirectory )
-    local destDir = system.DocumentsDirectory
-    --myText.text = "reNameImg"
-    for file in lfs.dir( doc_path ) do
-        -- "file" is the current file or directory name
-        print( "Found file: " .. file )
-
-        if (file == "PIC.jpg") then
-            local result, reason = os.rename(
-                system.pathForFile( "PIC.jpg", destDir ),
-                system.pathForFile( "" .. member_no .. ".jpg", destDir )
-            )
-
-            if result then
-                --myText.text = "File renamed"
-                print( "File renamed" )
-                UploadUserImage( member_no )
-            else
-                --myText.text = "File not renamed re: " .. reason 
-                print( "File not renamed", reason )  --> File not renamed    orange.txt: No such file or directory
-            end
-            break
-        end
-    end
-
-
-end
-
 local function networkListener( event )
     
     if ( event.isError ) then
@@ -208,56 +173,40 @@ local function networkListener( event )
         decodedData = (json.decode( myNewData ))
 
         if (decodedData["error"] == false) then
-            --myText.text = decodedData["member_no"] 
-             print( decodedData["member_no"] )
-             reNameImg( decodedData["member_no"] )
+            UploadUserImage()
+        else
+            native.showAlert( "Error","Try again.", { "OK" } )
         end
     end
 end
 
-function CreateAccountSendListener( RegisterSend )
+function CreateAccountSendListener( EditProfileSend )
     local headers = {}
 
     headers["Content-Type"] = "application/x-www-form-urlencoded"
     headers["Accept-Language"] = "en-US"
 
-    local body = "RegisterSend=" .. RegisterSend
+    local body = "EditProfileSend=" .. EditProfileSend
 
     local params = {}
     params.headers = headers
     params.body = body
 
-    local url = "http://mapofmem.esy.es/admin/api/android_login_api/register.php"
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/profile_edit.php"
     
-    print( "Register Data Sending To ".. url .." Web Server : " .. RegisterSend )
+    print( "Register Data Sending To ".. url .." Web Server : " .. EditProfileSend )
     network.request( url, "POST", networkListener, params )
 end
 
-
 local function CreateAccountListener( event )
-
-    if(txfFirstName.text == "" or txfLastName.text == "" or txfPassword.text == "" or txfConfirmPassword.text == "" or txfEmail.text == "") then
-        native.showAlert( "Please fill all information in the form.", { "OK" } )
-        return
-    end
-
-    if (CheckPasswordMatch == false) then
-        native.showAlert( "The password does not match", { "OK" } )
-        return
-    end
-
-    if (CheckEmail == false) then
-        native.showAlert( "Email Address in invalid format", { "OK" } )
-        return
-    end
 
     if isRechable() == false then 
         native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
         return
     end
 
-    if(event.phase == "began" and CheckPasswordMatch == true and CheckEmail == true) then
-
+    if(event.phase == "began") then
+        native.setActivityIndicator( true )
         local GenderPickerValues = GenderPickerWheel:getValues()
         local BirthPickerValues = BirthPickerWheel:getValues()
         local CountryPickerValues = CountryPickerWheel:getValues()
@@ -268,31 +217,36 @@ local function CreateAccountListener( event )
         local BirthYearValue = BirthPickerValues[3].value
         local CountryValue = CountryPickerValues[1].value
 
-        local register = {}
-        register["fname"] = txfFirstName.text
-        register["lname"] = txfLastName.text
-        register["email"] = txfEmail.text
-        register["password"] = txfPassword.text
-        register["gender"] = GenderValue
-        register["BirthMonth"] = BirthMonthValue
-        register["BirthDay"] = BirthDayValue
-        register["BirthYear"] = BirthYearValue
-        register["Country"] = CountryValue
-        register["UserFrom"] = "0"
-        register["UserImage"] = "/img_path/user.jpg"
+        for row in db:nrows("SELECT id FROM personel;") do
+                ID_USER = row.id
+        end
 
-        local RegisterSend = json.encode( register )
+        local EditProfile = {}
+        EditProfile["member_no"] = ID_USER
+        EditProfile["fname"] = txfFirstName.text
+        EditProfile["lname"] = txfLastName.text
+        EditProfile["email"] = txfEmail.text
+       -- EditProfile["password"] = txfPassword.text
+        EditProfile["gender"] = GenderValue
+        EditProfile["BirthMonth"] = BirthMonthValue
+        EditProfile["BirthDay"] = BirthDayValue
+        EditProfile["BirthYear"] = BirthYearValue
+        EditProfile["Country"] = CountryValue
+        --EditProfile["UserFrom"] = "0"
+        --EditProfile["UserImage"] = "/img_path/user.jpg"
+
+        local EditProfileSend = json.encode( EditProfile )
         
-        CreateAccountSendListener(RegisterSend)
+        CreateAccountSendListener(EditProfileSend)
 
     end
 end
 
-local sessionComplete = function(event)
+local SelectImageListener = function(event)
     photo = event.target
-    --myText.text = "ses"
+    
     if photo then
-
+        toast.show("SelectImageListener")
         if photo.width > photo.height then
            -- photo:rotate( -90 )         -- rotate for landscape
             print( "Rotated" )
@@ -303,8 +257,9 @@ local sessionComplete = function(event)
         local yScale = _H / photo.contentHeight
         local scale = math.max( xScale, yScale ) * .75
         
-        local maxWidth = 256
-        local maxHeight = 256
+        local maxWidth = 512
+        local maxHeight = 512
+        local ScaleProFile = 0
 
         --photo:scale( scale, scale )
         photo.x = centerX
@@ -319,6 +274,7 @@ local sessionComplete = function(event)
            local ratio = maxWidth / photo.width
            photo.width = maxWidth
            photo.height = photo.height * ratio
+           ScaleProFile = scale / 2.5
         end
          
         --rescale height
@@ -326,6 +282,7 @@ local sessionComplete = function(event)
            local ratio = maxHeight / photo.height
            photo.height = maxHeight
            photo.width = photo.width * ratio
+           ScaleProFile = scale
         end
 
         display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
@@ -337,17 +294,23 @@ local sessionComplete = function(event)
             if (mask) then
                 PicUser:setMask( nil )
                 mask = nil
-                RemoveAll(ProfileFrame)
+                --RemoveAll(ProfileFrame)
             end
+            ProfileFrame:removeSelf( )
+            ProfileFrame = nil
             PicUser:removeSelf( )
             PicUser = nil
+            local ID_USER = 0
+            for row in db:nrows("SELECT id FROM personel;") do
+                ID_USER = row.id
+            end
             
             PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 195, cy - 80, true )
-            PicUser:scale(0.2  , 0.2  )
-            PicUser.name = "PIC"
+            PicUser:scale( ScaleProFile, ScaleProFile )
+            PicUser.name = ID_USER
             PicUser:addEventListener( "touch", SelectImg )
 
-         mask = graphics.newMask( "cc.png" )
+            mask = graphics.newMask( "cc.png" )
              
             PicUser:setMask( mask )
             
@@ -366,14 +329,98 @@ local sessionComplete = function(event)
     else
         PhotoPickerCheck = false
         --myText.text = "No Image Selected"
-
+        toast.show("else")
     end
 end
 
 function SelectImg( event )
      PhotoName = event.target.name
-    -- myText.text = "This"
-     media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })   
+    toast.show("SelectImg")
+     media.selectPhoto( { listener = SelectImageListener, baseDir = system.DocumentsDirectory, filename = PhotoName .. ".jpg",mediaSource = PHOTO_FUNCTION })   
+end
+
+local function loadImageListener( event )
+    if(not event.isError) then
+        native.setActivityIndicator( true )
+        print( event.response.filename, event.response.baseDirectory )
+            PicUser = display.newImage( 
+                            event.response.filename, 
+                            event.response.baseDirectory,
+                            cx - 180,
+                            cy - 75 
+                            )
+                --PicUser:scale( 0.2, 0.2 )
+                PicUser.name = "profile"
+                
+
+           if PicUser.width > PicUser.height then
+            --PicUser:rotate( -90 )           -- rotate for landscape
+            print( "Rotated" )
+        end
+        
+        -- Scale image to fit content scaled screen
+        local xScale = cw / PicUser.contentWidth
+        local yScale = ch / PicUser.contentHeight
+        local scale = math.max( xScale, yScale ) * .75
+        
+        local maxWidth = 512
+        local maxHeight = 512
+        local ScaleProFile = 0
+
+        --rescale width
+        if ( PicUser.width > maxWidth ) then
+           local ratio = maxWidth / PicUser.width
+           PicUser.width = maxWidth
+           PicUser.height = PicUser.height * ratio
+           ScaleProFile = scale / 2.5
+        end
+         
+        --rescale height
+        if ( PicUser.height > maxHeight ) then
+           local ratio = maxHeight / PicUser.height
+           PicUser.height = maxHeight
+           PicUser.width = PicUser.width * ratio
+           ScaleProFile = scale
+        end
+
+        PicUser:scale( ScaleProFile, ScaleProFile )
+         mask = graphics.newMask( "cc.png" )
+         --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+             
+            PicUser:setMask( mask )
+            
+            PicUser.maskX = 1
+            --PicUser.maskY = 1
+            --PicUser.maskRotation = 20
+            PicUser.maskScaleX = 2
+            PicUser.maskScaleY = 2
+
+            print( PicUser.width, PicUser.height )
+
+    ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
+    ProfileFrame.x = PicUser.x 
+    ProfileFrame.y = PicUser.y + 6
+    ProfileFrame.name = "profile"
+    PicUser:addEventListener( "touch", SelectImg )
+    ImageGroup:insert( PicUser )
+    ImageGroup:insert( ProfileFrame )
+    
+    end
+    native.setActivityIndicator( false )
+
+end
+
+local function LoadUserImg( no )
+    local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. no 
+    print( url )
+network.download( url , 
+    "GET", 
+    loadImageListener,
+    {},
+    no,
+    system.ApplicationSupportDirectory
+    )
+
 end
 
 function scene:create(event)
@@ -389,41 +436,35 @@ function scene:show(event)
     cy = display.contentCenterY
     cw = display.contentWidth
     ch = display.contentHeight
+
     local prevScene = composer.getSceneName( "previous" )
 
-    if (prevScene ~= nil) then
-        composer.removeScene( prevScene )
-    end
-        
+        if (prevScene ~= nil) then
+            composer.removeScene( prevScene )
+        end
+
     scrollView = widget.newScrollView(
-        {
-            top = 00,
-            left = 0,
-            width = display.contentWidth,
-            height = display.contentHeight,
-            scrollWidth = 0,
-            scrollHeight = 0,
-            --topPadding = 20,
-            bottomPadding = 0,
-            hideBackground = true,
-           -- hideScrollBar = true,
-            isBounceEnabled = false,
-            verticalScrollDisabled = false,
-            horizontalScrollDisabled = false
+    {
+        top = 00,
+        left = 0,
+        width = display.contentWidth,
+        height = display.contentHeight,
+        scrollWidth = 0,
+        scrollHeight = 0,
+        --topPadding = 20,
+        bottomPadding = 0,
+        hideBackground = true,
+       -- hideScrollBar = true,
+        isBounceEnabled = false,
+        verticalScrollDisabled = false,
+        horizontalScrollDisabled = false
         }
     )
     ImageGroup:insert( scrollView )
 
-    Bg = display.newImageRect( "Phuket/CreateAccount/bg.png", cw , ch  )
+    Bg = display.newImageRect( "Phuket/Profile/bg.png", cw , ch  )
     Bg.x = cx
     Bg.y = cy 
-    
-    PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
-    PicUser.x = cx - 195
-    PicUser.y = cy - 80
-    PicUser:addEventListener( "touch", SelectImg )
-    PicUser.name = "PIC"
-    PhotoPickerCheck = false
 
     PicFirstName = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
     PicFirstName.x = cx - 70
@@ -433,17 +474,9 @@ function scene:show(event)
     PicLastName.x = PicFirstName.x + 130
     PicLastName.y = PicFirstName.y
 
-    PicPassword = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
-    PicPassword.x = PicLastName.x + 130
-    PicPassword.y = PicLastName.y
-
     PicEmail = display.newImageRect( "Phuket/CreateAccount/box.png", 250, 25 )
     PicEmail.x = PicFirstName.x + 65
     PicEmail.y = PicFirstName.y + 50
-
-    PicConfirmPassword = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
-    PicConfirmPassword.x = PicEmail.x + 195
-    PicConfirmPassword.y = PicEmail.y
 
     txfFirstName = native.newTextField( PicFirstName.x  , PicFirstName.y, PicFirstName.width - 10, PicFirstName.height - 10 )
     txfFirstName.inputType = "default"
@@ -457,23 +490,6 @@ function scene:show(event)
     txfLastName.hasBackground = false
     txfLastName.placeholder = "Lastname"
 
-    txfPassword = native.newTextField( PicPassword.x  , PicPassword.y, PicPassword.width - 10, PicPassword.height - 10 )
-    txfPassword.inputType = "default"
-    txfPassword.isSecure = true
-    txfPassword.text = ""
-    txfPassword.hasBackground = false
-    txfPassword.placeholder = "Password"
-
-    txfConfirmPassword = native.newTextField( PicConfirmPassword.x  , PicConfirmPassword.y, PicConfirmPassword.width - 10, PicConfirmPassword.height - 10 )
-    txfConfirmPassword.inputType = "default"
-    txfConfirmPassword.text = ""
-    txfConfirmPassword.isSecure = true
-    txfConfirmPassword.hasBackground = false
-    txfConfirmPassword.name = "txfConfirmPassword"
-    txfConfirmPassword.placeholder = "Confirm Password"
-
-    txfConfirmPassword:addEventListener("userInput", textFieldHandler)
-
     txfEmail = native.newTextField( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
@@ -482,13 +498,90 @@ function scene:show(event)
     txfEmail.placeholder = "Email"
 
     txfEmail:addEventListener("userInput", textFieldHandler)
+    local gender = ""
+    local dob = ""
+    local country = ""
+    local id = 0
+     for row in db:nrows("SELECT id, img, fname, lname, email, gender, dob, country FROM personel;") do
+            id = row.id
+            txfFirstName.text = row.fname   
+            txfLastName.text = row.lname
+            txfEmail.text = row.email
+            gender = row.gender
+            dob = row.dob
+            country = row.country
+            Filename = row.img
+
+            if (row.img == "") then
+                PicUser = display.newImageRect( "Phuket/CreateAccount/Addpic.png", 386/3, 388/3 )
+                PicUser.x = cx - 195
+                PicUser.y = cy - 80
+                PicUser:addEventListener( "touch", SelectImg )
+                PicUser.name = "PIC"
+     
+            elseif (FindImg( Filename ) == true) then  
+                PicUser = display.newImage( 
+                            row.img, 
+                            system.DocumentsDirectory,
+                            cx - 200,
+                            cy - 75 
+                            )
+                --PicUser:scale( 0.2, 0.2 )
+                PicUser.name = id
+                PicUser:addEventListener( "touch", SelectImg )
+            end
+        end
+
+        -- Scale image to fit content scaled screen
+        local xScale = cw / PicUser.contentWidth
+        local yScale = ch / PicUser.contentHeight
+        local scale = math.max( xScale, yScale ) * .75
+        
+        local maxWidth = 512
+        local maxHeight = 512
+        local ScaleProFile = 0
+        
+        --rescale width
+        if ( PicUser.width > maxWidth ) then
+           local ratio = maxWidth / PicUser.width
+           PicUser.width = maxWidth
+           PicUser.height = PicUser.height * ratio
+           ScaleProFile = scale 
+        end
+         
+        --rescale height
+        if ( PicUser.height > maxHeight ) then
+           local ratio = maxHeight / PicUser.height
+           PicUser.height = maxHeight
+           PicUser.width = PicUser.width * ratio
+           ScaleProFile = scale / 1.7
+        end
+        PicUser:scale( ScaleProFile, ScaleProFile )
+         local mask = graphics.newMask( "cc.png" )
+         --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
+             
+            PicUser:setMask( mask )
+            
+            PicUser.maskX = 1
+            --PicUser.maskY = 1
+            --PicUser.maskRotation = 20
+            PicUser.maskScaleX = 1.5
+            PicUser.maskScaleY = 1.5
+
+            ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
+    ProfileFrame.x = PicUser.x 
+    ProfileFrame.y = PicUser.y + 5 
+    ProfileFrame.name = "profile"
+
+    --scrollView:insert( PicUser )
+
 
     CreateBtn = widget.newButton(
         {
-            width = 291/3.5,
-            height = 108/3.5,
-            defaultFile = "Phuket/Button/Button/create.png",
-            overFile = "Phuket/Button/ButtonPress/create.png",
+            width = 457/4,
+            height = 121/4,
+            defaultFile = "Phuket/Button/Button/update.png",
+            overFile = "Phuket/Button/ButtonPress/update.png",
             id = "CreateBtn",
             onEvent = CreateAccountListener
         }
@@ -508,15 +601,19 @@ function scene:show(event)
         }
             )
         
-    BackBtn.x = cx + 240
-    BackBtn.y = cy - 138
+        BackBtn.x = cx + 240
+        BackBtn.y = cy - 138
    
 ------------------------------- Gender ------------------------------------------------
+    local GenderStartIndex = 1
+    if (gender == "Female") then
+        GenderStartIndex = 2
+    end
     local columnGenderData = { 
         {
             align = "center",
             width = 50,
-            startIndex = 1,
+            startIndex = GenderStartIndex,
             labels = {"Male", "Female"},
         }
     }
@@ -548,16 +645,27 @@ function scene:show(event)
     GenderTitle.y = BoxGender.y - 2
 
 ------------------------------- Birth ------------------------------------------------
+    local MonthsStartIndex = tonumber( dob:sub( 7, -4 ) )
+    local DaysStartIndex = tonumber( dob:sub( 10 ) )
+    local YearsSubStartIndex = tonumber( dob:sub( 1, -7 ) )
+    local YearsStartIndex = 1
+
     local days = {}
     local years = {}
     for i = 1,31 do days[i] = i end
     for j = 1,47 do years[j] = 1970+j end
 
+    for i=1, #years do
+        if (years[i] == YearsSubStartIndex) then
+            YearsStartIndex = i
+        end
+    end
+
     local columnBirthData = { 
         {
             align = "right",
             width = 70,
-            startIndex = 5,
+            startIndex = MonthsStartIndex,
             labels = {
                 "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" 
             },
@@ -565,16 +673,18 @@ function scene:show(event)
         {
             align = "right",
             width = 30,
-            startIndex = 18,
+            startIndex = DaysStartIndex,
             labels = days,
         },
         {
             align = "right",
             width = 50,
-            startIndex = 21,
+            startIndex = YearsStartIndex,
             labels = years,
         }
     }
+
+
  
     -- Create the widget
     BirthPickerWheel = widget.newPickerWheel(
@@ -603,12 +713,8 @@ function scene:show(event)
     BirthTitle.y = BoxBirth.y 
 
 ------------------------------- Country ------------------------------------------------
-   local columnCountryData = { 
-        {
-            align = "center",
-            width = 200,
-            startIndex = 21,
-            labels = {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia",
+    local CountrysStartIndex = 1
+    local countrys = {"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia",
                 "Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
                 "Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi",
                 "Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia",
@@ -629,9 +735,24 @@ function scene:show(event)
                 "Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago",
                 "Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom",
                 "United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela",
-                "Vietnam","Yemen","Zambia","Zimbabwe"},
+                "Vietnam","Yemen","Zambia","Zimbabwe"}
+    
+
+    for i=1, #countrys do
+        if (countrys[i] == country) then
+            CountrysStartIndex = i
+        end
+    end
+   local columnCountryData = { 
+        {
+            align = "center",
+            width = 200,
+            startIndex = CountrysStartIndex,
+            labels = countrys,
         }
     }
+
+
  
     -- Create the widget
     CountryPickerWheel = widget.newPickerWheel(
@@ -661,20 +782,16 @@ function scene:show(event)
 
         ImageGroup:insert(Bg)
         ImageGroup:insert(PicUser)
+        ImageGroup:insert(ProfileFrame)
         ImageGroup:insert(PicFirstName)
         ImageGroup:insert(PicLastName)
-        ImageGroup:insert(PicPassword)
-        ImageGroup:insert(PicConfirmPassword)
         ImageGroup:insert(PicEmail)
-        
         
         ImageGroup:insert(CreateBtn)
         ImageGroup:insert(BackBtn)
 
         ImageGroup:insert(txfFirstName)
         ImageGroup:insert(txfLastName)
-        ImageGroup:insert(txfPassword)
-        ImageGroup:insert(txfConfirmPassword)
         ImageGroup:insert(txfEmail)
 
         ImageGroup:insert(BoxBirth)
@@ -691,7 +808,8 @@ function scene:show(event)
         ImageGroup:insert(CountryPickerWheel)
         ImageGroup:insert(BirthPickerWheel)
         ImageGroup:insert(GenderPickerWheel)
-        sceneGroup:insert( ImageGroup )
+        sceneGroup:insert( ImageGroup )    
+
     elseif (phase == "did") then
         print("Scene Overview : show (did)")
     
@@ -703,14 +821,13 @@ function scene:hide(event)
     local sceneGroup = self.view
     local phase = event.phase
     if (phase == "will") then
-
 --[[
         RemoveAll(PicUser)
         RemoveAll(PicTitle)
         RemoveAll(PicFirstName)
         RemoveAll(PicLastName)
-        RemoveAll(PicPassword)
-        RemoveAll(PicConfirmPassword)
+        --RemoveAll(PicPassword)
+        --RemoveAll(PicConfirmPassword)
         RemoveAll(PicEmail)
         RemoveAll(PicBirthDay)
         RemoveAll(PicGender)
@@ -720,8 +837,8 @@ function scene:hide(event)
 
         RemoveAll(txfFirstName)
         RemoveAll(txfLastName)
-        RemoveAll(txfPassword)
-        RemoveAll(txfConfirmPassword)
+        --RemoveAll(txfPassword)
+       -- RemoveAll(txfConfirmPassword)
         RemoveAll(txfEmail)
 
         RemoveAll(BoxBirth)
@@ -738,19 +855,18 @@ function scene:hide(event)
         --RemoveAll(mask)
         --RemoveAll(ProfileFrame)
 
-       
+        
 
         RemoveAll(CountryPickerWheel)
         RemoveAll(BirthPickerWheel)
         RemoveAll(GenderPickerWheel)
-]]      PicUser:removeEventListener( "touch", SelectImg )
-
+]]      
+        PicUser:removeEventListener( "touch", SelectImg )
         if (mask) then
-            PicUser:setMask( nil )
-            mask = nil
-            RemoveAll(ProfileFrame)
-        end
-
+                PicUser:setMask( nil )
+                mask = nil
+                RemoveAll(ProfileFrame)
+            end
         RemoveAll(scrollView)
 
        -- CountryPickerWheel = nil

@@ -51,18 +51,23 @@ end
 local function Check( event )
 	print( event.target.id )
 	print( event.phase )
-
+--[[
 	if(event.target.id == "img") then
 		local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("informationImg",options)
 	end
+	]]
 	if(event.phase == "ended") then
 		if(event.target.id == "BackBtn") then
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
 			composer.gotoScene("HomePlace",options)
 
+		elseif(event.target.id == "img") then
+			local options = {params = {PlaceName = params.PlaceName}}
+			print( "Go to scene #HomePlace " .. params.PlaceName )
+			composer.gotoScene("informationImg",options)
 		elseif(event.target.id == "img") then
 			local options = {params = {PlaceName = params.PlaceName}}
 			print( "Go to scene #HomePlace " .. params.PlaceName )
@@ -132,6 +137,13 @@ function scene:show(event)
 	    cy = display.contentCenterY
 	    cw = display.contentWidth
 	    ch = display.contentHeight
+
+	    --composer.removeScene( "HomePlace" )
+	    local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
 
 	    Bg = display.newImageRect("Phuket/Information/bg.png", cw, ch )
 	    Bg.x = cx 
@@ -212,15 +224,22 @@ function scene:show(event)
 		FrameAttImg.y = AttImg.y
 		FrameAttImg:scale( 0.31, 0.32 ) 
 
-
-
-		print( AttImg.width, AttImg.height )
-
 		NearAtt = display.newImageRect( "Phuket/Information/text_nearby.png", 362, 137)
 		NearAtt.x = cx - 130
 		NearAtt.y = cy + 85
 		NearAtt:scale( 0.25, 0.25 ) 
 
+		sceneGroup:insert(Bg)
+		sceneGroup:insert(BgText)
+		sceneGroup:insert(BackBtn)
+		sceneGroup:insert(TextDesField)
+		sceneGroup:insert(AttImg)
+		sceneGroup:insert(NearAtt)
+		sceneGroup:insert(FrameAttImg)
+
+	for i=1, #NumberOfRecPlace do
+		sceneGroup:insert(Recommend[i])
+	end
 		elseif (phase == "did") then
 		print("Scene #informatiom : show (did)")
 
@@ -232,6 +251,7 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+		--[[
 		RemoveAll(Bg)
 		RemoveAll(BgText)
 		RemoveAll(BackBtn)
@@ -244,7 +264,7 @@ function scene:hide(event)
 		Recommend[i]:removeSelf( )
 		Recommend[i] = nil
 	end
-		
+		]]
 		print("Scene #informatiom : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #informatiom : hide (did)")

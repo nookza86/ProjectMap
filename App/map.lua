@@ -15,6 +15,7 @@ function scene:show(event)
 	params = event.params
 	
 	if (phase == "will") then
+		composer.removeScene( "HomePlace" )
 		print( "User Click " .. params.PlaceName .. " From HomePage" )
 
 		if(params.PlaceName == "Chalong Temple") then

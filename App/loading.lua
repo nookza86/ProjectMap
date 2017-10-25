@@ -156,13 +156,15 @@ local function GetDataListener( event )
 
 				Result_2 = db:exec( insertQuery )
 				--print(insertQuery)
-				INSERT_DATA_2 = true
+				
 				progressView:setProgress( 0.5 )
 				
 	       end
-	       if (Result_2 ~= 1) then
+	       if (Result_2 ~= 1 or Result_2 == nil) then
 	       		GetData(3)
-	       		print( "2 Exec Result " .. Result_2)
+	       		INSERT_DATA_2 = true
+	       		--print( "2 Exec Result " .. Result_2)
+	     
 	       else
 	       		GetData(2)
 	       		print( "2 Error " .. Result_2)
@@ -178,21 +180,22 @@ local function GetDataListener( event )
 
 				Result_3 = db:exec( insertQuery )
 				--print(insertQuery)
-				INSERT_DATA_3 = true
+				
 				progressView:setProgress( 0.75 )
 				
 	       end
-	       if (Result_3 ~= 1) then
-
+	       if (Result_3 ~= 1 or Result_3 == nil) then
+	       		INSERT_DATA_3 = true
 	       		if (USERIMG_FINING( NOOOO..".jpg" )) then
 	       			progressView:setProgress( 1 )
 	       			INSERT_DATA_4 = true
 	       			print( "Find " .. NOOOO .. ".jpg" )
+
 	       		else
 	       			LoadUserImg(  )
 	       		end
 	       		
-	       		print( "3 Exec Result " .. Result_3)
+	       		--print( "3 Exec Result " .. Result_3)
 	       else
 	       		GetData(3)
 	       		print( "3 Error " .. Result_1)
@@ -259,6 +262,12 @@ function scene:show(event)
 	    cw = display.contentWidth
 	    ch = display.contentHeight
 
+	    local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
+		
 	    Bg = display.newImageRect("Phuket/Loading/bg.png", cw, ch )
 	    Bg.x = cx 
 		Bg.y = cy
@@ -321,8 +330,11 @@ progressView:setProgress( 0 )
      	
         GetData(1)	
 
+        sceneGroup:insert(Bg)
+		sceneGroup:insert(Title)
+		sceneGroup:insert(Glass)
+		sceneGroup:insert(progressView)
 	
-
 		print("Scene #Loading : show (will)")
 	
 	elseif (phase == "did") then
@@ -336,11 +348,12 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+		--[[
 		RemoveAll(Bg)
 		RemoveAll(Glass)
 		RemoveAll(Title)
 		RemoveAll(progressView)
-
+]]
 		print("Scene #Loading : hide (will)")
 	elseif (phase == "did") then
 		return

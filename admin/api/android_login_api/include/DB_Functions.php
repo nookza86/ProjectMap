@@ -42,10 +42,26 @@ class DB_Functions {
      * Storing new user
      * returns user details
      */
-    public function UpdatePasswordUser($pass,  $member_no, $uniqid, $encrypted_password, $salt) {
+    public function UpdatePasswordUser($password,  $member_no) {
+        $uuid = uniqid('', true);
+        $hash = $this->hashSSHA($password);
+        $encrypted_password = $hash["encrypted"];
+        $salt = $hash["salt"];
 
+        $stmt = $this->conn->prepare("UPDATE `members` SET `encrypted_password` = ?, `salt` = ? WHERE member_no = ?");
+
+        $stmt->bind_param("sss", $encrypted_password, $salt, $member_no);
+        $result = $stmt->execute();
+        $stmt->close();
+        if ($result) {
+            return "FALSE"; 
+        }else{
+            return "TRUE"; 
+        }
+    }
+
+     public function UpdateForgotPasswordUser($pass,  $member_no, $uniqid, $encrypted_password, $salt) {
         $stmt = $this->conn->prepare("UPDATE `members` SET `encrypted_password` = ?, `salt` = ? WHERE member_no = ? and uniqid = ?");
-
         $stmt->bind_param("ssss", $encrypted_password, $salt, $member_no, $uniqid);
         $result = $stmt->execute();
         $stmt->close();
@@ -53,6 +69,26 @@ class DB_Functions {
             echo "Finish";
         }else{
             echo "try agin";
+        }
+    }
+
+    /**
+     * Storing new user
+     * returns user details
+     */
+    public function UpdateInformationUser($member_no, $fname, $lname, $email, $gender, $BirthDay, $BirthMonth, $BirthYear, $Country) {
+        $dob = "{$BirthYear}-{$BirthMonth}-{$BirthDay}";
+        $inputdob = date("Y-m-d",strtotime($dob));
+
+        $stmt = $this->conn->prepare("UPDATE `members` SET `first_name`= ?,`last_name`= ?,`email`= ?,`gender`= ?,`dob`= ?,`country`= ? WHERE member_no = ?");
+
+        $stmt->bind_param("sssssss", $fname, $lname, $email, $gender, $dob, $Country, $member_no);
+        $result = $stmt->execute();
+        $stmt->close();
+        if ($result) {
+            return "FALSE"; 
+        }else{
+            return "TRUE"; 
         }
     }
 

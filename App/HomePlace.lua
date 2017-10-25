@@ -78,7 +78,7 @@ local function Check( event )
 				composer.gotoScene("share", options)
 			else
 				--native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
-				toast.show("You need to add photo and note first.")
+				toast.show("Please add a photo in the diary to share your photo on facebook.")
 				return
 			end
 
@@ -91,7 +91,7 @@ local function Check( event )
 				composer.gotoScene("Diary", options)
 			else
 				--native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
-				toast.show(params.PlaceName .." is lock!")
+				toast.show("Not available because ".. params.PlaceName .." has been locked.")
 				return
 			end
 			
@@ -138,9 +138,6 @@ local function UnlockListener(  )
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, CallDrop )
 
-		toast.show(params.PlaceName .." now has Unlock!")
-
-
         timer.performWithDelay( 5000, GoS )         
 end
 
@@ -186,13 +183,14 @@ local function CalDis( currentLatitude, currentLongitude )
 			    	InArea = false
 			    end
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
-			    native.showAlert( "You Are Here", text, { "OK" } )
-			    toast.show("Not in area")
-			    print( "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea))
+			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
-
+				--InArea = true
 			if (InArea == true) then
+				toast.show("Now " .. params.PlaceName .." has Unlocked.")
 				UnlockListener(  )
+			else
+				toast.show("You are not in the area. Please try again.")
 			end
 		
 	end -- decode
@@ -295,6 +293,19 @@ function scene:show(event)
     ch = display.contentHeight
 
 	if (phase == "will") then
+		--[[
+		composer.removeScene( "overview" )
+		composer.removeScene( "information" )
+		composer.removeScene( "map" )
+		composer.removeScene( "Diary" )
+		composer.removeScene( "share" )
+		]]
+		local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
+
 		print( "User Click " .. params.PlaceName .. " From Overview" )
 
 		
@@ -302,42 +313,6 @@ function scene:show(event)
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 		--Bg:scale( 0.3, 0.3 ) 
-
-		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-
-		for row in db:nrows(sqlUnlock) do
-			if (row.Catt_no == 0) then
-				LocationBtn = widget.newButton(
-			{
-				left = cx - 250,
-				top = cy - 70,
-				--left = cx - 250,
-				--top = cy + 80,
-				width = 172/4,
-				height = 177/4,
-				defaultFile = "Phuket/Button/Button/scan.png",
-	        	overFile = "Phuket/Button/ButtonPress/scan.png",
-				onEvent = CheckLocation
-					
-			}
-		)
-			end
-			
-		
-		end
-
-		local sqlUnlock3 = "SELECT un_id FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-		IsUnlock = false
-		for row in db:nrows(sqlUnlock3) do
-			IsUnlock = true
-		end
-
-		local sqlUnlock4 = "SELECT diary_id FROM `diary` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-		IsDiary = false
-
-		for row in db:nrows(sqlUnlock4) do
-			IsDiary = true
-		end
 
 		InformationBtn = widget.newButton(
     	{
@@ -407,6 +382,54 @@ function scene:show(event)
 		--BackBtn.y = cy + 110
 		BackBtn.x = cx - 230
 		BackBtn.y = cy - 110
+
+		local sqlUnlock = "SELECT count(`att_no`) as Catt_no FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+
+		for row in db:nrows(sqlUnlock) do
+			if (row.Catt_no == 0) then
+				LocationBtn = widget.newButton(
+			{
+				left = cx - 250,
+				top = cy - 70,
+				--left = cx - 250,
+				--top = cy + 80,
+				width = 172/4,
+				height = 177/4,
+				defaultFile = "Phuket/Button/Button/scan.png",
+	        	overFile = "Phuket/Button/ButtonPress/scan.png",
+				onEvent = CheckLocation
+					
+			}
+		)
+
+			end
+			
+		
+		end
+
+		local sqlUnlock3 = "SELECT un_id FROM `unattractions` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		IsUnlock = false
+		for row in db:nrows(sqlUnlock3) do
+			IsUnlock = true
+		end
+
+		local sqlUnlock4 = "SELECT diary_id FROM `diary` WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+		IsDiary = false
+
+		for row in db:nrows(sqlUnlock4) do
+			IsDiary = true
+		end
+
+		sceneGroup:insert(Bg)
+		sceneGroup:insert(InformationBtn)
+		sceneGroup:insert(MapBtn)
+		sceneGroup:insert(ShareBtn)
+		sceneGroup:insert(DiaryBtn)
+		sceneGroup:insert(BackBtn)
+
+		if (LocationBtn) then
+			sceneGroup:insert(LocationBtn)
+		end
 		
 
 	elseif (phase == "did") then
@@ -420,19 +443,23 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+
+		if (myMap) then
+			myMap:removeSelf( )
+			myMap = nil
+		end
+		--[[
 		RemoveAll(Bg)
-		--RemoveAll(BgBtn)
 		RemoveAll(InformationBtn)
 		RemoveAll(MapBtn)
 		RemoveAll(ShareBtn)
 		RemoveAll(DiaryBtn)
 		RemoveAll(BackBtn)
-		--RemoveAll(TitleImage)
 
 		if (LocationBtn) then
 			RemoveAll(LocationBtn)
 		end
-
+]]
 		print("Scene #HomePlace : hide (will)")
 	elseif (phase == "did") then
 		print("Scene #HomePlace : hide (did)")
@@ -442,6 +469,8 @@ end
 function scene:destroy(event)
 	local sceneGroup = self.view
 	print("Scene #HomePlace : destroy")
+	IsUnlock = false
+	IsDiary = false
 end
 
 scene:addEventListener("create", scene)

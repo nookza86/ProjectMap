@@ -129,12 +129,12 @@ local function networkListener( event )
         	print( "Try again." )
         	native.setActivityIndicator( false )
         elseif ( decodedData["user"]["active"] == 'no') then
-        	local alert = native.showAlert( "Error", "Please Activate.", { "OK" })
-        	print( "Need Activate." )
+        	local alert = native.showAlert( "Error", "Please check your email and click the link to activate your account.", { "OK" })
+        	--print( "Need Activate." )
         	native.setActivityIndicator( false )
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["first_name"], { "OK" })
-        	print( "Welcome " .. decodedData["user"]["first_name"] )
+        	--print( "Welcome " .. decodedData["user"]["first_name"] )
 
 	    INSERT_DATA_4 = false
 		--native.setActivityIndicator( true )
@@ -222,6 +222,12 @@ function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+		local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
+		
 		
 		cx = display.contentCenterX
 	    cy = display.contentCenterY
@@ -317,11 +323,20 @@ function scene:show(event)
 	SignUpImage.id = "SignUp"
 
 	SignUpImage:addEventListener( "touch", Check )
+	
+	sceneGroup:insert(myText)
+	sceneGroup:insert(LoginBtn)
+	sceneGroup:insert(ForgotImage)
+	sceneGroup:insert(EmailTxf)
+	sceneGroup:insert(SignUpImage)
+	sceneGroup:insert(EmailImage)
+	sceneGroup:insert(PasswordImage)
+	sceneGroup:insert(PasswordTxf)
+	sceneGroup:insert(TextFieldImage)	
 
-		
 	elseif (phase == "did") then
 		print("Scene #Menu : show (did)")
-		--timer.performWithDelay(3000, showScene)
+
 		
 	end
 end
@@ -330,9 +345,9 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
+		--[[
 		RemoveAll(myText)
 		RemoveAll(LoginBtn)
-		--RemoveAll(LoginWithFaceBookBtn)
 		RemoveAll(ForgotImage)
 		RemoveAll(EmailTxf)
 		RemoveAll(SignUpImage)
@@ -340,6 +355,7 @@ function scene:hide(event)
 		RemoveAll(PasswordImage)
 		RemoveAll(PasswordTxf)
 		RemoveAll(TextFieldImage)
+		]]
 		SignUpImage:removeEventListener( "touch", Check )
 
 		

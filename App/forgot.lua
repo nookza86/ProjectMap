@@ -17,7 +17,7 @@ local EmailTxf
 
 local function RemoveAll( event )
 	if(event) then
-		--print( "deletePic in scene #HomePlace " .. params.PlaceName  )
+		--print( "deletePic in scene #Forgot " .. params.PlaceName  )
 		event:removeSelf( )
 		event = nil
 		
@@ -46,7 +46,7 @@ end
 
 function scene:create(event)
 	local sceneGroup = self.view
-	print("Scene #HomePlace : create")
+	print("Scene #Forgot : create")
 end
 
 local function networkListener( event )
@@ -66,7 +66,7 @@ local function networkListener( event )
         	print( "Try again." )
 
         else
-        	local alert = native.showAlert( "", "check your email", { "OK" })
+        	local alert = native.showAlert( "", "Check your email", { "OK" })
         	composer.gotoScene("menu")
 
     	end
@@ -109,7 +109,7 @@ local function Check( event )
 		if (event.target.id == "ok") then
 
 			if (EmailTxf.text == "" or EmailTxf.text == nil) then
-				native.showAlert( "Error", "Type email", { "OK" } )
+				native.showAlert( "Error", "Please fill your email.", { "OK" } )
 				return
 			else
 				native.setActivityIndicator( true )
@@ -135,6 +135,12 @@ function scene:show(event)
     ch = display.contentHeight
 
 	if (phase == "will") then
+		--composer.removeScene( "menu" )
+		local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
 
 		Bg = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
 		Bg.x = display.contentCenterX 
@@ -177,8 +183,13 @@ function scene:show(event)
 		BackBtn.x = cx - 240
 		BackBtn.y = cy - 110
 
+		sceneGroup:insert(Bg)
+		sceneGroup:insert(EmailTxf)
+		sceneGroup:insert(EmailImage)
+		sceneGroup:insert(OkBtn)
+
 	elseif (phase == "did") then
-		print("Scene #HomePlace : show (did)")
+		print("Scene #Forgot : show (did)")
 		--timer.performWithDelay(3000, showScene)
 		
 	end
@@ -192,15 +203,15 @@ function scene:hide(event)
 		RemoveAll(EmailTxf)
 		RemoveAll(EmailImage)
 		RemoveAll(OkBtn)
-		print("Scene #HomePlace : hide (will)")
+		print("Scene #Forgot : hide (will)")
 	elseif (phase == "did") then
-		print("Scene #HomePlace : hide (did)")
+		print("Scene #Forgot : hide (did)")
 	end
 end
 
 function scene:destroy(event)
 	local sceneGroup = self.view
-	print("Scene #HomePlace : destroy")
+	print("Scene #Forgot : destroy")
 end
 
 scene:addEventListener("create", scene)

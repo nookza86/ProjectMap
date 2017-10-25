@@ -13,6 +13,7 @@ local NameImage, CountryImage, UserImage
 local KataImage, KamalaImage, ChalongImage, KaronImage, PatongImage, BigbuddhaImage, BangpaeImage
 local SettingBtn, OkBtn
 local TextName, TextCountry, ProfileFrame, mask
+local ProfileGroup = display.newGroup( )
 
 local function RemoveAll( event )
 	if(event) then
@@ -52,18 +53,8 @@ local function Check( event )
 			composer.gotoScene("overview")
 
 		elseif(obj == "setting") then
---[[
-			local myRoundedRect = display.newRoundedRect( cx, cy, cw, ch, 1 )
-			myRoundedRect:setFillColor( 1,0,1 )
-			myRoundedRect.alpha = 0.1
+			composer.gotoScene("profile_select")
 
-			local options = {
-			    isModal = true,
-			    effect = "fade",
-			    time = 400,
-			}
- 			composer.showOverlay( "setting", options )
-			]]
 		elseif(obj == "watchalong") then
 			
 			local options = {params = {PlaceName = "Chalong Temple"}}
@@ -174,6 +165,9 @@ local function loadImageListener( event )
 	ProfileFrame.x = UserImage.x 
 	ProfileFrame.y = UserImage.y + 6
 	ProfileFrame.name = "profile"
+
+	ProfileGroup:insert( UserImage )
+	ProfileGroup:insert( ProfileFrame )
 	
 	end
 	native.setActivityIndicator( false )
@@ -224,11 +218,18 @@ function scene:show(event)
     ch = display.contentHeight
 	--params = event.params
 	if (phase == "will") then
+		local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
+
 		--native.setActivityIndicator( true )
 		Bg = display.newImageRect("Phuket/Profile/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 
+		ProfileGroup:insert( Bg )
 
 --[[
 		UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
@@ -238,17 +239,21 @@ function scene:show(event)
 		NameImage = display.newImageRect( "Phuket/Profile/name.png", 226/3, 77/3 )
 		NameImage.x = cx
 		NameImage.y = cy - 80
+		ProfileGroup:insert( NameImage )
 
 		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 449/3, 92/3 )
 		CountryImage.x = NameImage.x
 		CountryImage.y = NameImage.y + 40
+		ProfileGroup:insert( CountryImage )
 
 		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Light", 16 )
 		--TextName:setFillColor( 1, 0, 0 )
+		ProfileGroup:insert( TextName )
 
 
 		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, "Cloud-Light", 16 )
 		--TextCountry:setFillColor( 1, 0, 0 )
+		ProfileGroup:insert( TextCountry )
 
 		for row in db:nrows("SELECT img, fname, lname, country FROM personel;") do
 			TextName.text = row.fname .. " " .. row.lname  
@@ -257,7 +262,8 @@ function scene:show(event)
 			if (row.img == "") then
 			    UserImage = display.newImageRect( "Phuket/Profile/picpro.png", 387/3.5, 388/3.5 )
 				UserImage.x = cx - 180
-				UserImage.y = cy - 55           
+				UserImage.y = cy - 55          
+				ProfileGroup:insert( UserImage ) 
 			elseif (FindImg( Filename ) == true) then  
 				UserImage = display.newImage( 
 							row.img, 
@@ -317,6 +323,8 @@ function scene:show(event)
 	ProfileFrame.x = UserImage.x 
 	ProfileFrame.y = UserImage.y + 6
 	ProfileFrame.name = "profile"
+	ProfileGroup:insert( UserImage )
+	ProfileGroup:insert( ProfileFrame )
 native.setActivityIndicator( false )
 			else
 				LoadUserImg(row.img)
@@ -449,11 +457,11 @@ native.setActivityIndicator( false )
 			)
 		BangpaeImage.x = PatongImage.x
 		BangpaeImage.y = PatongImage.y + 45
---[[
+
 		SettingBtn = widget.newButton(
     	{
-	        width = 70/1.5,
-	        height = 70/1.5,
+	        width = 130/3,
+	        height = 101/3,
 	        defaultFile = "Phuket/Button/Button/setting.png",
 	        overFile = "Phuket/Button/ButtonPress/setting.png",
 	        id = "setting",
@@ -461,8 +469,8 @@ native.setActivityIndicator( false )
     	}
 			)
 		SettingBtn.x = cx - 230
-		SettingBtn.y = cy + 130
-]]
+		SettingBtn.y = cy + 115
+
 		OkBtn = widget.newButton(
     	{
 	        width = 130/3,
@@ -475,6 +483,19 @@ native.setActivityIndicator( false )
 			)
 		OkBtn.x = cx + 225
 		OkBtn.y = cy + 115
+	
+		ProfileGroup:insert(KataImage)
+		ProfileGroup:insert(KamalaImage)
+		ProfileGroup:insert(ChalongImage)
+		ProfileGroup:insert(KaronImage)
+		ProfileGroup:insert(PatongImage)
+		ProfileGroup:insert(BigbuddhaImage)
+		ProfileGroup:insert(BangpaeImage)
+
+		ProfileGroup:insert(SettingBtn)
+		ProfileGroup:insert(OkBtn)
+
+		sceneGroup:insert( ProfileGroup )
 
 		print("Scene #Profile : show (will)")
 	
@@ -489,11 +510,11 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-		RemoveAll(Bg)
 
 		UserImage:setMask( nil )
 		mask = nil
-
+		--[[
+		RemoveAll(Bg)
 		RemoveAll(NameImage)
 		RemoveAll(CountryImage)
 		RemoveAll(UserImage)
@@ -506,11 +527,12 @@ function scene:hide(event)
 		RemoveAll(BigbuddhaImage)
 		RemoveAll(BangpaeImage)
 
+		RemoveAll(SettingBtn)
 		RemoveAll(OkBtn)
 		RemoveAll(TextName)
 		RemoveAll(TextCountry)
 		RemoveAll(ProfileFrame)
-
+]]
 		print("Scene #Profile : hide (will)")
 	elseif (phase == "did") then
 		

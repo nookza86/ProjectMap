@@ -17,7 +17,7 @@ end
 
 function scene:create(event)
 	local sceneGroup = self.view
-	print("Scene #informatiom : create")
+	print("Scene #informatiom Image : create")
 end
 
 local function Check( event )
@@ -42,6 +42,13 @@ function scene:show(event)
 	    cy = display.contentCenterY
 	    cw = display.contentWidth
 	    ch = display.contentHeight
+
+	    local prevScene = composer.getSceneName( "previous" )
+
+		if (prevScene ~= nil) then
+			composer.removeScene( prevScene )
+		end
+
  myRectangle = display.newRect( cx, cy, cw, ch )
 myRectangle:setFillColor( black )
 
@@ -69,8 +76,11 @@ myRectangle:setFillColor( black )
 		
 		BackBtn.x = cx - 230
 		BackBtn.y = cy - 110	
+		sceneGroup:insert( myRectangle )
+		sceneGroup:insert( a )
+		sceneGroup:insert(BackBtn)
 		elseif (phase == "did") then
-		print("Scene #informatiom : show (did)")
+		print("Scene #informatiom Image : show (did)")
 
 		
 	end
@@ -81,24 +91,22 @@ function scene:hide(event)
 	local phase = event.phase
 	if (phase == "will") then
 		RemoveAll(BackBtn)
-		--RemoveAll(a)
-		--RemoveAll(topImages)
-		
-		
 		RemoveAll( myRectangle )
+		--topImages:removeSelf( )
 		topImages = nil
+		a:removeSelf( )
 		a = nil
 		
 		
-		print("Scene #informatiom : hide (will)")
+		print("Scene #informatiom Image : hide (will)")
 	elseif (phase == "did") then
-		print("Scene #informatiom : hide (did)")
+		print("Scene #informatiom Image : hide (did)")
 	end
 end
 
 function scene:destroy(event)
 	local sceneGroup = self.view
-	print("Scene #informatiom : destroy")
+	print("Scene #informatiom Image : destroy")
 end
 
 scene:addEventListener("create", scene)

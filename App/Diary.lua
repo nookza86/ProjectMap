@@ -158,8 +158,8 @@ end
 local function DiaryListener(  )
  
     if(TextDesField.text == "" ) then
-        print( "TextDesField null" )
-        native.showAlert( "Fill","Add some note.", { "OK" } )
+        print( "Please fill some note." )
+        native.showAlert( "Fill","Please fill some note.", { "OK" } )
         return
     end
     local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
@@ -385,7 +385,8 @@ local sessionComplete = function(event)
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser1 )
-   			--TextDesField.text = "1"
+   			DiaryGroup:insert( ImageUser1 )
+      			--TextDesField.text = "1"
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then
    			PhotoPickerCheck2 = true
@@ -397,6 +398,7 @@ local sessionComplete = function(event)
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser2 )
+   			DiaryGroup:insert( ImageUser2 )
    			--TextDesField.text = "2"
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
@@ -409,6 +411,7 @@ local sessionComplete = function(event)
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser3 )
+   			DiaryGroup:insert( ImageUser3 )
    			--TextDesField.text = "3"
 
    		else
@@ -421,6 +424,7 @@ local sessionComplete = function(event)
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
    			FitFrameImage( ImageUser4 )
+   			DiaryGroup:insert( ImageUser4 )
    			--TextDesField.text = "4"
 
    		end
@@ -469,6 +473,7 @@ local function loadImageListener( event )
 			ImageUser1.name = event.response.filename
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			ImageUser1.alpha = 0
+			DiaryGroup:insert( ImageUser1 )
        		--transition.to( ImageUser1, { alpha=1.0 } )
 			LOADING_IMG_1 = true
 			--DiaryGroup:insert(ImageUser1)
@@ -488,6 +493,7 @@ local function loadImageListener( event )
 			ImageUser2.name = event.response.filename
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			ImageUser2.alpha = 0
+			DiaryGroup:insert( ImageUser2 )
        		--transition.to( ImageUser2, { alpha=1.0 } )
 			LOADING_IMG_2 = true
 			--DiaryGroup:insert(ImageUser2)
@@ -505,6 +511,7 @@ local function loadImageListener( event )
 			ImageUser3.name = event.response.filename
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			ImageUser3.alpha = 0
+			DiaryGroup:insert( ImageUser3 )
        		--transition.to( ImageUser3, { alpha=1.0 } )
 			LOADING_IMG_3 = true
 			--DiaryGroup:insert(ImageUser3)
@@ -523,6 +530,7 @@ local function loadImageListener( event )
 			ImageUser4.name = event.response.filename
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			ImageUser4.alpha = 0
+			DiaryGroup:insert( ImageUser4 )
        		--transition.to( ImageUser4, { alpha=1.0 } )
 			LOADING_IMG_4 = true
 			--DiaryGroup:insert(ImageUser4)
@@ -639,6 +647,7 @@ function FitFrameImage( ImageObj )
 		FrameUserImage1.x = ImageUser1.x
 		FrameUserImage1.y = ImageUser1.y
 		FrameUserImage1:scale( Fit_X, Fit_Y)
+		DiaryGroup:insert( FrameUserImage1 )
 		if (ImageObj.width > ImageObj.height) then
 			IsImg1Landscape = true
 		end
@@ -648,6 +657,7 @@ function FitFrameImage( ImageObj )
 		FrameUserImage2.x = ImageUser2.x
 		FrameUserImage2.y = ImageUser2.y
 		FrameUserImage2:scale( Fit_X, Fit_Y )
+		DiaryGroup:insert( FrameUserImage2 )
 		if (ImageObj.width > ImageObj.height) then
 			IsImg2Landscape = true
 		end
@@ -657,6 +667,7 @@ function FitFrameImage( ImageObj )
 		FrameUserImage3.x = ImageUser3.x
 		FrameUserImage3.y = ImageUser3.y
 		FrameUserImage3:scale( Fit_X, Fit_Y )
+		DiaryGroup:insert( FrameUserImage3 )
 		if (ImageObj.width > ImageObj.height) then
 			IsImg3Landscape = true
 		end
@@ -666,6 +677,7 @@ function FitFrameImage( ImageObj )
 		FrameUserImage4.x = ImageUser4.x
 		FrameUserImage4.y = ImageUser4.y
 		FrameUserImage4:scale( Fit_X, Fit_Y )
+		DiaryGroup:insert( FrameUserImage4 )
 		if (ImageObj.width > ImageObj.height) then
 			IsImg4Landscape = true
 		end
@@ -686,6 +698,29 @@ function scene:show(event)
 	timer.performWithDelay( 1000, listener, 0 )
 
 	if (phase == "will") then
+		local prevScene = composer.getSceneName( "previous" )
+		composer.removeScene( prevScene )
+	sceneGroup:insert( DiaryGroup )
+	scrollView = widget.newScrollView(
+    {
+        top = 00,
+        left = 0,
+        width = display.contentWidth,
+        height = display.contentHeight,
+        scrollWidth = 0,
+        scrollHeight = 0,
+        --topPadding = 20,
+        bottomPadding = 0,
+        hideBackground = true,
+       -- hideScrollBar = true,
+        isBounceEnabled = false,
+        verticalScrollDisabled = false,
+        horizontalScrollDisabled = false
+        }
+    )
+    scrollView:insert( sceneGroup )
+
+		--composer.removeScene( "HomePlace" )
 		
 		local sqlCheck = "SELECT count(diary_id) as tt FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 		CheckIsHaveDiary = false
@@ -699,20 +734,24 @@ function scene:show(event)
 		Bg = display.newImageRect("Phuket/Diary/bg.png", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy
+		DiaryGroup:insert( Bg )
 
 		BgText = display.newImageRect( "Phuket/Diary/bgtext.png", 1000/4, 525/4.5)
 		BgText.x = cx + 130
 		BgText.y = cy - 70
+		DiaryGroup:insert( BgText )
 
 		TextDesField = native.newTextBox( BgText.x , BgText.y, BgText.width - 30, BgText.height - 30, 100 )
 	    TextDesField.text = ""
 	    TextDesField.hasBackground = false
 	    TextDesField.isEditable = true
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
+	    DiaryGroup:insert( TextDesField )
 
 	    Text = display.newImageRect( "Phuket/Diary/text.png", 658/4, 367/4)
 		Text.x = cx + 95
 		Text.y = cy + 42
+		DiaryGroup:insert( Text )
 
 	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 	    DB_diary_pic1 = ""
@@ -749,6 +788,7 @@ function scene:show(event)
 			ImageUser1.y = ImagePosition_Y_1
 			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
 			ImageUser1:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert( ImageUser1 )
 			PhotoPickerCheck1 = false
 
 		else
@@ -762,6 +802,7 @@ function scene:show(event)
 			ImageUser2.y = ImagePosition_Y_2
 			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
 			ImageUser2:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert( ImageUser2 )
 			PhotoPickerCheck2 = false
 
 		else
@@ -775,6 +816,7 @@ function scene:show(event)
 			ImageUser3.y = ImagePosition_Y_3
 			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
 			ImageUser3:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert( ImageUser3 )
 			PhotoPickerCheck3 = false
 
 		else
@@ -788,6 +830,7 @@ function scene:show(event)
 			ImageUser4.y = ImagePosition_Y_4
 			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
 			ImageUser4:addEventListener( "touch", AddImgListener )
+			DiaryGroup:insert( ImageUser4 )
 			PhotoPickerCheck4 = false
 
 		else
@@ -914,12 +957,16 @@ function scene:show(event)
 	end
 
 	for i=1,5 do
-	ImpressionRadioGroup:insert( ImpressionRadioButton[i] )	
-	BeautyRadioGroup:insert( BeautyRadioButton[i] )	
-	CleanRadioGroup:insert( CleanRadioButton[i] )
-end
+		ImpressionRadioGroup:insert( ImpressionRadioButton[i] )	
+		BeautyRadioGroup:insert( BeautyRadioButton[i] )	
+		CleanRadioGroup:insert( CleanRadioButton[i] )
+	end
 
- ImpressionScore = 1
+	DiaryGroup:insert( ImpressionRadioGroup )
+	DiaryGroup:insert( BeautyRadioGroup )
+	DiaryGroup:insert( CleanRadioGroup )
+
+ 	ImpressionScore = 1
     BeautyScore = 1
     CleanScore = 1
 	
@@ -954,26 +1001,14 @@ end
 		SaveBtn.y = cy + 110
 		SaveBtn.name = "SaveBtn"
 
+		DiaryGroup:insert( BackBtn )
+		DiaryGroup:insert( SaveBtn )
+
 		--myText = display.newText( "Hello World!", 400, 200, native.systemFont, 36 )
 		--myText:setFillColor( 1, 1, 0 )
 
-			scrollView = widget.newScrollView(
-    {
-        top = 00,
-        left = 0,
-        width = display.contentWidth,
-        height = display.contentHeight,
-        scrollWidth = 0,
-        scrollHeight = 0,
-        --topPadding = 20,
-        bottomPadding = 0,
-        hideBackground = true,
-       -- hideScrollBar = true,
-        isBounceEnabled = false,
-        verticalScrollDisabled = false,
-        horizontalScrollDisabled = false
-        }
-    )
+
+			--[[
 			scrollView:insert( ImpressionRadioGroup )
 			scrollView:insert( BeautyRadioGroup )
 			scrollView:insert( CleanRadioGroup )
@@ -991,7 +1026,7 @@ end
 		end
 			scrollView:insert( SaveBtn )
 			scrollView:insert( BackBtn )
-
+]]
 	elseif (phase == "did") then
 		print("Scene #Diary : show (did)")
 
@@ -1007,7 +1042,7 @@ function scene:hide(event)
 		ImageUser2:removeEventListener( "touch", AddImgListener )
 		ImageUser3:removeEventListener( "touch", AddImgListener )
 		ImageUser4:removeEventListener( "touch", AddImgListener )
-
+--[[
 		scrollView:remove( ImpressionRadioGroup )
 		scrollView:remove( BeautyRadioGroup )
 		scrollView:remove( CleanRadioGroup )
@@ -1041,13 +1076,15 @@ function scene:hide(event)
 		RemoveAll( BackBtn )
 		RemoveAll(Text)
 
-		RemoveAll(scrollView)
+		
 
 	for i=1,5 do
 		ImpressionRadioGroup:remove( ImpressionRadioButton[i] )	
 		BeautyRadioGroup:remove( BeautyRadioButton[i] )	
 		CleanRadioGroup:remove( CleanRadioButton[i] )
 	end
+	]]
+	RemoveAll(scrollView)
 	IsDone = false
 
 

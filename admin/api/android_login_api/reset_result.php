@@ -16,7 +16,7 @@ $db = new DB_Functions();
     //echo "salt = ".$salt;
 
 
-   $db->UpdatePasswordUser($pass,  $member_no, $uniqid, $encrypted_password, $salt);
+   $db->UpdateForgotPasswordUser($pass,  $member_no, $uniqid, $encrypted_password, $salt);
    
     
 

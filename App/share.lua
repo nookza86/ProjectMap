@@ -26,6 +26,7 @@ local FitFrameImage
 local IMG_SCALE = 1.2
 --local mask = graphics.newMask( "rr-512.png" )
 local mask = graphics.newMask( "Phuket/share/addpicture.png" )
+local ShareGroup = display.newGroup()
 
 cx = display.contentCenterX
 cy = display.contentCenterY
@@ -165,6 +166,7 @@ local function loadImageListener( event )
 					UserImage1.maskScaleX = IMG_SCALE
 					UserImage1.maskScaleY = IMG_SCALE
 					]]
+			ShareGroup:insert( UserImage1 )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_2.jpg") then
@@ -191,6 +193,7 @@ local function loadImageListener( event )
 					UserImage2.maskScaleX = IMG_SCALE
 					UserImage2.maskScaleY = IMG_SCALE
 					]]
+			ShareGroup:insert( UserImage2 )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_3.jpg") then
@@ -217,6 +220,7 @@ local function loadImageListener( event )
 					UserImage3.maskScaleX = IMG_SCALE
 					UserImage3.maskScaleY = IMG_SCALE
 					]]
+			ShareGroup:insert( UserImage3 )
 		end
 
 		if (event.response.filename == NoAtt .. "_" .. member_no .. "_4.jpg") then
@@ -243,6 +247,7 @@ local function loadImageListener( event )
 					UserImage4.maskScaleX = IMG_SCALE
 					UserImage4.maskScaleY = IMG_SCALE
 					]]
+			ShareGroup:insert( UserImage4 )
 		end
 		
 	end
@@ -410,24 +415,30 @@ function FitFrameImage( ImageObj )
 		FrameUserImage1.x = UserImage1.x
 		FrameUserImage1.y = UserImage1.y
 		FrameUserImage1:scale( Fit_X , Fit_Y )
+		ShareGroup:insert( FrameUserImage1 )
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_2.jpg") then
 		FrameUserImage2 = display.newImageRect( Frame, UserImage2.width, UserImage2.height )
 		FrameUserImage2.x = UserImage2.x
 		FrameUserImage2.y = UserImage2.y
 		FrameUserImage2:scale( Fit_X, Fit_Y )
+		ShareGroup:insert( FrameUserImage2 )
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_3.jpg") then
 		FrameUserImage3 = display.newImageRect( Frame, UserImage3.width, UserImage3.height )
 		FrameUserImage3.x = UserImage3.x
 		FrameUserImage3.y = UserImage3.y
 		FrameUserImage3:scale( Fit_X, Fit_Y )
+		ShareGroup:insert( FrameUserImage3 )
+
 
 	elseif (ImageObj.id == NoAtt .. "_" .. member_no .. "_4.jpg") then
 		FrameUserImage4 = display.newImageRect( Frame, UserImage4.width, UserImage4.height )
 		FrameUserImage4.x = UserImage4.x
 		FrameUserImage4.y = UserImage4.y
 		FrameUserImage4:scale( Fit_X, Fit_Y )
+		ShareGroup:insert( FrameUserImage4 )
+
 	end
 end
 
@@ -436,6 +447,10 @@ function scene:show(event)
 	local phase = event.phase
 	params = event.params
 	if (phase == "will") then
+		--composer.removeScene( "HomePlace" )
+		local prevScene = composer.getSceneName( "previous" )
+		composer.removeScene( prevScene )
+		
 		LOADING_IMG_1 = false
 	    LOADING_IMG_2 = false
 	    LOADING_IMG_3 = false
@@ -453,10 +468,12 @@ function scene:show(event)
 		Bg = display.newImageRect("Phuket/share/bg.png", cw, ch )
 	    Bg.x = cx 
 		Bg.y = cy 
+		ShareGroup:insert( Bg )
 
 		Tett = display.newImageRect("Phuket/share/text.png", 764/2, 94/2 )
 	    Tett.x = cx 
 		Tett.y = cy  - 80
+		ShareGroup:insert( Tett )
 
 		local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
 		NoAtt = 0
@@ -513,6 +530,8 @@ function scene:show(event)
 					UserImage1.maskScaleX = IMG_SCALE
 					UserImage1.maskScaleY = IMG_SCALE
 ]]
+					ShareGroup:insert( UserImage1 )
+
 				else
 					LoadDirayImage(row.diary_pic1)
 				end
@@ -547,6 +566,7 @@ function scene:show(event)
 					UserImage2.maskScaleX = IMG_SCALE
 					UserImage2.maskScaleY = IMG_SCALE
 					]]
+					ShareGroup:insert( UserImage2 )
 				else
 				LoadDirayImage(row.diary_pic2)
 			end
@@ -580,6 +600,7 @@ function scene:show(event)
 					UserImage3.maskScaleX = IMG_SCALE
 					UserImage3.maskScaleY = IMG_SCALE
 					]]
+					ShareGroup:insert( UserImage3 )
 				else
 				LoadDirayImage(row.diary_pic3)
 			end
@@ -613,6 +634,7 @@ function scene:show(event)
 					UserImage4.maskScaleX = IMG_SCALE
 					UserImage4.maskScaleY = IMG_SCALE
 					]]
+					ShareGroup:insert( UserImage4 )
 				else
 				LoadDirayImage(row.diary_pic4)
 			end
@@ -626,6 +648,7 @@ end
 			UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage1.x = ImagePosition_X_1
 			UserImage1.y = ImagePosition_Y_1
+			ShareGroup:insert( UserImage1 )
 			LOADING_IMG_1 = true
 		end
 
@@ -634,6 +657,7 @@ end
 			UserImage2 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage2.x = ImagePosition_X_1
 			UserImage2.y = ImagePosition_Y_2
+			ShareGroup:insert( UserImage2 )
 			LOADING_IMG_2 = true
 		end
 
@@ -642,6 +666,7 @@ end
 			UserImage3 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage3.x = ImagePosition_X_3
 			UserImage3.y = ImagePosition_Y_3
+			ShareGroup:insert( UserImage3 )
 			LOADING_IMG_3 = true
 		end
 
@@ -650,6 +675,7 @@ end
 			UserImage4 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
 			UserImage4.x = ImagePosition_X_4
 			UserImage4.y = ImagePosition_Y_4
+			ShareGroup:insert( UserImage4 )
 			LOADING_IMG_4 = true
 		end
 		
@@ -681,6 +707,9 @@ end
 		ShareBtn.x = cx 
 		ShareBtn.y = cy + 120
 
+		ShareGroup:insert( BackBtn )
+		ShareGroup:insert( ShareBtn )
+		sceneGroup:insert(ShareGroup)
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")
 		--timer.performWithDelay(3000, showScene)
@@ -692,7 +721,11 @@ function scene:hide(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	if (phase == "will") then
-
+		UserImage1:removeEventListener( "touch", SelectImg )
+		UserImage2:removeEventListener( "touch", SelectImg )
+		UserImage3:removeEventListener( "touch", SelectImg )
+		UserImage4:removeEventListener( "touch", SelectImg )
+--[[
 		if (CheckImg1 == true) then
 			UserImage1:removeEventListener( "touch", SelectImg )
 		end
@@ -739,7 +772,7 @@ function scene:hide(event)
 		end
 
 		
-
+]]
 		CheckSelectImg = false
 		print("Scene #share : hide (will)")
 	elseif (phase == "did") then
