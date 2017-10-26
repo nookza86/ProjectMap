@@ -103,7 +103,7 @@ local function Check( event )
 end
 
 local function GoS(  )
-
+	toast.show("Now " .. params.PlaceName .." has Unlocked.")
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("overview", options)
 			native.setActivityIndicator( false )
@@ -187,7 +187,6 @@ local function CalDis( currentLatitude, currentLongitude )
 			end
 				--InArea = true
 			if (InArea == true) then
-				toast.show("Now " .. params.PlaceName .." has Unlocked.")
 				UnlockListener(  )
 			else
 				toast.show("You are not in the area. Please try again.")

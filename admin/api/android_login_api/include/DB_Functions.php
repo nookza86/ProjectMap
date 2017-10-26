@@ -31,9 +31,15 @@ class DB_Functions {
         $strMessage = "";
         $strMessage .= "Welcome : <br>";
         $strMessage .= "=================================<br>";
-        $strMessage .= "Activate account click here.<br>";
-        $strMessage .= "mapofmem.esy.es/admin/activate/activate.php?sid=".$uuid."&uid=".$member_no."<br>";
-        $strMessage .= "=================================<br>";
+        $strMessage .= "Activate account ";
+        //$string .= "mapofmem.esy.es/admin/activate/activate.php?sid=".$uuid."&uid=".$member_no;
+        //$strMessage .= rawurlencode($string);
+
+        $query_string = 'sid=' . urlencode($uuid) . '&uid=' . urlencode($member_no);
+
+        $strMessage .= '<a href="mapofmem.esy.es/admin/activate/activate.php?' . htmlentities($query_string) . '">';
+        $strMessage .= "click here.";
+        //$strMessage .= "<br>================================<br>";
 
         $flgSend = mail($strTo,$strSubject,$strMessage,$strHeader);   
     }

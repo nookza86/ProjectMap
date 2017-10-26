@@ -16,7 +16,8 @@ include ("$root/admin/inc/dbconn.php");
 	}
 	else
 	{	
-			$sql = "UPDATE members SET Active = 'Yes'  WHERE uniqid = '".trim($_GET['sid'])."' AND member_no = '".trim($_GET['uid'])."' ";
+			$sql = "UPDATE members SET active = 'Yes'  WHERE uniqid = '".trim($_GET['sid'])."' AND member_no = '".trim($_GET['uid'])."' ";
+			//echo $sql." ";
 			$result = mysqli_query($db, $sql);
 
 		echo "Activate Successfully !";

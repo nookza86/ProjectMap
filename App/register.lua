@@ -122,7 +122,7 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-
+         native.setActivityIndicator( false )
          composer.gotoScene("menu")
          --myText.text = event.status .. " " .. event.response
 --[[
@@ -257,7 +257,7 @@ local function CreateAccountListener( event )
     end
 
     if(event.phase == "began" and CheckPasswordMatch == true and CheckEmail == true) then
-
+        native.setActivityIndicator( true )
         local GenderPickerValues = GenderPickerWheel:getValues()
         local BirthPickerValues = BirthPickerWheel:getValues()
         local CountryPickerValues = CountryPickerWheel:getValues()
