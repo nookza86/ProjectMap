@@ -175,7 +175,8 @@ local function networkListener( event )
         if (decodedData["error"] == false) then
             UploadUserImage()
         else
-            native.showAlert( "Error","Try again.", { "OK" } )
+            ---native.showAlert( "Error","Try again.", { "OK" } )
+            toast.show("Try again")
         end
     end
 end
@@ -201,7 +202,8 @@ end
 local function CreateAccountListener( event )
 
     if isRechable() == false then 
-        native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+        --native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+        toast.show("It seems internet is not Available. Please connect to internet.")
         return
     end
 

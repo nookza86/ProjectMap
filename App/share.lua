@@ -254,11 +254,10 @@ local function loadImageListener( event )
 
 end
 
-
-
 local function LoadDirayImage( event )
 	if isRechable() == false then 
- 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		toast.show("It seems internet is not Available. Please connect to internet.")
  		return
 	end
 
@@ -297,11 +296,13 @@ local function Check( event )
 			--myText.text = "n : " .. filename
 
 			if (filename == nil or filename == "") then
+				toast.show('Please select at least one photo.') 
 				return
 			else
 
 			if isRechable() == false then 
- 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				toast.show('It seems internet is not Available. Please connect to internet.') 
  				return
 			end
 

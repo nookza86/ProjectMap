@@ -54,7 +54,8 @@ local function networkListener( event )
         ErrorCheck = decodedData["error"]
 
     	if( ErrorCheck == true) then
-    		local alert = native.showAlert( "Error", "Try again.", { "OK" })
+    		--local alert = native.showAlert( "Error", "Try again.", { "OK" })
+            toast.show("Try again")
         	print( "Try again." )
         	
         else

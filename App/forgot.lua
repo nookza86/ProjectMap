@@ -53,7 +53,8 @@ local function networkListener( event )
 	native.setActivityIndicator( false )
     if ( event.isError ) then
         print( "Network error!" )
-        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        toast.show("Try again.")
     else
     	myNewData = event.response
         print( "RESPONSE: " .. event.response )
@@ -62,11 +63,13 @@ local function networkListener( event )
         ErrorCheck = decodedData["error"]
 
     	if( ErrorCheck == true) then
-    		local alert = native.showAlert( "Error", decodedData["error_msg"], { "OK" })
+    		--local alert = native.showAlert( "Error", decodedData["error_msg"], { "OK" })
+        	toast.show("Try again.")
         	print( "Try again." )
 
         else
-        	local alert = native.showAlert( "", "Check your email", { "OK" })
+        	--local alert = native.showAlert( "", "Check your email", { "OK" })
+        	toast.shwo("Please check your email.")
         	composer.gotoScene("menu")
 
     	end
@@ -110,6 +113,7 @@ local function Check( event )
 
 			if (EmailTxf.text == "" or EmailTxf.text == nil) then
 				native.showAlert( "Error", "Please fill your email.", { "OK" } )
+				toast.show("Please fill your email.")
 				return
 			else
 				native.setActivityIndicator( true )

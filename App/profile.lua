@@ -237,21 +237,21 @@ function scene:show(event)
 		UserImage.y = cy - 55
 ]]
 		NameImage = display.newImageRect( "Phuket/Profile/name.png", 226/3, 77/3 )
-		NameImage.x = cx
+		NameImage.x = cx + 40
 		NameImage.y = cy - 80
 		ProfileGroup:insert( NameImage )
 
 		CountryImage = display.newImageRect( "Phuket/Profile/country.png", 449/3, 92/3 )
-		CountryImage.x = NameImage.x
+		CountryImage.x = NameImage.x - 40
 		CountryImage.y = NameImage.y + 40
 		ProfileGroup:insert( CountryImage )
 
-		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Light", 16 )
+		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Bold", 16 )
 		--TextName:setFillColor( 1, 0, 0 )
 		ProfileGroup:insert( TextName )
 
 
-		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, "Cloud-Light", 16 )
+		TextCountry = display.newText( "dd", CountryImage.x + 150 , CountryImage.y, "Cloud-Bold", 16 )
 		--TextCountry:setFillColor( 1, 0, 0 )
 		ProfileGroup:insert( TextCountry )
 
@@ -378,7 +378,7 @@ native.setActivityIndicator( false )
     	}
 			)
 		KataImage.x = cx - 180 
-		KataImage.y = cy + 25
+		KataImage.y = cy + 15
 
 		KamalaImage = widget.newButton(
     	{

@@ -159,7 +159,8 @@ local function DiaryListener(  )
  
     if(TextDesField.text == "" ) then
         print( "Please fill some note." )
-        native.showAlert( "Fill","Please fill some note.", { "OK" } )
+        --native.showAlert( "Fill","Please fill some note.", { "OK" } )
+        toast.show("Please fill some note.")
         return
     end
     local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
@@ -245,7 +246,8 @@ local function Check( event )
 			composer.gotoScene("HomePlace", options)
 		else
 			if isRechable() == false then 
- 				native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 				toast.show("It seems internet is not Available. Please connect to internet.")
  				return
 			end
 --[[
@@ -544,7 +546,8 @@ end
 
 local function randomFlag( event )
 	if isRechable() == false then 
- 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		toast.show("It seems internet is not Available. Please connect to internet.")
  		native.setActivityIndicator( false )
  		return
 	end

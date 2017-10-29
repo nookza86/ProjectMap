@@ -115,7 +115,8 @@ end
 local function networkListener( event )
     if ( event.isError ) then
         print( "Network error!" )
-        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        toast.show("Try again")
     else
     	myNewData = event.response
         print( "RESPONSE: " .. event.response )
@@ -125,11 +126,13 @@ local function networkListener( event )
        -- ActiveCheck = decodedData["user"]["active"]
 
     	if( ErrorCheck == true) then
-    		local alert = native.showAlert( "Error", "Try again.", { "OK" })
+    		--local alert = native.showAlert( "Error", "Try again.", { "OK" })
+    		toast.show("Try again")
         	print( "Try again." )
         	native.setActivityIndicator( false )
         elseif ( decodedData["user"]["active"] == 'no') then
-        	local alert = native.showAlert( "Error", "Please check your email and click the link to activate your account.", { "OK" })
+        	--local alert = native.showAlert( "Error", "Please check your email and click the link to activate your account.", { "OK" })
+        	toast.show("Please check your email and click the link to activate your account.")
         	--print( "Need Activate." )
         	native.setActivityIndicator( false )
         else
@@ -188,6 +191,7 @@ local function Check( event )
 		print( "Internet access" )
 	else 
   		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+  		toast.show("It seems internet is not Available. Please connect to internet.")
   		return
 	end
 ]]

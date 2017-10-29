@@ -237,22 +237,26 @@ end
 local function CreateAccountListener( event )
 
     if(txfFirstName.text == "" or txfLastName.text == "" or txfPassword.text == "" or txfConfirmPassword.text == "" or txfEmail.text == "") then
-        native.showAlert( "Please fill all information in the form.", { "OK" } )
+        --native.showAlert( "Please fill all information in the form.", { "OK" } )
+        toast.show("Please fill all information in the form.")
         return
     end
 
     if (CheckPasswordMatch == false) then
-        native.showAlert( "The password does not match", { "OK" } )
+        --native.showAlert( "The password does not match", { "OK" } )
+        toast.show("The password does not match.")
         return
     end
 
     if (CheckEmail == false) then
-        native.showAlert( "Email Address in invalid format", { "OK" } )
+        --native.showAlert( "Email Address in invalid format", { "OK" } )
+        toast.show("Email Address in invalid format.")
         return
     end
 
     if isRechable() == false then 
-        native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+        --native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+        toast.show("It seems internet is not Available. Please connect to internet.")
         return
     end
 
