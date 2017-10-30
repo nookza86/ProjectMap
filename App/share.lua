@@ -24,8 +24,10 @@ local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
 local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
 local FitFrameImage
 local IMG_SCALE = 1.2
+local Check, SelectImg
 --local mask = graphics.newMask( "rr-512.png" )
 local mask = graphics.newMask( "Phuket/share/addpicture.png" )
+local PopupImg, PopupClose, backgroundALpha, PopupText
 local ShareGroup = display.newGroup()
 
 cx = display.contentCenterX
@@ -76,7 +78,76 @@ local function onKeyEvent( event )
     return false
 end
 
-local function SelectImg( event )
+local function DisableBTN(  )
+	
+	UserImage1:removeEventListener( "touch", SelectImg )
+	UserImage2:removeEventListener( "touch", SelectImg )
+	UserImage3:removeEventListener( "touch", SelectImg )
+	UserImage4:removeEventListener( "touch", SelectImg )
+	ShareBtn:setEnabled( false )
+	BackBtn:setEnabled( false )
+
+end
+
+local function EnableBTN(  )
+	
+	UserImage1:addEventListener( "touch", SelectImg )
+	UserImage2:addEventListener( "touch", SelectImg )
+	UserImage3:addEventListener( "touch", SelectImg )
+	UserImage4:addEventListener( "touch", SelectImg )
+	ShareBtn:setEnabled( true )
+	BackBtn:setEnabled( true )
+
+end
+
+local function ShowPopUp( TextAlert )
+
+	backgroundALpha = display.newRect(0,0,570,360)
+	backgroundALpha.x = display.contentWidth / 2
+	backgroundALpha.y = display.contentHeight / 2
+	backgroundALpha:setFillColor( black )
+	backgroundALpha.alpha = 0.5
+
+	PopupImg = display.newImageRect( "Phuket/Home/popup.png", 779 / 3, 450 / 3 )
+	PopupImg.x = display.contentCenterX
+	PopupImg.y = display.contentCenterY
+
+	local options = {
+	   text = TextAlert,
+	   x = PopupImg.x,
+	   y = PopupImg.y,
+	   fontSize = 16,
+	   font = "Cloud-Light",
+	   --width = 200,
+	   --height = 0,
+	   align = "center"
+	}
+
+	PopupText = display.newText( options )
+
+	CloseBtn = widget.newButton(
+    	{
+	        width = 130/3,
+	        height = 101/3,
+	        defaultFile = "Phuket/Button/Button/close.png",
+	        overFile = "Phuket/Button/ButtonPress/close.png",
+	        id = "CloseBtn",
+	        onEvent = Check
+    	}
+			)
+	CloseBtn.name = "CloseBtn"
+	CloseBtn.x = PopupImg.x + 90
+	CloseBtn.y = PopupImg.y - 50
+
+	DisableBTN(  )
+
+	ShareGroup:insert( backgroundALpha )
+	ShareGroup:insert( PopupImg )
+	ShareGroup:insert( PopupText )
+	ShareGroup:insert( CloseBtn )
+end
+
+function SelectImg( event )
 	SelecFileImg = event.target.id
 
 	if (composer.getSceneName( "current" ) ~= "share") then
@@ -132,6 +203,7 @@ local function SelectImg( event )
 	backgroundALpha.x = PositionX
 	backgroundALpha.y = PositionY
 	backgroundALpha:scale(0.2, 0.2 )
+	ShareGroup:insert(backgroundALpha)
 	
 	end
 
@@ -257,7 +329,7 @@ end
 local function LoadDirayImage( event )
 	if isRechable() == false then 
  		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
- 		toast.show("It seems internet is not Available. Please connect to internet.")
+ 		toast.show("It seems internet is not Available.\n Please connect to internet.")
  		return
 	end
 
@@ -273,7 +345,7 @@ network.download( url ,
 
 end
 
-local function Check( event )
+function Check( event )
 	print( event.target.id, params.PlaceName)
 	local options = {params = {PlaceName = params.PlaceName}}
 	if(event.phase == "ended") then
@@ -296,19 +368,27 @@ local function Check( event )
 			--myText.text = "n : " .. filename
 
 			if (filename == nil or filename == "") then
-				toast.show('Please select at least one photo.') 
+				--toast.show('Please select at least one photo.') 
+				ShowPopUp( 'Please select at least one photo.' )
 				return
 			else
 
 			if isRechable() == false then 
  				--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
- 				toast.show('It seems internet is not Available. Please connect to internet.') 
+ 				--toast.show('It seems internet is not Available. Please connect to internet.') 
+ 				ShowPopUp( 'It seems internet is not Available. Please connect to internet.' )
  				return
 			end
 
 				buttonOnRelease(command, caption, AttNo, memNo, filename)
 			end
-
+		elseif (event.target.id == "CloseBtn") then
+			RemoveAll( backgroundALpha )
+			RemoveAll( PopupImg )
+			RemoveAll( PopupText )
+			RemoveAll( CloseBtn )
+			EnableBTN()
+			
 		else
 			composer.gotoScene("share",options)
 		end

@@ -14,9 +14,11 @@ local myMap = native.newMapView( 20, 20, 1, 1 )
 local params, cx, cy, cw, ch
 local Bg, BgBtn, BackBtn, TitleImage
 local InformationBtn, MapBtn, ShareBtn, DiaryBtn
+local PopupImg, PopupClose, backgroundALpha, PopupText
 local IsUnlock = false
 local IsDiary = false
-
+local Check
+local HomeGroup = display.newGroup( )
 ------
 local filename = system.pathForFile( "distance.json", system.ResourceDirectory )
 local decoded, pos, msg = json.decodeFile( filename )
@@ -58,7 +60,80 @@ function scene:create(event)
 	print("Scene #HomePlace : create")
 end
 
-local function Check( event )
+local function DisableBTN(  )
+	
+	InformationBtn:setEnabled( false )
+	MapBtn:setEnabled( false )
+	ShareBtn:setEnabled( false )
+	DiaryBtn:setEnabled( false )
+	BackBtn:setEnabled( false )
+
+	if (LocationBtn) then
+		BackBtn:setEnabled( false )
+	end
+end
+
+local function EnableBTN(  )
+	
+	InformationBtn:setEnabled( true )
+	MapBtn:setEnabled( true )
+	ShareBtn:setEnabled( true )
+	DiaryBtn:setEnabled( true )
+	BackBtn:setEnabled( true )
+
+	if (LocationBtn) then
+		BackBtn:setEnabled( true )
+	end
+end
+
+local function ShowPopUp( TextAlert )
+
+	backgroundALpha = display.newRect(0,0,570,360)
+	backgroundALpha.x = display.contentWidth / 2
+	backgroundALpha.y = display.contentHeight / 2
+	backgroundALpha:setFillColor( black )
+	backgroundALpha.alpha = 0.5
+
+	PopupImg = display.newImageRect( "Phuket/Home/popup.png", 779 / 3, 450 / 3 )
+	PopupImg.x = display.contentCenterX
+	PopupImg.y = display.contentCenterY
+
+	local options = {
+	   text = TextAlert,
+	   x = PopupImg.x - 5,
+	   y = PopupImg.y ,
+	   fontSize = 16,
+	   font = "Cloud-Light",
+	   --width = 200,
+	   --height = 0,
+	   align = "center"
+	}
+
+	PopupText = display.newText( options )
+
+	CloseBtn = widget.newButton(
+    	{
+	        width = 130/4,
+	        height = 101/4,
+	        defaultFile = "Phuket/Button/Button/close.png",
+	        overFile = "Phuket/Button/ButtonPress/close.png",
+	        id = "CloseBtn",
+	        onEvent = Check
+    	}
+			)
+	CloseBtn.name = "CloseBtn"
+	CloseBtn.x = PopupImg.x + 90
+	CloseBtn.y = PopupImg.y - 50
+
+	DisableBTN(  )
+
+	HomeGroup:insert( backgroundALpha )
+	HomeGroup:insert( PopupImg )
+	HomeGroup:insert( PopupText )
+	HomeGroup:insert( CloseBtn )
+end
+
+function Check( event )
 	print( event.target.id )
 	local options = {params = {PlaceName = params.PlaceName}}
 	
@@ -78,7 +153,8 @@ local function Check( event )
 				composer.gotoScene("share", options)
 			else
 				--native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
-				toast.show("Please add a photo in the diary to share your photo on facebook.")
+				--toast.show("Please add a photo in the diary to share your photo on facebook.")
+				ShowPopUp( "Not available \n\n Please add a photo in the diary." )
 				return
 			end
 
@@ -91,19 +167,27 @@ local function Check( event )
 				composer.gotoScene("Diary", options)
 			else
 				--native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
-				toast.show("Not available because ".. params.PlaceName .." has been locked.")
+				--toast.show("Not available because ".. params.PlaceName .." has been locked.")
+				ShowPopUp( "Not available \n\n ".. params.PlaceName .." is locked." )
 				return
 			end
 			
 
 		elseif (event.target.id == "BackBtn") then
 			composer.gotoScene("overview")
+		elseif (event.target.id == "CloseBtn") then
+			RemoveAll( backgroundALpha )
+			RemoveAll( PopupImg )
+			RemoveAll( PopupText )
+			RemoveAll( CloseBtn )
+			EnableBTN()
 		end
 	end
 end
 
 local function GoS(  )
-	toast.show("Now " .. params.PlaceName .." has Unlocked.")
+	--toast.show("Now " .. params.PlaceName .." has Unlocked.")
+	ShowPopUp("Now " .. params.PlaceName .." has Unlocked.")
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("overview", options)
 			native.setActivityIndicator( false )
@@ -185,11 +269,13 @@ local function CalDis( currentLatitude, currentLongitude )
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
-				InArea = true
+				--InArea = true
 			if (InArea == true) then
 				UnlockListener(  )
 			else
-				toast.show("You are not in the area. Please try again.")
+
+				--toast.show("You are not in the area. Please try again.")
+				ShowPopUp("You are not in the area. Please try again.")
 			end
 		
 	end -- decode
@@ -221,7 +307,8 @@ local function CheckLocation( event )
  	-- Do not continue if a MapView has not been created.
 if(event.phase == "ended") then
  	if isRechable() == false then 
- 		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+ 		toast.show("It seems internet is not Available. Please connect to internet.")
  		return
 	end
 
@@ -236,7 +323,8 @@ if(event.phase == "ended") then
 		if currentLocation.errorCode ~= 0 then -- errorCode 0 is: Pending User Authorization!
 			currentLatitude = 0
 			currentLongitude = 0
-			native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
+			--native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
+			toast.show(currentLocation.errorMessage)
 		end
 	else
 		-- Current location data was received.
@@ -431,6 +519,8 @@ function scene:show(event)
 		if (LocationBtn) then
 			sceneGroup:insert(LocationBtn)
 		end
+
+		sceneGroup:insert(HomeGroup)
 		
 
 	elseif (phase == "did") then
