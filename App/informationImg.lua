@@ -55,8 +55,7 @@ myRectangle:setFillColor( black )
 	    topImages = {
 			"Phuket/Information/".. params.PlaceName .."/1.jpg",
 			"Phuket/Information/".. params.PlaceName .."/2.jpg",
-			"Phuket/Information/".. params.PlaceName .."/3.jpg",
-			"Phuket/Information/".. params.PlaceName .."/4.jpg"
+			"Phuket/Information/".. params.PlaceName .."/3.jpg"
 			--"top_04.png"
 		}                   
 

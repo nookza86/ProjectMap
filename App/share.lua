@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
+local image = require('image')
 require("FitImage")
 require("createAcc")
 require("get-data")
@@ -14,7 +15,7 @@ local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, UserImage1, UserImage2, UserImage3, UserImage4
-local BackBtn, ShareBtn
+local BackBtn, ShareBtn, ReloadBtn
 local member_no, NoAtt, DiaryNote, SelecFileImg
 local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 local backgroundALpha
@@ -388,7 +389,19 @@ function Check( event )
 			RemoveAll( PopupText )
 			RemoveAll( CloseBtn )
 			EnableBTN()
-			
+
+		elseif (event.target.id == "ReloadBtn") then
+			local sql = "SELECT member_no, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE att_no IN (SELECT att_no FROM attractions WHERE att_name = '" .. params.PlaceName .. "' );"
+
+			for row in db:nrows(sql) do	
+				image.Delete(member_no, row.diary_pic1)
+				image.Delete(member_no, row.diary_pic2)
+				image.Delete(member_no, row.diary_pic3)
+				image.Delete(member_no, row.diary_pic4)
+			end
+
+			--composer.gotoScene("share",options)
+
 		else
 			composer.gotoScene("share",options)
 		end
@@ -546,7 +559,7 @@ function scene:show(event)
 	    
 	 -- toast.show('Loading Image!')  
 
-		Bg = display.newImageRect("Phuket/share/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/share/bg.jpg", cw, ch )
 	    Bg.x = cx 
 		Bg.y = cy 
 		ShareGroup:insert( Bg )
@@ -787,9 +800,24 @@ end
 		
 		ShareBtn.x = cx 
 		ShareBtn.y = cy + 120
-
+--[[
+		ReloadBtn = widget.newButton(
+    	{
+	        width = 451/3.5,
+	        height = 121/3.5,
+	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
+	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
+	        id = "ReloadBtn",
+	        onEvent = Check
+    	}
+			)
+		
+		ReloadBtn.x = cx + 150
+		ReloadBtn.y = cy + 120
+]]
 		ShareGroup:insert( BackBtn )
 		ShareGroup:insert( ShareBtn )
+		--ShareGroup:insert( ReloadBtn )
 		sceneGroup:insert(ShareGroup)
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")

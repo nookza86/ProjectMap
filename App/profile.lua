@@ -225,7 +225,7 @@ function scene:show(event)
 		end
 
 		--native.setActivityIndicator( true )
-		Bg = display.newImageRect("Phuket/Profile/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/Profile/bg.jpg", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
 		--Bg:scale( 0.3, 0.3 ) 

@@ -507,7 +507,7 @@ print( display.pixelHeight / display.actualContentHeight )
 		
 		timer.performWithDelay( 1000, listener, 0 )
 
-	island = display.newImageRect("Phuket/Overview/island.png", cw, ch)
+	island = display.newImageRect("Phuket/Overview/island.jpg", cw, ch)
 	island.x = cx
 	island.y = cy
 

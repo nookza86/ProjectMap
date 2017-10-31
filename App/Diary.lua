@@ -734,7 +734,7 @@ function scene:show(event)
 		end
 
 
-		Bg = display.newImageRect("Phuket/Diary/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/Diary/bg.jpg", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy
 		DiaryGroup:insert( Bg )

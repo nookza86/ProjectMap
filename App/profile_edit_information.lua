@@ -464,7 +464,7 @@ function scene:show(event)
     )
     ImageGroup:insert( scrollView )
 
-    Bg = display.newImageRect( "Phuket/Profile/bg.png", cw , ch  )
+    Bg = display.newImageRect( "Phuket/Profile/bg.jpg", cw , ch  )
     Bg.x = cx
     Bg.y = cy 
 

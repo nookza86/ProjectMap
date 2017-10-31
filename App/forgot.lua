@@ -146,7 +146,7 @@ function scene:show(event)
 			composer.removeScene( prevScene )
 		end
 
-		Bg = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
+		Bg = display.newImageRect("Phuket/menu/bglogin.jpg", cw, ch )
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 

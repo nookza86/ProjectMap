@@ -268,7 +268,7 @@ function scene:show(event)
 			composer.removeScene( prevScene )
 		end
 		
-	    Bg = display.newImageRect("Phuket/Loading/bg.png", cw, ch )
+	    Bg = display.newImageRect("Phuket/Loading/bg.jpg", cw, ch )
 	    Bg.x = cx 
 		Bg.y = cy
 

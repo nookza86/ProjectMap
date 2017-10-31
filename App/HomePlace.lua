@@ -396,7 +396,7 @@ function scene:show(event)
 		print( "User Click " .. params.PlaceName .. " From Overview" )
 
 		
-		Bg = display.newImageRect("Phuket/Home/".. params.PlaceName .. "/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/Home/".. params.PlaceName .. "/bg.jpg", cw, ch )
 		Bg.x = display.contentCenterX 
 		Bg.y = display.contentCenterY
 		--Bg:scale( 0.3, 0.3 ) 

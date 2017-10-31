@@ -117,6 +117,7 @@ local function networkListener( event )
         print( "Network error!" )
         --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
         toast.show("Try again")
+        native.setActivityIndicator( false )
     else
     	myNewData = event.response
         print( "RESPONSE: " .. event.response )
@@ -253,7 +254,7 @@ function scene:show(event)
 		print( display.pixelHeight / display.actualContentHeight )
 		]]
 
-		myText = display.newImageRect("Phuket/menu/bglogin.png", cw, ch )
+		myText = display.newImageRect("Phuket/menu/bglogin.jpg", cw, ch )
 		myText.x = display.contentCenterX 
 		myText.y = display.contentCenterY
 

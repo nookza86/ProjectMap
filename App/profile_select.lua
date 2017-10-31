@@ -138,7 +138,7 @@ function scene:show(event)
         if (prevScene ~= nil) then
             composer.removeScene( prevScene )
         end
-		Bg = display.newImageRect("Phuket/Profile/bg.png", cw, ch )
+		Bg = display.newImageRect("Phuket/Profile/bg.jpg", cw, ch )
 		Bg.x = cx 
 		Bg.y = cy 
 		
