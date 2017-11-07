@@ -5,6 +5,7 @@ local json = require ("json")
 local mime = require( "mime" )
 local lfs = require( "lfs" )
 local toast = require('plugin.toast')
+local imgOper = require('image')
 require("createAcc")
 require ("Network-Check")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
@@ -23,6 +24,7 @@ local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
 local SelectImg, mask, ProfileFrame
 local myText, scrollView
+local CountImg = 0
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -153,8 +155,8 @@ local function UploadUserImage( MemNo )
 
     local filename = "".. MemNo ..".jpg"
     --local baseDirectory = system.ResourceDirectory
-    local baseDirectory = system.DocumentsDirectory 
-   -- local baseDirectory = system.TemporaryDirectory
+    --local baseDirectory = system.DocumentsDirectory 
+    local baseDirectory = system.TemporaryDirectory
     local contentType = "image/jpge" 
 
     local headers = {}
@@ -167,16 +169,16 @@ end
 
 local function reNameImg( member_no )
     -- Get raw path to the app documents directory
-    local doc_path = system.pathForFile( "", system.DocumentsDirectory )
-    local destDir = system.DocumentsDirectory
+    local doc_path = system.pathForFile( "", system.TemporaryDirectory )
+    local destDir = system.TemporaryDirectory
     --myText.text = "reNameImg"
     for file in lfs.dir( doc_path ) do
         -- "file" is the current file or directory name
         print( "Found file: " .. file )
 
-        if (file == "PIC.jpg") then
+        if (file == PhotoName .. ".jpg") then
             local result, reason = os.rename(
-                system.pathForFile( "PIC.jpg", destDir ),
+                system.pathForFile( PhotoName .. ".jpg", destDir ),
                 system.pathForFile( "" .. member_no .. ".jpg", destDir )
             )
 
@@ -191,8 +193,6 @@ local function reNameImg( member_no )
             break
         end
     end
-
-
 end
 
 local function networkListener( event )
@@ -296,7 +296,7 @@ local sessionComplete = function(event)
     photo = event.target
     --myText.text = "ses"
     if photo then
-
+        imgOper.Remove( (PhotoName - 1) ..".jpg", system.TemporaryDirectory)
         if photo.width > photo.height then
            -- photo:rotate( -90 )         -- rotate for landscape
             print( "Rotated" )
@@ -307,17 +307,15 @@ local sessionComplete = function(event)
         local yScale = _H / photo.contentHeight
         local scale = math.max( xScale, yScale ) * .75
         
-        local maxWidth = 256
-        local maxHeight = 256
+        local maxWidth = imgOper.getWidth(  )
+        local maxHeight = imgOper.getHeight(  )
 
         --photo:scale( scale, scale )
         photo.x = centerX
         photo.y = centerY
         --myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
         print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
-
-
-
+        --local alert = native.showAlert( "Error", "photo w,h = " .. photo.width .. "," .. photo.height .." ".. xScale .." ".. yScale .." ".. scale, { "OK" })
         --rescale width
         if ( photo.width > maxWidth ) then
            local ratio = maxWidth / photo.width
@@ -332,8 +330,9 @@ local sessionComplete = function(event)
            photo.width = photo.width * ratio
         end
 
-        display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-        display.remove( photo )
+        --local alert = native.showAlert( "Error", "photo w,h = " .. photo.width .. "," .. photo.height .." ".. xScale .." ".. yScale .." ".. scale, { "OK" })
+
+        
             PhotoPickerCheck1 = true
             PicUser:removeEventListener( "touch", SelectImg )
             --RemoveAll(PicUser)
@@ -341,17 +340,22 @@ local sessionComplete = function(event)
             if (mask) then
                 PicUser:setMask( nil )
                 mask = nil
-                RemoveAll(ProfileFrame)
+                --RemoveAll(ProfileFrame)
+                ProfileFrame:removeSelf( )
+                ProfileFrame = nil
             end
             PicUser:removeSelf( )
             PicUser = nil
+
+            display.save( photo, { filename=PhotoName..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+        display.remove( photo )
             
-            PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 195, cy - 80, true )
+            PicUser = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, cx - 195, cy - 80, true )
             PicUser:scale(0.2  , 0.2  )
             PicUser.name = "PIC"
             PicUser:addEventListener( "touch", SelectImg )
 
-         mask = graphics.newMask( "cc.png" )
+            mask = graphics.newMask( "cc.png" )
              
             PicUser:setMask( mask )
             
@@ -375,9 +379,11 @@ local sessionComplete = function(event)
 end
 
 function SelectImg( event )
-     PhotoName = event.target.name
-    -- myText.text = "This"
-     media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })   
+     --PhotoName = event.target.name
+     CountImg = CountImg + 1
+     PhotoName = CountImg
+     
+     media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })   
 end
 
 function scene:create(event)
@@ -539,7 +545,7 @@ function scene:show(event)
         fontSize = 12
     })  
 
-    FrameGender = display.newImageRect( "Phuket/CreateAccount/FrameGender.png", GenderPickerWheel.width + 25, GenderPickerWheel.height + 20 )
+    FrameGender = display.newImageRect( "Phuket/CreateAccount/FrameGender.png", GenderPickerWheel.width + 15, GenderPickerWheel.height + 20 )
     FrameGender.x = GenderPickerWheel.x
     FrameGender.y = GenderPickerWheel.y
 
@@ -681,20 +687,19 @@ function scene:show(event)
         ImageGroup:insert(txfConfirmPassword)
         ImageGroup:insert(txfEmail)
 
+        ImageGroup:insert(CountryPickerWheel)
+        ImageGroup:insert(BirthPickerWheel)
+        ImageGroup:insert(GenderPickerWheel)
+        ImageGroup:insert(FrameGender)
+        ImageGroup:insert(FrameCountry)
+        ImageGroup:insert(FrameBirth)
         ImageGroup:insert(BoxBirth)
         ImageGroup:insert(BoxCountry)
         ImageGroup:insert(BoxGender)
         ImageGroup:insert(GenderTitle)
         ImageGroup:insert(CountryTitle)
         ImageGroup:insert(BirthTitle)
-
-        ImageGroup:insert(FrameGender)
-        ImageGroup:insert(FrameCountry)
-        ImageGroup:insert(FrameBirth)
-
-        ImageGroup:insert(CountryPickerWheel)
-        ImageGroup:insert(BirthPickerWheel)
-        ImageGroup:insert(GenderPickerWheel)
+        
         sceneGroup:insert( ImageGroup )
     elseif (phase == "did") then
         print("Scene Overview : show (did)")

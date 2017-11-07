@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
+local imgOper = require('image')
 require("createAcc")
 require("get-data")
 local sqlite = require("sqlite3")
@@ -113,7 +114,7 @@ local function loadImageListener( event )
 							cx - 180,
 							cy - 75 
 							)
-				--UserImage:scale( 0.2, 0.2 )
+				UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
 				
 
@@ -127,10 +128,10 @@ local function loadImageListener( event )
 		local yScale = ch / UserImage.contentHeight
 		local scale = math.max( xScale, yScale ) * .75
 		
-		local maxWidth = 512
-		local maxHeight = 512
+		local maxWidth = imgOper.getWidth(  )
+		local maxHeight = imgOper.getHeight(  )
 
-		UserImage:scale( scale, scale )
+		--UserImage:scale( scale, scale )
 		--UserImage.x = cx
 		--UserImage.y = cy + 100
 		
@@ -147,7 +148,7 @@ local function loadImageListener( event )
 		   UserImage.height = maxHeight
 		   UserImage.width = UserImage.width * ratio
 		end
-
+		--UserImage:scale( 0.2, 0.2 )
 		 mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
 			 
@@ -271,7 +272,7 @@ function scene:show(event)
 							cx - 180,
 							cy - 75 
 							)
-				--UserImage:scale( 0.2, 0.2 )
+				UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
 				
 
@@ -288,7 +289,7 @@ function scene:show(event)
 		local maxWidth = 512
 		local maxHeight = 512
 
-		UserImage:scale( scale, scale )
+		--UserImage:scale( scale, scale )
 		--UserImage.x = cx
 		--UserImage.y = cy + 100
 		

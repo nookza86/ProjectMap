@@ -5,6 +5,7 @@ local json = require ("json")
 local mime = require( "mime" )
 local lfs = require( "lfs" )
 local toast = require('plugin.toast')
+local imgOper = require('image')
 require("createAcc")
 require ("Network-Check")
 require ("get-data")
@@ -28,6 +29,7 @@ local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
 local SelectImg, mask, ProfileFrame
 local myText, scrollView
+local CountImg = 100000
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -103,12 +105,13 @@ local function textFieldHandler( event )
 end
 
 local function uploadListener( event )
-    print( "uploaddddL:is" )
+    --toast.show("uploadListener")
    if ( event.isError ) then
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
        --myText.text = "Status:" .. event.status .. " Response: " .. event.response
+    --toast.show("Network Error, Try again.")
 
    else
       if ( event.phase == "began" ) then
@@ -120,22 +123,26 @@ local function uploadListener( event )
          print( "Status:", event.status )
          print( "Response:", event.response )
 
-         local Result = DropTableData( 4 )
-         
-         if (Result == true) then
-             composer.gotoScene( "profile" )
-         end
+        for row in db:nrows("SELECT id FROM personel;") do
+            imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
+        end
+
+         --imgOper.Remove( PhotoName .. ".jpg", system.DocumentsDirectory  )
+
+         composer.gotoScene( "profile" )
+
       end
    end
 end
 
-local function UploadUserImage( )
+local function UploadUserImage( MemberNo )
+    --[[
     local MemNo = 0
 
     for row in db:nrows("SELECT id FROM personel;") do
         MemNo = row.id
     end
-
+]]
     local url = "http://mapofmem.esy.es/admin/api/android_upload_api/register_upload.php"
   
     local method = "PUT"
@@ -146,10 +153,11 @@ local function UploadUserImage( )
        bodyType = "binary"
     }
 
-    local filename = "".. MemNo ..".jpg"
+    local filename = "".. MemberNo ..".jpg"
+    --toast.show("Upload img name : " .. filename)
     --local baseDirectory = system.ResourceDirectory
-    local baseDirectory = system.DocumentsDirectory 
-   -- local baseDirectory = system.TemporaryDirectory
+    --local baseDirectory = system.DocumentsDirectory 
+    local baseDirectory = system.TemporaryDirectory
     local contentType = "image/jpge" 
 
     local headers = {}
@@ -173,10 +181,24 @@ local function networkListener( event )
         decodedData = (json.decode( myNewData ))
 
         if (decodedData["error"] == false) then
-            UploadUserImage()
+
+            local MemberNo 
+            for row in db:nrows("SELECT id FROM personel;") do
+                MemberNo = row.id
+            end
+            DropTableData( 4 )
+            local Result_Rename = imgOper.reName( PhotoName, MemberNo  )
+
+            if ( Result_Rename == true ) then
+                UploadUserImage( MemberNo )
+                --toast.show("true " .. MemberNo)
+            else
+                toast.show("Try again")
+            end
+
         else
             ---native.showAlert( "Error","Try again.", { "OK" } )
-            toast.show("Try again")
+            toast.show("Error. Try again")
         end
     end
 end
@@ -248,7 +270,7 @@ local SelectImageListener = function(event)
     photo = event.target
     
     if photo then
-        toast.show("SelectImageListener")
+        imgOper.Remove( (PhotoName - 1) ..".jpg", system.TemporaryDirectory)
         if photo.width > photo.height then
            -- photo:rotate( -90 )         -- rotate for landscape
             print( "Rotated" )
@@ -259,9 +281,9 @@ local SelectImageListener = function(event)
         local yScale = _H / photo.contentHeight
         local scale = math.max( xScale, yScale ) * .75
         
-        local maxWidth = 512
-        local maxHeight = 512
-        local ScaleProFile = 0
+        local maxWidth = imgOper.getWidth(  )
+        local maxHeight = imgOper.getHeight(  )
+        --local ScaleProFile = 0
 
         --photo:scale( scale, scale )
         photo.x = centerX
@@ -269,14 +291,10 @@ local SelectImageListener = function(event)
         --myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
         print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 
-
-
-        --rescale width
         if ( photo.width > maxWidth ) then
            local ratio = maxWidth / photo.width
            photo.width = maxWidth
            photo.height = photo.height * ratio
-           ScaleProFile = scale / 2.5
         end
          
         --rescale height
@@ -284,11 +302,9 @@ local SelectImageListener = function(event)
            local ratio = maxHeight / photo.height
            photo.height = maxHeight
            photo.width = photo.width * ratio
-           ScaleProFile = scale
         end
 
-        display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
-        display.remove( photo )
+        
             PhotoPickerCheck1 = true
             PicUser:removeEventListener( "touch", SelectImg )
             --RemoveAll(PicUser)
@@ -297,18 +313,23 @@ local SelectImageListener = function(event)
                 PicUser:setMask( nil )
                 mask = nil
                 --RemoveAll(ProfileFrame)
+                ProfileFrame:removeSelf( )
+                ProfileFrame = nil
             end
-            ProfileFrame:removeSelf( )
-            ProfileFrame = nil
             PicUser:removeSelf( )
             PicUser = nil
+
             local ID_USER = 0
+
             for row in db:nrows("SELECT id FROM personel;") do
                 ID_USER = row.id
             end
             
-            PicUser = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, cx - 195, cy - 80, true )
-            PicUser:scale( ScaleProFile, ScaleProFile )
+            display.save( photo, { filename=PhotoName..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+            display.remove( photo )
+
+            PicUser = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, cx - 165, cy - 80, true )
+            PicUser:scale(0.2  , 0.2  )
             PicUser.name = ID_USER
             PicUser:addEventListener( "touch", SelectImg )
 
@@ -331,14 +352,16 @@ local SelectImageListener = function(event)
     else
         PhotoPickerCheck = false
         --myText.text = "No Image Selected"
-        toast.show("else")
+        --toast.show("else")
     end
 end
 
 function SelectImg( event )
-     PhotoName = event.target.name
-    toast.show("SelectImg")
-     media.selectPhoto( { listener = SelectImageListener, baseDir = system.DocumentsDirectory, filename = PhotoName .. ".jpg",mediaSource = PHOTO_FUNCTION })   
+     --PhotoName = event.target.name
+     CountImg = CountImg + 1
+     PhotoName = CountImg
+
+     media.selectPhoto( { listener = SelectImageListener, baseDir = system.TemporaryDirectory, filename = PhotoName .. ".jpg",mediaSource = PHOTO_FUNCTION })   
 end
 
 local function loadImageListener( event )
@@ -351,7 +374,7 @@ local function loadImageListener( event )
                             cx - 180,
                             cy - 75 
                             )
-                --PicUser:scale( 0.2, 0.2 )
+                PicUser:scale( 0.2, 0.2 )
                 PicUser.name = "profile"
                 
 
@@ -385,7 +408,7 @@ local function loadImageListener( event )
            ScaleProFile = scale
         end
 
-        PicUser:scale( ScaleProFile, ScaleProFile )
+        --PicUser:scale( ScaleProFile, ScaleProFile )
          mask = graphics.newMask( "cc.png" )
          --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
              
@@ -469,7 +492,7 @@ function scene:show(event)
     Bg.y = cy 
 
     PicFirstName = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
-    PicFirstName.x = cx - 70
+    PicFirstName.x = cx 
     PicFirstName.y = cy - 90
 
     PicLastName = display.newImageRect( "Phuket/CreateAccount/box.png", 120, 25 )
@@ -525,10 +548,10 @@ function scene:show(event)
                 PicUser = display.newImage( 
                             row.img, 
                             system.DocumentsDirectory,
-                            cx - 200,
+                            cx - 165,
                             cy - 75 
                             )
-                --PicUser:scale( 0.2, 0.2 )
+                PicUser:scale( 0.2, 0.2 )
                 PicUser.name = id
                 PicUser:addEventListener( "touch", SelectImg )
             end
@@ -558,7 +581,7 @@ function scene:show(event)
            PicUser.width = PicUser.width * ratio
            ScaleProFile = scale / 1.7
         end
-        PicUser:scale( ScaleProFile, ScaleProFile )
+        --PicUser:scale( ScaleProFile, ScaleProFile )
          local mask = graphics.newMask( "cc.png" )
          --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
              
@@ -634,7 +657,7 @@ function scene:show(event)
         fontSize = 12
     })  
 
-    FrameGender = display.newImageRect( "Phuket/CreateAccount/FrameGender.png", GenderPickerWheel.width + 25, GenderPickerWheel.height + 20 )
+    FrameGender = display.newImageRect( "Phuket/CreateAccount/FrameGender.png", GenderPickerWheel.width + 15, GenderPickerWheel.height + 20 )
     FrameGender.x = GenderPickerWheel.x
     FrameGender.y = GenderPickerWheel.y
 
@@ -796,6 +819,12 @@ function scene:show(event)
         ImageGroup:insert(txfLastName)
         ImageGroup:insert(txfEmail)
 
+        ImageGroup:insert(CountryPickerWheel)
+        ImageGroup:insert(BirthPickerWheel)
+        ImageGroup:insert(GenderPickerWheel)
+        ImageGroup:insert(FrameGender)
+        ImageGroup:insert(FrameCountry)
+        ImageGroup:insert(FrameBirth)
         ImageGroup:insert(BoxBirth)
         ImageGroup:insert(BoxCountry)
         ImageGroup:insert(BoxGender)
@@ -803,13 +832,6 @@ function scene:show(event)
         ImageGroup:insert(CountryTitle)
         ImageGroup:insert(BirthTitle)
 
-        ImageGroup:insert(FrameGender)
-        ImageGroup:insert(FrameCountry)
-        ImageGroup:insert(FrameBirth)
-
-        ImageGroup:insert(CountryPickerWheel)
-        ImageGroup:insert(BirthPickerWheel)
-        ImageGroup:insert(GenderPickerWheel)
         sceneGroup:insert( ImageGroup )    
 
     elseif (phase == "did") then

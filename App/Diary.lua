@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
+local imgOper = require('image')
 require("FitImage")
 require("createAcc")
 require("get-data")
@@ -28,11 +29,12 @@ local myText ,scrollView, Text
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
 local FitFrameImage
 local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
-
+local NowUploadFilename = ""
 local IsImg1Landscape = false
 local IsImg2Landscape = false
 local IsImg3Landscape = false
 local IsImg3Landscape = false
+--local myText1 = display.newText( "1", display.contentCenterX + 50, 260, native.systemFont, 16 )
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -110,17 +112,20 @@ local function uploadListener( event )
          print( "Upload started" )
       elseif ( event.phase == "progress" ) then
          print( "Uploading... bytes transferred ", event.bytesTransferred )
+         --toast.show(event.bytesTransferred)
       elseif ( event.phase == "ended" ) then
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
+         --toast.show(NowUploadFilename .. " Upload finish")
 
       end
    end
 end
 
-local function UploadUserImage( fileName )
-
+local function UploadUserImage( fileName_Upload )
+  NowUploadFilename = fileName_Upload
+  --toast.show(NowUploadFilename)
     local url = "http://mapofmem.esy.es/admin/api/android_upload_api/diary_upload.php"
   
     local method = "PUT"
@@ -131,28 +136,29 @@ local function UploadUserImage( fileName )
        bodyType = "binary"
     }
 
-    local filename = fileName .. ".jpg"
-    local baseDirectory = system.DocumentsDirectory
-   -- local baseDirectory = system.DocumentsDirectory 
-   -- local baseDirectory = system.TemporaryDirectory
+    local filename = fileName_Upload .. ".jpg"
+    --local baseDirectory = system.DocumentsDirectory
+    local baseDirectory = system.TemporaryDirectory
     local contentType = "image/jpge" 
 
     local headers = {}
     headers.filename = filename
     params.headers = headers
-     
+    --myText1.text = filename
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
 local function GoS(  )
-
+--[[
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("HomePlace", options)
+      ]]
 			native.setActivityIndicator( false )
 end
 
 local function CallDrop(  )
 	DropTableData( 2 )
+
 end
 
 local function DiaryListener(  )
@@ -174,13 +180,7 @@ local function DiaryListener(  )
 		for row in db:nrows(sql2) do
 			member_no = row.id
 		end
---[[
-	local DB_DIARY_ID = 0	
-	local sql3 = "SELECT diary_id FROM diary WHERE att_name = '".. params.PlaceName .."';"
-		for row in db:nrows(sql2) do
-			DB_DIARY_ID = row.diary_id
-		end
-]]
+
         local diary = {}
 
         if (CheckIsHaveDiary == true) then
@@ -189,51 +189,45 @@ local function DiaryListener(  )
         else
         	diary["command"] = "insert"
         end
+          diary["member_no"] = member_no
+          diary["att_no"] = NoAtt
+          diary["diary_note"] = TextDesField.text
+          diary["impression"] = ImpressionScore
+          diary["beauty"] = BeautyScore
+          diary["clean"] = CleanScore
 
-        
-        diary["member_no"] = member_no
-        diary["att_no"] = NoAtt
-        diary["diary_note"] = TextDesField.text
-        diary["impression"] = ImpressionScore
-        diary["beauty"] = BeautyScore
-        diary["clean"] = CleanScore
+        local sql3 = "SELECT diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
+          for row in db:nrows(sql3) do
 
-        if (PhotoPickerCheck1 )then
-			 diary["diary_pic1"] = NoAtt .. "_" .. NoMember .. "_1.jpg"
-		else
-			diary["diary_pic1"] = ""
-		end
+              diary["diary_pic1"] = row.diary_pic1
+              diary["diary_pic2"] = row.diary_pic2
+              diary["diary_pic3"] = row.diary_pic3
+              diary["diary_pic4"] = row.diary_pic4
+          end
+              if (PhotoPickerCheck1 == true) then
+      			     diary["diary_pic1"] = NoAtt .. "_" .. NoMember .. "_1.jpg"
+      		    end
 
-		if (PhotoPickerCheck2 )then
-			diary["diary_pic2"] = NoAtt .. "_" .. NoMember .. "_2.jpg"
-			else
-			diary["diary_pic2"] = ""
-		end
+      		    if (PhotoPickerCheck2 == true) then
+      			     diary["diary_pic2"] = NoAtt .. "_" .. NoMember .. "_2.jpg"
+      		    end
 
-		if (PhotoPickerCheck3 )then
-			diary["diary_pic3"] = NoAtt .. "_" .. NoMember .. "_3.jpg"
-		else
-			diary["diary_pic3"] = ""
-		end
+          		if (PhotoPickerCheck3 == true) then
+          			diary["diary_pic3"] = NoAtt .. "_" .. NoMember .. "_3.jpg"
+          		end
 
-		if (PhotoPickerCheck4 )then
-			 diary["diary_pic4"] = NoAtt .. "_" .. NoMember .. "_4.jpg"
-		else
-			diary["diary_pic4"] = ""
-		end
+          		if (PhotoPickerCheck4 == true) then
+          			 diary["diary_pic4"] = NoAtt .. "_" .. NoMember .. "_4.jpg"
+          		end
 
-
-
-        local DiarySendData = json.encode( diary )
-
-       --myText.text = DiarySendData
-        DiarySend(DiarySendData)
+    --myText1.text = " " .. tostring( PhotoPickerCheck1 ) .. " " .. tostring( PhotoPickerCheck2 ) .. " " .. tostring( PhotoPickerCheck3 ) .. " " .. tostring( PhotoPickerCheck4 )
+    local DiarySendData = json.encode( diary )
+    DiarySend(DiarySendData)
+    print( DiarySendData )
 		native.setActivityIndicator( true )
-		timer.performWithDelay( 5000, CallDrop )
-        timer.performWithDelay( 5000, GoS )
+		timer.performWithDelay( 10000, CallDrop )
+    --timer.performWithDelay( 10000, GoS )
 
-        
-        
 end
 
 
@@ -250,32 +244,37 @@ local function Check( event )
  				toast.show("It seems internet is not Available. Please connect to internet.")
  				return
 			end
---[[
-			if (PhotoPickerCheck1 == false or PhotoPickerCheck2 == false or PhotoPickerCheck3 == false or PhotoPickerCheck4 == false ) then
-				native.showAlert( "No photo select","Add least 1 photo.", { "OK" } )
-				return
-			end
-]]
-			if (PhotoPickerCheck1 )then
+      if (CheckIsHaveDiary == false) then
+  			if (PhotoPickerCheck1 == false or PhotoPickerCheck2 == false or PhotoPickerCheck3 == false or PhotoPickerCheck4 == false ) then
+  				native.showAlert( "No photo select","Add least 1 photo.", { "OK" } )
+  				return
+  			end
+      end
+      
+			if (PhotoPickerCheck1 == true ) then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
+        --toast.show("1 true")
 			end
 
-			if (PhotoPickerCheck2 )then
+			if (PhotoPickerCheck2 == true) then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_2")
+        --toast.show("2 true")
 			end
 
-			if (PhotoPickerCheck3 )then
+			if (PhotoPickerCheck3 == true) then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_3")
+        --toast.show("3 true")
 			end
 
-			if (PhotoPickerCheck4 )then
+			if (PhotoPickerCheck4 == true) then
 				UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
+        --toast.show("4 true")
 			end
-			
-			DiaryListener(  )
+
+      DiaryListener(  )
+						
 		end
-		
-		
+				
 	end
 
 end
@@ -331,8 +330,6 @@ local function onSwitchPress( event )
 
 end
 
-
-
 -- Media listener
 -- Executes after the user picks a photo (or cancels)
 --
@@ -376,13 +373,15 @@ local sessionComplete = function(event)
 		   photo.width = photo.width * ratio
 		end
 
-		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.DocumentsDirectory, isFullResolution=true } )
+		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
    		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
-   			PhotoPickerCheck1 = true
+   			
+        PhotoPickerCheck1 = true
    			RemoveAll(FrameUserImage1)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
-   			ImageUser1 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_1, ImagePosition_Y_1, true )
+        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_1.jpg", system.TemporaryDirectory)
+   			ImageUser1 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_1, ImagePosition_Y_1, true )
    			--ImageUser1:scale(scale / 2, scale / 2 )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
@@ -391,11 +390,13 @@ local sessionComplete = function(event)
       			--TextDesField.text = "1"
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then
-   			PhotoPickerCheck2 = true
+   			
+        PhotoPickerCheck2 = true
    			RemoveAll(FrameUserImage2)
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
-   			ImageUser2 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_2, ImagePosition_Y_2, true )
+        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_2.jpg", system.TemporaryDirectory )
+   			ImageUser2 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_2, ImagePosition_Y_2, true )
    			--ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
@@ -404,11 +405,13 @@ local sessionComplete = function(event)
    			--TextDesField.text = "2"
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
-   			PhotoPickerCheck3 = true
+   			
+        PhotoPickerCheck3 = true
    			RemoveAll(FrameUserImage3)
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
-   			ImageUser3 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_3, ImagePosition_Y_3, true )
+        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_3.jpg", system.TemporaryDirectory)
+   			ImageUser3 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_3, ImagePosition_Y_3, true )
    			--ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
@@ -417,11 +420,13 @@ local sessionComplete = function(event)
    			--TextDesField.text = "3"
 
    		else
+        
    			PhotoPickerCheck4 = true
    			RemoveAll(FrameUserImage4)
    			ImageUser4:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser4)
-   			ImageUser4 = display.newImage( PhotoName..".jpg", system.DocumentsDirectory, ImagePosition_X_4, ImagePosition_Y_4, true )
+        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_4.jpg", system.TemporaryDirectory)
+   			ImageUser4 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_4, ImagePosition_Y_4, true )
    			--ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
@@ -431,8 +436,6 @@ local sessionComplete = function(event)
 
    		end
 
-   		
-   		--myText.text = PhotoName..".jpg".. photo.width .. " " .. photo.height
    		display.remove( photo )
 		
 	else
@@ -445,6 +448,7 @@ local sessionComplete = function(event)
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_4") then
    			PhotoPickerCheck4 = false
    		end
+      --toast.show("No Image Selected")
 		--myText.text = "No Image Selected"
 
 	end
@@ -455,7 +459,7 @@ function AddImgListener( event )
 	print( PhotoName )
 	--TextDesField.text = PhotoName
 	--myText.text = PhotoName
-	media.selectPhoto( { listener = sessionComplete, baseDir = system.DocumentsDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
+	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
 
 end
 
@@ -472,7 +476,7 @@ local function loadImageListener( event )
 							ImagePosition_Y_1 
 							)
 			--ImageUser1:scale( 0.15, 0.15 )
-			ImageUser1.name = event.response.filename
+			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			ImageUser1.alpha = 0
 			DiaryGroup:insert( ImageUser1 )
@@ -492,7 +496,7 @@ local function loadImageListener( event )
 							ImagePosition_Y_2 
 							)
 			--ImageUser2:scale( 0.15, 0.15 )
-			ImageUser2.name = event.response.filename
+			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			ImageUser2.alpha = 0
 			DiaryGroup:insert( ImageUser2 )
@@ -510,7 +514,7 @@ local function loadImageListener( event )
 							ImagePosition_Y_3 
 							)
 			--ImageUser3:scale( 0.15, 0.15 )
-			ImageUser3.name = event.response.filename
+			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			ImageUser3.alpha = 0
 			DiaryGroup:insert( ImageUser3 )
@@ -529,7 +533,7 @@ local function loadImageListener( event )
 							ImagePosition_Y_4 
 							)
 			--ImageUser4:scale( 0.15, 0.15 )
-			ImageUser4.name = event.response.filename
+			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			ImageUser4.alpha = 0
 			DiaryGroup:insert( ImageUser4 )
@@ -590,7 +594,8 @@ local function listener( event )
 	    	 print( "LOADING DONE" )
 	    	 IsDone = true
     	 end
-
+      elseif (CheckIsHaveDiary == false) then
+        native.setActivityIndicator( false )
     	else
     		print( "LOADING IMG" )
     end
@@ -724,6 +729,11 @@ function scene:show(event)
     scrollView:insert( sceneGroup )
 
 		--composer.removeScene( "HomePlace" )
+
+    PhotoPickerCheck1 = false
+    PhotoPickerCheck2 = false
+    PhotoPickerCheck3 = false
+    PhotoPickerCheck4 = false
 		
 		local sqlCheck = "SELECT count(diary_id) as tt FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
 		CheckIsHaveDiary = false
@@ -792,11 +802,12 @@ function scene:show(event)
 			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser1 )
-			PhotoPickerCheck1 = false
+      LOADING_IMG_1 = true
+			--PhotoPickerCheck1 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_1.jpg")
-			PhotoPickerCheck1 = true
+			--PhotoPickerCheck1 = true
 		end
 		
 		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
@@ -806,11 +817,12 @@ function scene:show(event)
 			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser2 )
-			PhotoPickerCheck2 = false
+      LOADING_IMG_2 = true
+			--PhotoPickerCheck2 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_2.jpg")
-			PhotoPickerCheck2 = true
+			--PhotoPickerCheck2 = true
 		end
 
 		if (DB_diary_pic3 == nil or DB_diary_pic3 == "") then
@@ -820,11 +832,12 @@ function scene:show(event)
 			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser3 )
-			PhotoPickerCheck3 = false
+      LOADING_IMG_3 = true
+			--PhotoPickerCheck3 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_3.jpg")
-			PhotoPickerCheck3 = true
+			--PhotoPickerCheck3 = true
 		end
 
 		if (DB_diary_pic4 == nil or DB_diary_pic4 == "") then
@@ -834,11 +847,12 @@ function scene:show(event)
 			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser4 )
-			PhotoPickerCheck4 = false
+      LOADING_IMG_4 = true
+			--PhotoPickerCheck4 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_4.jpg")
-			PhotoPickerCheck4 = true
+			--PhotoPickerCheck4 = true
 		end
 
 		local DB_impression = 1
@@ -850,6 +864,10 @@ function scene:show(event)
 			DB_impression = row.impression
 			DB_beauty = row.beauty
 			DB_clean = row.clean
+
+      ImpressionScore = row.impression
+      BeautyScore = row.beauty
+      CleanScore = row.clean
 
 			print( DB_impression,DB_beauty,DB_clean )
 		end
@@ -969,12 +987,7 @@ function scene:show(event)
 	DiaryGroup:insert( BeautyRadioGroup )
 	DiaryGroup:insert( CleanRadioGroup )
 
- 	ImpressionScore = 1
-    BeautyScore = 1
-    CleanScore = 1
-	
-
-		BackBtn = widget.newButton(
+ 			BackBtn = widget.newButton(
     	{
 	        width = 130/3,
 	        height = 101/3,
@@ -1006,6 +1019,7 @@ function scene:show(event)
 
 		DiaryGroup:insert( BackBtn )
 		DiaryGroup:insert( SaveBtn )
+    --DiaryGroup:insert( myText1 )
 
 		--myText = display.newText( "Hello World!", 400, 200, native.systemFont, 36 )
 		--myText:setFillColor( 1, 1, 0 )
@@ -1045,6 +1059,10 @@ function scene:hide(event)
 		ImageUser2:removeEventListener( "touch", AddImgListener )
 		ImageUser3:removeEventListener( "touch", AddImgListener )
 		ImageUser4:removeEventListener( "touch", AddImgListener )
+    PhotoPickerCheck1 = false
+    PhotoPickerCheck2 = false
+    PhotoPickerCheck3 = false
+    PhotoPickerCheck4 = false
 --[[
 		scrollView:remove( ImpressionRadioGroup )
 		scrollView:remove( BeautyRadioGroup )

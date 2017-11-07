@@ -88,7 +88,7 @@ end
 
 local function ShowPopUp( TextAlert )
 
-	backgroundALpha = display.newRect(0,0,570,360)
+	backgroundALpha = display.newRect(0,0,cw,ch)
 	backgroundALpha.x = display.contentWidth / 2
 	backgroundALpha.y = display.contentHeight / 2
 	backgroundALpha:setFillColor( black )
@@ -275,7 +275,7 @@ local function CalDis( currentLatitude, currentLongitude )
 			else
 
 				--toast.show("You are not in the area. Please try again.")
-				ShowPopUp("You are not in the area. Please try again.")
+				ShowPopUp("You are not in the area.\n Please try again.")
 			end
 		
 	end -- decode

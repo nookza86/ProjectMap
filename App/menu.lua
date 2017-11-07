@@ -261,6 +261,7 @@ function scene:show(event)
 		EmailTxf = native.newTextField( cx , cy + 40, 200, 25 )
 	    EmailTxf.inputType = "default"
 	    EmailTxf.text = "nook_we@hotmail.com"
+	    --EmailTxf.text = "nooza86@gmail.com"
 	    EmailTxf.hasBackground = false
 	    EmailTxf.placeholder = "E-mail"
 
@@ -272,6 +273,7 @@ function scene:show(event)
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
 	    PasswordTxf.text = "111111111"
+	    --PasswordTxf.text = "8"
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 

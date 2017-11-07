@@ -74,8 +74,6 @@ local function GetDataListener( event )
 				print( insertQuery )
 				db:exec( insertQuery )
 	       end
-
-			return true
 	       
 	    end
        

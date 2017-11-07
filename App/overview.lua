@@ -8,7 +8,7 @@ require ("Network-Check")
 require ("image_proportion")
 local island
 local PlaceGroup, ButtonGroup
-local cx, cy
+local cx, cy, cw, ch
 local watchalong, bangpae, bigbuddha, kata, karon, kamala1, kamala2, kamala3, patong
 local cocoKataImage, cocokaronImage
 local TreeImage, LagoonImage, cocoLagoonImage, TribeBangpareImage
@@ -199,7 +199,8 @@ local function loadImageListener( event )
 		   ProfileImage.width = ProfileImage.width * ratio
 		   ScaleProFile = scale / 1.7
 		end
-		ProfileImage:scale( ScaleProFile, ScaleProFile )
+		--ProfileImage:scale( ScaleProFile, ScaleProFile )
+		ProfileImage:scale( 0.2, 0.2 )
 		 local mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
 			 
@@ -307,7 +308,7 @@ local function Check( event )
 	IsClick = true
 	if (event.phase == "ended") then
 	DisableBTN()
-		backgroundALpha = display.newRect(0,0,570,360)
+		backgroundALpha = display.newRect(0,0,cw,ch)
 		backgroundALpha.x = display.contentWidth / 2
 		backgroundALpha.y = display.contentHeight / 2
 		backgroundALpha:setFillColor( black )
@@ -761,7 +762,8 @@ print( display.pixelHeight / display.actualContentHeight )
 		   ScaleProFile = scale / 1.7
 		end
 
-		ProfileImage:scale( ScaleProFile, ScaleProFile )
+		--ProfileImage:scale( ScaleProFile, ScaleProFile )
+		ProfileImage:scale( 0.2, 0.2 )
 
 		 local mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
