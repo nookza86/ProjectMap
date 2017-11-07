@@ -29,9 +29,9 @@ class DB_Functions {
         $strHeader = "Content-type: text/html; charset=windows-874\n"; // or UTF-8 //
         $strHeader .= "From: admin@map.com\nReply-To: admin@map.com";
         $strMessage = "";
-        $strMessage .= "Welcome : <br>";
+        $strMessage .= "Welcome to hidden journey: <br>";
         $strMessage .= "=================================<br>";
-        $strMessage .= "Activate account ";
+        $strMessage .= "Thank you for sign up. Please confirm your email address by ";
         //$string .= "mapofmem.esy.es/admin/activate/activate.php?sid=".$uuid."&uid=".$member_no;
         //$strMessage .= rawurlencode($string);
 
