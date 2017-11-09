@@ -34,6 +34,13 @@ local IsImg1Landscape = false
 local IsImg2Landscape = false
 local IsImg3Landscape = false
 local IsImg3Landscape = false
+local CountImg = {}
+CountImg[1] = 100
+CountImg[2] = 200
+CountImg[3] = 300
+CountImg[4] = 400
+local PhotoNo = 0
+local PhotoArray = {}
 --local myText1 = display.newText( "1", display.contentCenterX + 50, 260, native.systemFont, 16 )
 
 -----------------PPhoto Picker----------------------------------------
@@ -117,7 +124,7 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         --toast.show(NowUploadFilename .. " Upload finish")
+         toast.show("Status : " .. event.status .. " Response : " ..  event.response)
 
       end
    end
@@ -149,15 +156,16 @@ local function UploadUserImage( fileName_Upload )
 end
 
 local function GoS(  )
---[[
+
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("HomePlace", options)
-      ]]
+
 			native.setActivityIndicator( false )
 end
 
 local function CallDrop(  )
 	DropTableData( 2 )
+  imgOper.CleanDir(system.TemporaryDirectory)
 
 end
 
@@ -169,7 +177,7 @@ local function DiaryListener(  )
         toast.show("Please fill some note.")
         return
     end
-    local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
+  local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
 	local att_no = 0
 		for row in db:nrows(sql) do
 			att_no = row.att_no
@@ -225,8 +233,8 @@ local function DiaryListener(  )
     DiarySend(DiarySendData)
     print( DiarySendData )
 		native.setActivityIndicator( true )
-		timer.performWithDelay( 10000, CallDrop )
-    --timer.performWithDelay( 10000, GoS )
+		timer.performWithDelay( 2000, CallDrop )
+    timer.performWithDelay( 15000, GoS )
 
 end
 
@@ -252,23 +260,47 @@ local function Check( event )
       end
       
 			if (PhotoPickerCheck1 == true ) then
-				UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
-        --toast.show("1 true")
+          local result = imgOper.reName( PhotoArray[1], NoAtt .. "_" .. NoMember .. "_1"  )
+
+          if (result == true) then
+            UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
+            --toast.show( "Old : " .. NoAtt .. "_" .. NoMember .. "_1 , New : " .. PhotoArray[1] .. " Result : " .. tostring( result ) )
+          else
+              return
+          end
 			end
 
 			if (PhotoPickerCheck2 == true) then
-				UploadUserImage(NoAtt .. "_" .. NoMember .. "_2")
-        --toast.show("2 true")
+          local result = imgOper.reName( PhotoArray[2], NoAtt .. "_" .. NoMember .. "_2"  )
+
+          if (result == true) then
+            UploadUserImage(NoAtt .. "_" .. NoMember .. "_2")
+            --toast.show( "Old : " .. NoAtt .. "_" .. NoMember .. "_2 , New : " .. PhotoArray[2] .. " Result : " .. tostring( result ) )
+          else
+              return
+          end
 			end
 
 			if (PhotoPickerCheck3 == true) then
-				UploadUserImage(NoAtt .. "_" .. NoMember .. "_3")
-        --toast.show("3 true")
+          local result = imgOper.reName( PhotoArray[3], NoAtt .. "_" .. NoMember .. "_3"  )
+
+          if (result == true) then
+            UploadUserImage(NoAtt .. "_" .. NoMember .. "_3")
+            --toast.show( "Old : " .. NoAtt .. "_" .. NoMember .. "_3 , New : " .. PhotoArray[3] .. " Result : " .. tostring( result ) )
+          else
+              return
+          end
 			end
 
 			if (PhotoPickerCheck4 == true) then
-				UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
-        --toast.show("4 true")
+         local result = imgOper.reName( PhotoArray[4], NoAtt .. "_" .. NoMember .. "_4"  )
+
+          if (result == true) then
+            UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
+            --toast.show( "Old : " .. NoAtt .. "_" .. NoMember .. "_4 , New : " .. PhotoArray[4] .. " Result : " .. tostring( result ) )
+          else
+              return
+          end
 			end
 
       DiaryListener(  )
@@ -337,7 +369,7 @@ local sessionComplete = function(event)
 	photo = event.target
 	--myText.text = "sessionComplete"
 	if photo then
-
+    imgOper.Remove( (CountImg[PhotoNo] - 1) .. ".jpg", system.TemporaryDirectory )
 		if photo.width > photo.height then
 			--photo:rotate( -90 )			-- rotate for landscape
 			print( "Rotated" )
@@ -355,9 +387,9 @@ local sessionComplete = function(event)
 		photo.x = centerX
 		photo.y = centerY
 		
-		print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
+		print( "Before photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 		 --native.showAlert( "You Are Here", "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale, { "OK" } )
-
+     --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
 
 		--rescale width
 		if ( photo.width > maxWidth ) then
@@ -372,69 +404,82 @@ local sessionComplete = function(event)
 		   photo.height = maxHeight
 		   photo.width = photo.width * ratio
 		end
-
-		display.save( photo, { filename=PhotoName..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+    --toast.show("After photo w,h = " .. photo.width .. "," .. photo.height)
+		display.save( photo, { filename=CountImg[PhotoNo]..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
    		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
-   			
-        PhotoPickerCheck1 = true
+   			DiaryGroup:remove( FrameUserImage1 )        
    			RemoveAll(FrameUserImage1)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
-        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_1.jpg", system.TemporaryDirectory)
-   			ImageUser1 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_1, ImagePosition_Y_1, true )
+        --imgOper.Remove(NoAtt .. "_" .. NoMember .. "_1.jpg", system.TemporaryDirectory)
+   			ImageUser1 = display.newImage( CountImg[PhotoNo]..".jpg", system.TemporaryDirectory, ImagePosition_X_1, ImagePosition_Y_1, true )
    			--ImageUser1:scale(scale / 2, scale / 2 )
    			ImageUser1.name = NoAtt .. "_" .. NoMember .. "_1"
    			ImageUser1:addEventListener( "touch", AddImgListener )
-   			FitFrameImage( ImageUser1 )
    			DiaryGroup:insert( ImageUser1 )
-      			--TextDesField.text = "1"
+        FitFrameImage( ImageUser1 )
+   			
+      	--TextDesField.text = "1"
+        PhotoPickerCheck1 = true
+        PhotoArray[1] = CountImg[PhotoNo]
+        --toast.show(PhotoArray[1])
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then
-   			
-        PhotoPickerCheck2 = true
+   			DiaryGroup:remove( FrameUserImage2 )        
    			RemoveAll(FrameUserImage2)
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
-        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_2.jpg", system.TemporaryDirectory )
-   			ImageUser2 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_2, ImagePosition_Y_2, true )
+        --imgOper.Remove(NoAtt .. "_" .. NoMember .. "_2.jpg", system.TemporaryDirectory )
+   			ImageUser2 = display.newImage( CountImg[PhotoNo]..".jpg", system.TemporaryDirectory, ImagePosition_X_2, ImagePosition_Y_2, true )
    			--ImageUser2:scale(scale / 2, scale / 2 )
    			ImageUser2.name = NoAtt .. "_" .. NoMember .. "_2"
    			ImageUser2:addEventListener( "touch", AddImgListener )
-   			FitFrameImage( ImageUser2 )
    			DiaryGroup:insert( ImageUser2 )
+        FitFrameImage( ImageUser2 )
+   			
    			--TextDesField.text = "2"
+        PhotoPickerCheck2 = true
+        PhotoArray[2] = CountImg[PhotoNo]
+        --toast.show(PhotoArray[2])
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
-   			
-        PhotoPickerCheck3 = true
+   			DiaryGroup:remove( FrameUserImage3 )
    			RemoveAll(FrameUserImage3)
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
-        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_3.jpg", system.TemporaryDirectory)
-   			ImageUser3 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_3, ImagePosition_Y_3, true )
+        --imgOper.Remove(NoAtt .. "_" .. NoMember .. "_3.jpg", system.TemporaryDirectory)
+   			ImageUser3 = display.newImage( CountImg[PhotoNo]..".jpg", system.TemporaryDirectory, ImagePosition_X_3, ImagePosition_Y_3, true )
    			--ImageUser3:scale(scale / 2, scale / 2 )
    			ImageUser3.name = NoAtt .. "_" .. NoMember .. "_3"
    			ImageUser3:addEventListener( "touch", AddImgListener )
-   			FitFrameImage( ImageUser3 )
    			DiaryGroup:insert( ImageUser3 )
+        FitFrameImage( ImageUser3 )
+   			
    			--TextDesField.text = "3"
+        PhotoPickerCheck3 = true
+        PhotoArray[3] = CountImg[PhotoNo]
+        --toast.show(PhotoArray[3])
 
    		else
-        
-   			PhotoPickerCheck4 = true
+        DiaryGroup:remove( FrameUserImage4 )   			
    			RemoveAll(FrameUserImage4)
    			ImageUser4:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser4)
-        imgOper.Remove(NoAtt .. "_" .. NoMember .. "_4.jpg", system.TemporaryDirectory)
-   			ImageUser4 = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, ImagePosition_X_4, ImagePosition_Y_4, true )
+        --imgOper.Remove(NoAtt .. "_" .. NoMember .. "_4.jpg", system.TemporaryDirectory)
+   			ImageUser4 = display.newImage( CountImg[PhotoNo]..".jpg", system.TemporaryDirectory, ImagePosition_X_4, ImagePosition_Y_4, true )
    			--ImageUser4:scale(scale / 2, scale / 2 )
    			ImageUser4.name = NoAtt .. "_" .. NoMember .. "_4"
    			ImageUser4:addEventListener( "touch", AddImgListener )
+        DiaryGroup:insert( ImageUser4 )
    			FitFrameImage( ImageUser4 )
-   			DiaryGroup:insert( ImageUser4 )
+   			
    			--TextDesField.text = "4"
-
+        PhotoPickerCheck4 = true
+        PhotoArray[4] = CountImg[PhotoNo]
+        --toast.show(PhotoArray[4])
    		end
+
+      --toast.show(PhotoArray[1] .. " " .. PhotoArray[2] .. " " ..  PhotoArray[3] .. " " .. PhotoArray[4])
 
    		display.remove( photo )
 		
@@ -456,10 +501,21 @@ end
 
 function AddImgListener( event )
 	PhotoName = event.target.name
-	print( PhotoName )
-	--TextDesField.text = PhotoName
-	--myText.text = PhotoName
-	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = PhotoName .. "jpg",mediaSource = PHOTO_FUNCTION })
+
+  if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
+      PhotoNo = 1
+  elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then  
+      PhotoNo = 2
+  elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
+      PhotoNo = 3
+  elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_4" or PhotoName == NoAtt .. "_" .. NoMember .. "_4.jpg") then 
+      PhotoNo = 4
+  end 
+
+	--print( PhotoName )
+	CountImg[PhotoNo] = CountImg[PhotoNo] + 1
+  --PhotoName = CountImg
+	media.selectPhoto( { listener = sessionComplete, baseDir = system.TemporaryDirectory, filename = CountImg[PhotoNo] .. ".jpg",mediaSource = PHOTO_FUNCTION })
 
 end
 
@@ -698,7 +754,7 @@ function scene:show(event)
 	local phase = event.phase
 	params = event.params
 
-    LOADING_IMG_1 = false
+  LOADING_IMG_1 = false
 	LOADING_IMG_2 = false
 	LOADING_IMG_3 = false
 	LOADING_IMG_4 = false
@@ -706,6 +762,7 @@ function scene:show(event)
 	timer.performWithDelay( 1000, listener, 0 )
 
 	if (phase == "will") then
+    imgOper.CleanDir(system.TemporaryDirectory)
 		local prevScene = composer.getSceneName( "previous" )
 		composer.removeScene( prevScene )
 	sceneGroup:insert( DiaryGroup )

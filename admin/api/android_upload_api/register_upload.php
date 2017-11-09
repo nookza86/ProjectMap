@@ -103,7 +103,8 @@ if ((isset($_SERVER["HTTP_FILENAME"])) && (isset($_SERVER["CONTENT_TYPE"])) && (
             chmod("upload/profile/" . $filename, 0777);
             if ($result) {
                 http_response_code(201);
-                echo("File Created " . $filename);
+                //echo("File Created " . $filename);
+                echo($filename);
             } else {
                 http_response_code(403);
                 echo("Renaming file to upload/profile/" . $filename . " failed.");

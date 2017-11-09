@@ -461,7 +461,7 @@ function scene:show(event)
     cy = display.contentCenterY
     cw = display.contentWidth
     ch = display.contentHeight
-
+    imgOper.CleanDir(system.TemporaryDirectory)
     local prevScene = composer.getSceneName( "previous" )
 
         if (prevScene ~= nil) then

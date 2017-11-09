@@ -24,6 +24,32 @@ function image.Delete( Filename )
 	end
 end
 
+function image.CleanDir( Dir )
+	local lfs = require( "lfs" )
+ 
+	--local doc_dir = system.DocumentsDirectory;
+	local doc_dir = Dir
+	local doc_path = system.pathForFile("", doc_dir)
+	local resultOK, errorMsg
+	 
+	for file in lfs.dir(doc_path) do
+	    local theFile = system.pathForFile(file, doc_dir)
+	 
+	    if (lfs.attributes(theFile, "mode") ~= "directory") then
+	        resultOK, errorMsg = os.remove(theFile)
+	 
+	        if (resultOK) then
+	            print(file.." removed")
+	            --local alert = native.showAlert( "Error", file .. " removed.", { "OK" })
+	        else
+	            print("Error removing file: "..file..":"..errorMsg)
+	            --local alert = native.showAlert( "Error", "Error removing file: "..file..":"..errorMsg, { "OK" })
+	        end
+	    end
+	end 
+	return true
+end
+
 function image.Remove( Filename, Dir )
 	--local destDir = system.DocumentsDirectory  -- Location where the file is stored
 	local destDir = Dir
