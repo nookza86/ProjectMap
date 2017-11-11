@@ -1,4 +1,5 @@
 local json = require ("json")
+require ("get-data")
 local myNewData, decodedData
 
 local function showAlertListener( event )
@@ -59,6 +60,7 @@ local function DiarySendListener( event )
         local GetDatabase = event.response
         print( "RESPONSE: " .. event.response )
        local decodedDatabase = (json.decode( GetDatabase ))
+       DropTableData( 2 )
        
     end
 end

@@ -104,6 +104,11 @@ local function textFieldHandler( event )
 
 end
 
+local function GoS(  )
+  composer.gotoScene( "profile" )
+  
+end
+
 local function uploadListener( event )
     --toast.show("uploadListener")
    if ( event.isError ) then
@@ -129,7 +134,8 @@ local function uploadListener( event )
 
          --imgOper.Remove( PhotoName .. ".jpg", system.DocumentsDirectory  )
 
-         composer.gotoScene( "profile" )
+         imgOper.CleanDir(system.TemporaryDirectory)
+         timer.performWithDelay( 5000, GoS )
 
       end
    end

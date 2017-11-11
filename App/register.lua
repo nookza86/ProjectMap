@@ -107,6 +107,10 @@ local function textFieldHandler( event )
     end
 end
 
+local function GoS(  )
+  composer.gotoScene( "menu" )
+end
+
 local function uploadListener( event )
     print( "uploaddddL:is" )
    if ( event.isError ) then
@@ -124,8 +128,10 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         native.setActivityIndicator( false )
-         composer.gotoScene("menu")
+         --native.setActivityIndicator( false )
+         --composer.gotoScene("menu")
+         imgOper.CleanDir(system.TemporaryDirectory)
+         timer.performWithDelay( 5000, GoS )
          --myText.text = event.status .. " " .. event.response
 --[[
          if (event.status == "201") then

@@ -27,6 +27,7 @@ local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local DiaryGroup = display.newGroup()
 local myText ,scrollView, Text
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
+local UPLOADING_IMG_1, UPLOADING_IMG_2, UPLOADING_IMG_3,UPLOADING_IMG_4
 local FitFrameImage
 local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
 local NowUploadFilename = ""
@@ -108,6 +109,35 @@ function scene:create(event)
 	print("Scene #Diary : create")
 end
 
+
+local function GoS(  )
+
+  local options = {params = {PlaceName = params.PlaceName}}
+      composer.gotoScene("HomePlace", options)
+
+      native.setActivityIndicator( false )
+end
+
+local function CallDrop(  )
+  DropTableData( 2 )
+  imgOper.CleanDir(system.TemporaryDirectory)
+
+end
+
+local function UploadPhotoDiarylistener( event )
+
+    if (UPLOADING_IMG_1 == true and UPLOADING_IMG_2 == true and UPLOADING_IMG_3 == true and UPLOADING_IMG_4 == true) then
+        timer.cancel( event.source )
+        print( "UPLOADING DONE" )
+        imgOper.CleanDir(system.TemporaryDirectory)
+        timer.performWithDelay( 5000, GoS )
+    else
+        print( "UPLOADING IMG" )
+    end
+
+end
+
+
 local function uploadListener( event )
    if ( event.isError ) then
       print( "Network Error." )
@@ -124,7 +154,26 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         toast.show("Status : " .. event.status .. " Response : " ..  event.response)
+
+         --toast.show("Status : " .. event.status .. " Response : " ..  event.response)
+
+        if (event.status == 201 or event.status == "201") then
+            if (PhotoPickerCheck1 == true and event.response == NoAtt .. "_" .. NoMember .. "_1.jpg") then
+                 UPLOADING_IMG_1 = true
+            end
+
+             if (PhotoPickerCheck2 == true and event.response == NoAtt .. "_" .. NoMember .. "_2.jpg") then
+                 UPLOADING_IMG_2 = true
+            end
+
+             if (PhotoPickerCheck3 == true and event.response == NoAtt .. "_" .. NoMember .. "_3.jpg") then
+                 UPLOADING_IMG_3 = true
+            end
+
+             if (PhotoPickerCheck4 == true and event.response == NoAtt .. "_" .. NoMember .. "_4.jpg") then
+                 UPLOADING_IMG_4 = true
+            end
+        end
 
       end
    end
@@ -153,20 +202,6 @@ local function UploadUserImage( fileName_Upload )
     params.headers = headers
     --myText1.text = filename
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
-end
-
-local function GoS(  )
-
-	local options = {params = {PlaceName = params.PlaceName}}
-			composer.gotoScene("HomePlace", options)
-
-			native.setActivityIndicator( false )
-end
-
-local function CallDrop(  )
-	DropTableData( 2 )
-  imgOper.CleanDir(system.TemporaryDirectory)
-
 end
 
 local function DiaryListener(  )
@@ -212,29 +247,44 @@ local function DiaryListener(  )
               diary["diary_pic3"] = row.diary_pic3
               diary["diary_pic4"] = row.diary_pic4
           end
+
+          UPLOADING_IMG_1 = false
+          UPLOADING_IMG_2 = false
+          UPLOADING_IMG_3 = false
+          UPLOADING_IMG_4 = false
+
               if (PhotoPickerCheck1 == true) then
       			     diary["diary_pic1"] = NoAtt .. "_" .. NoMember .. "_1.jpg"
+              else
+                  UPLOADING_IMG_1 = true
       		    end
 
       		    if (PhotoPickerCheck2 == true) then
       			     diary["diary_pic2"] = NoAtt .. "_" .. NoMember .. "_2.jpg"
+              else
+                  UPLOADING_IMG_2 = true
       		    end
 
           		if (PhotoPickerCheck3 == true) then
           			diary["diary_pic3"] = NoAtt .. "_" .. NoMember .. "_3.jpg"
+              else
+                  UPLOADING_IMG_3 = true
           		end
 
           		if (PhotoPickerCheck4 == true) then
           			 diary["diary_pic4"] = NoAtt .. "_" .. NoMember .. "_4.jpg"
+              else
+                  UPLOADING_IMG_4 = true
           		end
 
     --myText1.text = " " .. tostring( PhotoPickerCheck1 ) .. " " .. tostring( PhotoPickerCheck2 ) .. " " .. tostring( PhotoPickerCheck3 ) .. " " .. tostring( PhotoPickerCheck4 )
     local DiarySendData = json.encode( diary )
     DiarySend(DiarySendData)
-    print( DiarySendData )
+    
 		native.setActivityIndicator( true )
-		timer.performWithDelay( 2000, CallDrop )
-    timer.performWithDelay( 15000, GoS )
+    timer.performWithDelay( 1000, UploadPhotoDiarylistener, 0 )
+		--timer.performWithDelay( 2000, CallDrop )
+    --timer.performWithDelay( 15000, GoS )
 
 end
 
@@ -943,12 +993,14 @@ function scene:show(event)
  	BeautyRadioGroup = display.newGroup()
  	CleanRadioGroup = display.newGroup()
  	
+
+  local j = 5
 -- Create two associated radio buttons (inserted into the same display group)
 	ImpressionRadioButton = {}
 	local position = cx + 120
 	local initialSwitch = false
 	for i=1,5 do
-		if (i == DB_impression) then
+		if (j == DB_impression) then
 			initialSwitch = true
 		else
 			initialSwitch = false
@@ -972,13 +1024,15 @@ function scene:show(event)
 	)
 		
 		position = position + 28
+    j = j - 1
 	end
 
+  j = 5
 	BeautyRadioButton = {}
 	position = cx + 120
 	initialSwitch = false
 	for i=1,5 do
-		if (i == DB_beauty) then
+		if (j == DB_beauty) then
 			initialSwitch = true
 		else
 			initialSwitch = false
@@ -1002,13 +1056,15 @@ function scene:show(event)
 	)
 		
 		position = position + 28
+    j = j - 1
 	end
 
+  j = 5
 	CleanRadioButton = {}
 	position = cx + 120
 	initialSwitch = false
 	for i=1,5 do
-		if (i == DB_clean) then
+		if (j == DB_clean) then
 			initialSwitch = true
 		else
 			initialSwitch = false
@@ -1032,6 +1088,7 @@ function scene:show(event)
 	)
 		
 		position = position + 28
+    j = j - 1
 	end
 
 	for i=1,5 do
