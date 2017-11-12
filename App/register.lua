@@ -108,6 +108,7 @@ local function textFieldHandler( event )
 end
 
 local function GoS(  )
+  native.setActivityIndicator( false )  
   composer.gotoScene( "menu" )
 end
 
@@ -117,7 +118,6 @@ local function uploadListener( event )
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
-       --myText.text = "Status:" .. event.status .. " Response: " .. event.response
 
    else
       if ( event.phase == "began" ) then
@@ -128,21 +128,10 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-         --native.setActivityIndicator( false )
-         --composer.gotoScene("menu")
+
          imgOper.CleanDir(system.TemporaryDirectory)
          timer.performWithDelay( 5000, GoS )
-         --myText.text = event.status .. " " .. event.response
---[[
-         if (event.status == "201") then
-            local UpImg = {}
 
-            UpImg["member_no"] = member_no
-            UpImg["att_no"] = NoAtt
-
-             UpdateImg
-         end
-         ]]
       end
    end
 end
@@ -208,7 +197,6 @@ local function networkListener( event )
 
     else
         print( "RESPONSE: " .. event.response )
-        native.setActivityIndicator( false )
 
         myNewData = event.response
         decodedData = (json.decode( myNewData ))

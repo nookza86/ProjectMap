@@ -240,15 +240,16 @@ local function GoS(  )
 end
 
 local function listener( event )
-    if (INSERT_DATA_1 == true and INSERT_DATA_2 == true and INSERT_DATA_3 == true ) then
+    if (INSERT_DATA_1 == true and INSERT_DATA_2 == true and INSERT_DATA_3 == true and INSERT_DATA_4 == true ) then
+    	print( "LOADING DONE" )
     	progressView:setProgress( 1 )
-    	 timer.cancel( event.source )
-    	 composer.gotoScene("overview")
-    	 print( "LOADING DONE" )
-    	else
-    		print( "1 : " .. tostring( INSERT_DATA_1 ) )
-    		print( "2 : " .. tostring( INSERT_DATA_2 ) )
-    		print( "3 : " .. tostring( INSERT_DATA_3 ) )
+    	timer.cancel( event.source )
+    	composer.gotoScene("overview")
+    else
+    	print( "1 : " .. tostring( INSERT_DATA_1 ) )
+    	print( "2 : " .. tostring( INSERT_DATA_2 ) )
+    	print( "3 : " .. tostring( INSERT_DATA_3 ) )
+    	print( "4 : " .. tostring( INSERT_DATA_4 ) )
 
     end
 end

@@ -191,20 +191,16 @@ local function Check( event )
 	if isRechable() == true then 
 		print( "Internet access" )
 	else 
-  		native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
+  		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
   		toast.show("It seems internet is not Available. Please connect to internet.")
   		return
 	end
 ]]
-	if(event.target.id == "LoginWithFaceBookBtn") then
-		composer.gotoScene( "overview" )
-	end
-
 	if(event.phase == "ended") then
 		if(event.target.id == "login") then
 			if(EmailTxf.text == "" or PasswordTxf.text == "") then
-				print( "NULL" )
-
+				--print( "NULL" )
+				toast.show("Please fill all fields.")
 				return
 			else
 				native.setActivityIndicator( true )
@@ -303,21 +299,7 @@ function scene:show(event)
 		
 		LoginBtn.x = cx 
 		LoginBtn.y = cy + 115
---[[
-	 LoginWithFaceBookBtn = widget.newButton(
-    	{
-	        width = 451 / 4.5,
-	        height = 121/ 4.5,
-	        defaultFile = "Phuket/Button/Button/login_w_fb.png",
-	        overFile = "Phuket/Button/ButtonPress/login_w_fb.png",
-	        id = "LoginWithFaceBookBtn",
-	        onEvent = Check
-    	}
-			)
-		
-		LoginWithFaceBookBtn.x = LoginBtn.x + 95
-		LoginWithFaceBookBtn.y = LoginBtn.y  
-]]
+
 	ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5 )
 	ForgotImage.x = display.contentCenterX - 40
 	ForgotImage.y = display.contentCenterY + 145
