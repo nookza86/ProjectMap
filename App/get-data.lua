@@ -58,6 +58,7 @@ local function GetDataListener( event )
 				--print(insertQuery)
 	       end
 
+
 	    elseif(CountGetDatabase == 4) then
 
 			for idx4, val4 in ipairs(decodedDatabase) do

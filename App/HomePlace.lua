@@ -4,8 +4,8 @@ local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
 require ("cal")
-require("createAcc")
-require("get-data")
+--require("createAcc")
+--require("get-data")
 require ("Network-Check")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -86,7 +86,7 @@ local function EnableBTN(  )
 	end
 end
 
-local function ShowPopUp( TextAlert )
+local function ShowPopUp( TextAlert, IsAlert )
 
 	backgroundALpha = display.newRect(0,0,cw,ch)
 	backgroundALpha.x = display.contentWidth / 2
@@ -98,11 +98,31 @@ local function ShowPopUp( TextAlert )
 	PopupImg.x = display.contentCenterX
 	PopupImg.y = display.contentCenterY
 
+	local BtnType = {}
+
+	if (IsAlert == true) then
+		BtnType.File = "close"
+		BtnType.name = "CloseBtn"
+		BtnType.x = PopupImg.x + 90
+		BtnType.y = PopupImg.y - 50
+		BtnType.fontSize = 16
+		BtnType.TextPositionX = PopupImg.x - 5
+		BtnType.TextPositionY = PopupImg.y
+	else
+		BtnType.File = "ok"
+		BtnType.name = "OkBtn"
+		BtnType.x = PopupImg.x + 90
+		BtnType.y = PopupImg.y + 40
+		BtnType.fontSize = 20
+		BtnType.TextPositionX = PopupImg.x - 5
+		BtnType.TextPositionY = PopupImg.y - 10
+	end
+
 	local options = {
 	   text = TextAlert,
-	   x = PopupImg.x - 5,
-	   y = PopupImg.y ,
-	   fontSize = 16,
+	   x = BtnType.TextPositionX,
+	   y = BtnType.TextPositionY ,
+	   fontSize = BtnType.fontSize,
 	   font = "Cloud-Light",
 	   --width = 200,
 	   --height = 0,
@@ -113,17 +133,17 @@ local function ShowPopUp( TextAlert )
 
 	CloseBtn = widget.newButton(
     	{
-	        width = 130/4,
-	        height = 101/4,
-	        defaultFile = "Phuket/Button/Button/close.png",
-	        overFile = "Phuket/Button/ButtonPress/close.png",
-	        id = "CloseBtn",
+	        width = 130/3,
+	        height = 101/3,
+	        defaultFile = "Phuket/Button/Button/".. BtnType.File ..".png",
+	        overFile = "Phuket/Button/ButtonPress/".. BtnType.File ..".png",
+	        id = BtnType.name,
 	        onEvent = Check
     	}
 			)
-	CloseBtn.name = "CloseBtn"
-	CloseBtn.x = PopupImg.x + 90
-	CloseBtn.y = PopupImg.y - 50
+	CloseBtn.name = BtnType.name
+	CloseBtn.x = BtnType.x
+	CloseBtn.y = BtnType.y
 
 	DisableBTN(  )
 
@@ -154,7 +174,7 @@ function Check( event )
 			else
 				--native.showAlert( "Not Diary","Add some diary and some photo", { "OK" } )
 				--toast.show("Please add a photo in the diary to share your photo on facebook.")
-				ShowPopUp( "Not available \n\n Please add a photo in the diary." )
+				ShowPopUp( "Not available \n\n Please add a photo in the diary.", true)
 				return
 			end
 
@@ -168,13 +188,15 @@ function Check( event )
 			else
 				--native.showAlert( "Not Unlock","Unlock Please", { "OK" } )
 				--toast.show("Not available because ".. params.PlaceName .." has been locked.")
-				ShowPopUp( "Not available \n\n ".. params.PlaceName .." is locked." )
+				ShowPopUp( "Not available \n\n ".. params.PlaceName .." is locked.", true )
 				return
 			end
 			
 
-		elseif (event.target.id == "BackBtn") then
+		elseif (event.target.id == "BackBtn" or event.target.id == "OkBtn") then
+			EnableBTN()
 			composer.gotoScene("overview")
+
 		elseif (event.target.id == "CloseBtn") then
 			RemoveAll( backgroundALpha )
 			RemoveAll( PopupImg )
@@ -187,18 +209,126 @@ end
 
 local function GoS(  )
 	--toast.show("Now " .. params.PlaceName .." has Unlocked.")
-	ShowPopUp("Now " .. params.PlaceName .." has Unlocked.")
+	ShowPopUp("Now " .. params.PlaceName .." has Unlocked.", false)
+	--[[
 	local options = {params = {PlaceName = params.PlaceName}}
 			composer.gotoScene("overview", options)
 			native.setActivityIndicator( false )
+			]]
 end
 
-local function CallDrop(  )
-	DropTableData( 3 )
+local function GetDataListener( event )
+	--toast.show("GetDataListener")
+    if ( event.isError ) then
+        print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+    else
+
+    	local GetDatabase = event.response
+        print( "RESPONSE: " .. event.response )
+       local decodedDatabase = (json.decode( GetDatabase ))
+
+	       for idx3, val3 in ipairs(decodedDatabase) do
+	       	--print("GetData 3",idx3, val3)
+	       		local insertQuery = "INSERT INTO unattractions VALUES (" ..
+				val3.un_id .. ",'" ..
+				val3.member_no .. "','" ..
+				val3.att_no .. "');"
+
+				db:exec( insertQuery )
+				--print(insertQuery)
+	       end 
+	    native.setActivityIndicator( false )
+	    ShowPopUp("Unlocked\n\n" .. params.PlaceName, false)
+	    --ShowPopUp(params.PlaceName .." has Unlocked.", false)
+	    --GoS()
+	end
 end
 
-local function UnlockListener(  )
- 
+local function GetData( i , member_no)
+	--toast.show("GetData")
+	--CountGetDatabase = i
+	local GetDatabase = {}
+    GetDatabase["no"] = i
+    GetDatabase["mem_no"] = member_no
+
+    local GetDatabaseSend = json.encode( GetDatabase )
+
+    local headers = {}
+   
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "Number=" .. GetDatabaseSend
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/retivedata.php"
+     --print( CountGetDatabase.." : Login Data Sending To ".. url .." : " .. GetDatabaseSend )
+    network.request( url, "POST", GetDataListener, params )
+end
+
+local function DropTableData( Table )
+	--toast.show("DropTableData")
+	local NOOOO = 0	
+	local tablesetup = ""
+	local sql2 = "SELECT id FROM personel;"
+		for row in db:nrows(sql2) do
+			NOOOO = row.id
+		end
+
+	tablesetup = "DELETE FROM `unattractions`;"
+
+	db:exec(tablesetup)
+	GetData(Table , NOOOO)
+
+ end
+
+local function UnlockSendListener( event )
+--toast.show("UnlockSendListener")
+    if ( event.isError ) then
+        print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+    else
+
+        myNewData = event.response
+        print( "RESPONSE: " .. event.response )
+        decodedData = (json.decode( myNewData ))
+
+        ErrorCheck = decodedData["error"]
+        --toast.show(ErrorCheck)
+        if (ErrorCheck == true) then
+            return
+        else
+            DropTableData( 3 )
+        end
+       
+    end
+end
+
+function UnAttSend( unattractionsSendData )
+	--toast.show("UnAttSend")
+    local headers = {}
+
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "unattractionsSendData=" .. unattractionsSendData
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/unattractions.php"
+
+    print( "Diary Data Sending To ".. url .." Web Server : " .. unattractionsSendData )
+    network.request( url, "POST", UnlockSendListener, params )
+end
+
+local function UnlockListener( user )
+ --toast.show("UnlockListener")
     local sql = "SELECT att_no FROM attractions WHERE att_name = '".. params.PlaceName .."';"
 	local att_no = 0
 		for row in db:nrows(sql) do
@@ -215,14 +345,18 @@ local function UnlockListener(  )
 
         unattractions["member_no"] = member_no
         unattractions["att_no"] = att_no
+        unattractions["latitude"] = user.latitude
+        unattractions["longitude"] = user.longitude
 
         local unattractionsSendData = json.encode( unattractions )
-        --print( "BBBBBBBBBBBBBBBBBBBBBBBB" .. unattractionsSendData )
+        
         UnAttSend(unattractionsSendData)
-		native.setActivityIndicator( true )
-		timer.performWithDelay( 1000, CallDrop )
 
-        timer.performWithDelay( 5000, GoS )         
+		native.setActivityIndicator( true )
+		--timer.performWithDelay( 1000, CallDrop )
+
+        --timer.performWithDelay( 5000, GoS )     
+            
 end
 
 local function CalDis( currentLatitude, currentLongitude )
@@ -269,13 +403,14 @@ local function CalDis( currentLatitude, currentLongitude )
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
-				--InArea = true
+				InArea = true
 			if (InArea == true) then
-				UnlockListener(  )
+				--toast.show(user.latitude .. " " .. user.longitude)
+				UnlockListener( user )
 			else
 
 				--toast.show("You are not in the area. Please try again.")
-				ShowPopUp("You are not in the area.\n Please try again.")
+				ShowPopUp("You are not in the area.\n Please try again.", false)
 			end
 		
 	end -- decode

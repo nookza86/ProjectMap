@@ -84,6 +84,24 @@ function DiarySend( DiarySend )
     network.request( url, "POST", DiarySendListener, params )
 end
 
+local function UnlockSendListener( event )
+    if ( event.isError ) then
+        print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+    else
+
+        --local GetDatabase = event.response
+        print( "RESPONSE: " .. event.response )
+       --local decodedDatabase = (json.decode( GetDatabase ))
+        if (event.response == "finish") then
+            DropTableData( 3 )
+        else
+            return
+        end
+       
+    end
+end
+
 function UnAttSend( unattractionsSendData )
 
     local headers = {}
@@ -100,5 +118,5 @@ function UnAttSend( unattractionsSendData )
     local url = "http://mapofmem.esy.es/admin/api/android_login_api/unattractions.php"
 
     print( "Diary Data Sending To ".. url .." Web Server : " .. unattractionsSendData )
-    network.request( url, "POST", DiarySendListener, params )
+    network.request( url, "POST", UnlockSendListener, params )
 end

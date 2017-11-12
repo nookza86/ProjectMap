@@ -4,23 +4,34 @@ $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 require_once 'include/dbconn.php';
 //include ("$root/admin/api/android_login_api/include/dbconn.php");
 
+$response = array("error" => FALSE);
+
 if (isset($_POST['unattractionsSendData'])) { 
   $UnlockData = json_decode($_POST['unattractionsSendData'], true);
 
   $member_no = $UnlockData["member_no"];
   $att_no = $UnlockData['att_no'];
+  $latitude = $UnlockData['latitude'];
+  $longitude = $UnlockData['longitude'];
 
 
-  $sql = "INSERT INTO `unattractions`(`member_no`, `att_no`, `last_update`) VALUES ('$member_no','$att_no', NOW());";
+  $sql = "INSERT INTO `unattractions`(`member_no`, `att_no`, `latitude`, `longitude`, `last_update`) VALUES ('$member_no','$att_no', $latitude, $longitude, NOW());";
   //echo($sql);
     $result = mysqli_query($db, $sql) or die("Error " . mysqli_error($db));
+    
 
     if($result==false){
-            echo ("Query cannot be executed!<br>");
-            echo ("SQL Error : ".mysqli_error($db));
+        //echo ("Query cannot be executed!<br>");
+        //echo ("SQL Error : ".mysqli_error($db));
+        $response["error"] = TRUE;
+        $response["error_msg"] = "Query cannot be executed!";
+        echo json_encode($response);
           }
-          else{//insert successfull
-            echo "finish";
+    else{//insert successfull
+        //echo "finish";
+        $response["error"] = FALSE;
+        $response["error_msg"] = "Finish!";
+        echo json_encode($response);
            // echo $sql;
           }
           /*
@@ -31,5 +42,9 @@ if (isset($_POST['unattractionsSendData'])) {
     }
     echo json_encode($emparray);
     */
-}else{ echo "need param";}
+}else{ 
+  $response["error"] = TRUE;
+  $response["error_msg"] = "Need param!";
+  echo json_encode($response);
+  }
 ?> 

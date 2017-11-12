@@ -5,8 +5,8 @@ local json = require ("json")
 local toast = require('plugin.toast')
 local imgOper = require('image')
 require("FitImage")
-require("createAcc")
-require("get-data")
+--require("createAcc")
+--require("get-data")
 require ("Network-Check")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
@@ -27,7 +27,7 @@ local DB_diary_pic1, DB_diary_pic2, DB_diary_pic3, DB_diary_pic4
 local DiaryGroup = display.newGroup()
 local myText ,scrollView, Text
 local LOADING_IMG_1, LOADING_IMG_2, LOADING_IMG_3,LOADING_IMG_4
-local UPLOADING_IMG_1, UPLOADING_IMG_2, UPLOADING_IMG_3,UPLOADING_IMG_4
+local UPLOADING_IMG_1, UPLOADING_IMG_2, UPLOADING_IMG_3,UPLOADING_IMG_4, UPLOADING_IMG_5
 local FitFrameImage
 local FrameUserImage1, FrameUserImage2, FrameUserImage3, FrameUserImage4
 local NowUploadFilename = ""
@@ -126,7 +126,7 @@ end
 
 local function UploadPhotoDiarylistener( event )
 
-    if (UPLOADING_IMG_1 == true and UPLOADING_IMG_2 == true and UPLOADING_IMG_3 == true and UPLOADING_IMG_4 == true) then
+    if (UPLOADING_IMG_1 == true and UPLOADING_IMG_2 == true and UPLOADING_IMG_3 == true and UPLOADING_IMG_4 == true and UPLOADING_IMG_5 == true) then
         timer.cancel( event.source )
         print( "UPLOADING DONE" )
         imgOper.CleanDir(system.TemporaryDirectory)
@@ -204,6 +204,120 @@ local function UploadUserImage( fileName_Upload )
     network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 end
 
+local function GetDataListener( event )
+  --toast.show("GetDataListener")
+    if ( event.isError ) then
+        print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+    else
+
+      local GetDatabase = event.response
+        print( "RESPONSE: " .. event.response )
+       local decodedDatabase = (json.decode( GetDatabase ))
+
+         for idx2, val2 in ipairs(decodedDatabase) do
+            local insertQuery = "INSERT INTO diary VALUES (" ..
+                  val2.diary_id .. "," ..
+                  val2.member_no .. "," ..
+                  val2.att_no .. ",'" ..
+                  val2.diary_note.. "'," .. 
+                  val2.impression.. "," .. 
+                  val2.beauty.. "," ..
+                  val2.clean.. ",'" ..
+                  val2.diary_pic1.. "','" ..
+                  val2.diary_pic2.. "','" ..
+                  val2.diary_pic3.. "','" ..
+                  val2.diary_pic4 .. "');"
+
+        db:exec( insertQuery )
+
+         end
+         UPLOADING_IMG_5 = true
+
+  end
+end
+
+local function GetData( i , member_no)
+  --toast.show("GetData")
+  --CountGetDatabase = i
+  local GetDatabase = {}
+    GetDatabase["no"] = i
+    GetDatabase["mem_no"] = member_no
+
+    local GetDatabaseSend = json.encode( GetDatabase )
+
+    local headers = {}
+   
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "Number=" .. GetDatabaseSend
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/retivedata.php"
+     --print( CountGetDatabase.." : Login Data Sending To ".. url .." : " .. GetDatabaseSend )
+    network.request( url, "POST", GetDataListener, params )
+end
+
+local function DropTableData( Table )
+  --toast.show("DropTableData")
+  local NOOOO = 0 
+  local tablesetup = ""
+  local sql2 = "SELECT id FROM personel;"
+    for row in db:nrows(sql2) do
+      NOOOO = row.id
+    end
+
+  tablesetup = "DELETE FROM `diary`;"
+
+  db:exec(tablesetup)
+  GetData(Table , NOOOO)
+
+ end
+
+local function DiarySendListener( event )
+    if ( event.isError ) then
+        print( "Network error!" )
+        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+    else
+
+         myNewData = event.response
+        print( "RESPONSE: " .. event.response )
+        decodedData = (json.decode( myNewData ))
+
+        ErrorCheck = decodedData["error"]
+        --toast.show(ErrorCheck)
+        if (ErrorCheck == true) then
+            return
+        else
+            DropTableData( 2 )
+        end
+       
+    end
+end
+
+local function DiarySend( DiarySend )
+
+    local headers = {}
+
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept-Language"] = "en-US"
+
+    local body = "DiarySend=" .. DiarySend
+
+    local params = {}
+    params.headers = headers
+    params.body = body
+
+    local url = "http://mapofmem.esy.es/admin/api/android_login_api/diary.php"
+
+    print( "Diary Data Sending To ".. url .." Web Server : " .. DiarySend )
+    network.request( url, "POST", DiarySendListener, params )
+end
+
 local function DiaryListener(  )
  
     if(TextDesField.text == "" ) then
@@ -252,6 +366,7 @@ local function DiaryListener(  )
           UPLOADING_IMG_2 = false
           UPLOADING_IMG_3 = false
           UPLOADING_IMG_4 = false
+          UPLOADING_IMG_5 = false
 
               if (PhotoPickerCheck1 == true) then
       			     diary["diary_pic1"] = NoAtt .. "_" .. NoMember .. "_1.jpg"
