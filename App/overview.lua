@@ -637,7 +637,7 @@ print( display.pixelHeight / display.actualContentHeight )
 	--object.xScale = -1  to flip right,left or
 	--object.yScale = -1 to flip up,down
 	--IsClick = false
-	RecommendPlace(  )
+	--RecommendPlace(  )
 
 	ChalongLabel:addEventListener( "touch", check )
 	BangPaeLabel:addEventListener( "touch", check )
@@ -794,11 +794,12 @@ print( display.pixelHeight / display.actualContentHeight )
 
 	ButtonGroup = display.newGroup()
 	----------------------------------- Group Button -----------------------------------------
-
+--[[
 	if (CheckInList) then
 		ButtonGroup:insert(RecButton)
 	end
-
+]]	
+	RecommendPlace(  )
 	sceneGroup:insert( PlaceGroup )
 	sceneGroup:insert( ButtonGroup )
 

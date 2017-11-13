@@ -109,6 +109,48 @@ local function GoS(  )
   
 end
 
+local function loadProfileImageListener( event )
+
+	if ( event.isError ) then
+        print( "Network error: ", event.response )
+ 
+    elseif ( event.phase == "began" ) then
+        if ( event.bytesEstimated <= 0 ) then
+            print( "Download starting, size unknown" )
+        else
+            print( "Download starting, estimated size: " .. event.bytesEstimated )
+        end
+ 
+    elseif ( event.phase == "progress" ) then
+        if ( event.bytesEstimated <= 0 ) then
+            print( "Download progress: " .. event.bytesTransferred )
+        else
+            print( "Download progress: " .. event.bytesTransferred .. " of estimated: " .. event.bytesEstimated )
+
+        end
+         
+    elseif ( event.phase == "ended" ) then
+        print( "Download complete, total bytes transferred: " .. event.bytesTransferred )
+        composer.gotoScene( "profile" )
+        native.setActivityIndicator( false )
+		
+    end
+
+end
+
+local function LoadUserImg( NOOOO )
+	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. NOOOO ..".jpg"
+	print( url )
+network.download( url , 
+	"GET", 
+	loadProfileImageListener,
+	{},
+	NOOOO..".jpg",
+	system.DocumentsDirectory
+	)
+
+end
+
 local function uploadListener( event )
     --toast.show("uploadListener")
    if ( event.isError ) then
@@ -127,15 +169,17 @@ local function uploadListener( event )
          print( "Upload ended..." )
          print( "Status:", event.status )
          print( "Response:", event.response )
-
+      local id = 0   
         for row in db:nrows("SELECT id FROM personel;") do
+        	id = row.id
             imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
         end
 
          --imgOper.Remove( PhotoName .. ".jpg", system.DocumentsDirectory  )
 
          imgOper.CleanDir(system.TemporaryDirectory)
-         timer.performWithDelay( 5000, GoS )
+         LoadUserImg( id )
+         --timer.performWithDelay( 5000, GoS )
 
       end
    end
@@ -181,7 +225,7 @@ local function networkListener( event )
 
     else
         print( "RESPONSE: " .. event.response )
-        native.setActivityIndicator( false )
+        --native.setActivityIndicator( false )
 
         myNewData = event.response
         decodedData = (json.decode( myNewData ))
@@ -197,12 +241,15 @@ local function networkListener( event )
 
             if ( Result_Rename == true ) then
                 UploadUserImage( MemberNo )
+                native.setActivityIndicator( true )
                 --toast.show("true " .. MemberNo)
             else
+                native.setActivityIndicator( false )
                 toast.show("Try again")
             end
 
         else
+            native.setActivityIndicator( false )
             ---native.showAlert( "Error","Try again.", { "OK" } )
             toast.show("Error. Try again")
         end
