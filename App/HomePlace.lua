@@ -403,7 +403,7 @@ local function CalDis( currentLatitude, currentLongitude )
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
-				InArea = true
+				--InArea = true
 			if (InArea == true) then
 				--toast.show(user.latitude .. " " .. user.longitude)
 				UnlockListener( user )
