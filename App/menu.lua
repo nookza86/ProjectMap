@@ -128,13 +128,8 @@ local function networkListener( event )
 
     	if( ErrorCheck == true) then
     		--local alert = native.showAlert( "Error", "Try again.", { "OK" })
-    		toast.show("Try again")
+    		toast.show(decodedData["error_msg"])
         	print( "Try again." )
-        	native.setActivityIndicator( false )
-        elseif ( decodedData["user"]["active"] == 'no') then
-        	--local alert = native.showAlert( "Error", "Please check your email and click the link to activate your account.", { "OK" })
-        	toast.show("Please check your email and click the link to activate your account.")
-        	--print( "Need Activate." )
         	native.setActivityIndicator( false )
         else
         	--local alert = native.showAlert( "Welcome", decodedData["user"]["first_name"], { "OK" })

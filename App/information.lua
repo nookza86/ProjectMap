@@ -151,7 +151,7 @@ function scene:show(event)
 		--Bg:scale( 0.3, 0.3 ) 
 		
 		BgText = display.newImageRect( "Phuket/Information/text.png", 1222/4.5, 637/5)
-		BgText.x = cx + 90
+		BgText.x = cx + 95
 		BgText.y = cy - 30
 		
 

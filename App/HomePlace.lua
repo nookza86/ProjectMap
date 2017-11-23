@@ -406,9 +406,7 @@ local function CalDis( currentLatitude, currentLongitude )
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
-			if (params.PlaceName == "Patong Beach") then
-				InArea = true
-			end
+			
 				--InArea = true
 			if (InArea == true) then
 				--toast.show(user.latitude .. " " .. user.longitude)
