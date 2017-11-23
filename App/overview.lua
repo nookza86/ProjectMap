@@ -334,7 +334,7 @@ local function RecommendPlace(  )
 		for row in db:nrows(sql) do
 			nationality = row.country
 		end
-		nationality = "Australia"
+		--nationality = "Australia"
 		--nationality = "Canada"
 		--nationality = "India"
 		print( nationality )
