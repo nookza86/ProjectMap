@@ -221,7 +221,8 @@ local function GetDataListener( event )
 	--toast.show("GetDataListener")
     if ( event.isError ) then
         print( "Network error!" )
-        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        ShowPopUp("Network error!, Try again.", true)
     else
 
     	local GetDatabase = event.response
@@ -290,7 +291,9 @@ local function UnlockSendListener( event )
 --toast.show("UnlockSendListener")
     if ( event.isError ) then
         print( "Network error!" )
-        local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
+        ShowPopUp("Network error!, Try again.", false)
+
     else
 
         myNewData = event.response
@@ -403,6 +406,9 @@ local function CalDis( currentLatitude, currentLongitude )
 			    text = "Rule No : " .. idx .. " Distance : " .. d .. " User distance : " .. Userd .. " In Area : " .. tostring(InArea)
 			    --native.showAlert( "You Are Here", text, { "OK" } )
 			end
+			if (params.PlaceName == "Patong Beach") then
+				InArea = true
+			end
 				--InArea = true
 			if (InArea == true) then
 				--toast.show(user.latitude .. " " .. user.longitude)
@@ -410,7 +416,7 @@ local function CalDis( currentLatitude, currentLongitude )
 			else
 
 				--toast.show("You are not in the area. Please try again.")
-				ShowPopUp("You are not in the area.\n Please try again.", false)
+				ShowPopUp("You are not in the area.\n\n Please try again.", true)
 			end
 		
 	end -- decode
@@ -443,7 +449,8 @@ local function CheckLocation( event )
 if(event.phase == "ended") then
  	if isRechable() == false then 
  		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
- 		toast.show("It seems internet is not Available. Please connect to internet.")
+ 		--toast.show("It seems internet is not Available. Please connect to internet.")
+ 		ShowPopUp("It seems internet is not Available.\n\n Please connect to internet.", true)
  		return
 	end
 
@@ -459,7 +466,8 @@ if(event.phase == "ended") then
 			currentLatitude = 0
 			currentLongitude = 0
 			--native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
-			toast.show(currentLocation.errorMessage)
+			--toast.show(currentLocation.errorMessage)
+			ShowPopUp(currentLocation.errorMessage, true)
 		end
 	else
 		-- Current location data was received.
