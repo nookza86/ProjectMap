@@ -7,7 +7,7 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>FSTM.kuis.edu.my - PHP - MySQL</title>
+  <title>Diary</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/css/bootstrap.min.css">
@@ -49,12 +49,12 @@ if(mysqli_num_rows($result) > 0)
             <thead>
               <tr >
                 <th>No.</th>
-                <th>Member no</th>
-                <th>Attration no</th>
-                <th>Note</th>
-                <th>Impression score</th>
-                <th>Beauty score</th>
-                <th>Clean score</th>
+                <th>Member</th>
+                <th>Attration</th>
+                
+                <th>Impression</th>
+                <th>Beauty</th>
+                <th>Clean</th>
               </tr>
             </thead>
  ';
@@ -69,7 +69,7 @@ if(mysqli_num_rows($result) > 0)
     <td>'.$row["diary_id"].'</td>
     <td>'.$row["member_no"].'</td>
     <td>'.$row["att_no"].'</td>
-    <td>'.$row["diary_note"].'</td>
+    
     <td>'.$row["impression"].'</td>
     <td>'.$row["beauty"].'</td>
     <td>'.$row["clean"].'</td>

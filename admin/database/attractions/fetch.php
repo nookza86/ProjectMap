@@ -7,7 +7,7 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>FSTM.kuis.edu.my - PHP - MySQL</title>
+  <title>Attractions</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/css/bootstrap.min.css">
@@ -46,7 +46,7 @@ if(mysqli_num_rows($result) > 0)
               <tr >
                 <th>No.</th>
                 <th>Name</th>
-                <th>Image</th>          
+                          
               </tr>
             </thead>
  ';
@@ -60,7 +60,7 @@ if(mysqli_num_rows($result) > 0)
    <tr>
     <td>'.$row["att_no"].'</td>
     <td>'.$row["att_name"].'</td> 
-    <td><img src="'.$row["att_img"].'" class="img-responsive" alt="Responsive image"></td>
+   
     
     <td><a href="'.$urlview.'" class="btn btn-info" title="View complete attractions info" 
             data-toggle="tooltip" >

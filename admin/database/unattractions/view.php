@@ -8,7 +8,7 @@ include ("$root/admin/session.php");
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Members</title>
+  <title>Unlock Attractions</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/admin/css/bootstrap.min.css">
@@ -37,14 +37,14 @@ include ("$root/admin/inc/navbar.php");?>
     <div class="col-md-9" name="maincontent" id="maincontent">
 		
 		<div id="exercise" name="exercise" class="panel panel-info">
-		<div class="panel-heading"><h5>Member</h5></div>
+		<div class="panel-heading"><h5>Unlock Attractions</h5></div>
 			<div class="panel-body">
 			<!-- ***********Edit your content STARTS from here******** -->
 			
 			<div class="form-group">
     <div class="input-group">
      <span class="input-group-addon">Search</span>
-     <input type="text" name="search_text" id="search_text" placeholder="Search by Member Details" class="form-control" />
+     <input type="text" name="search_text" id="search_text" placeholder="Search by Unlock Attraction Details" class="form-control" />
     </div>
    </div>
    <br />

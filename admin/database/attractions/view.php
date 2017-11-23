@@ -6,7 +6,7 @@ include ("$root/admin/inc/dbconn.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Attracktions</title>
+  <title>Attractions</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="<?php $root ?>/admin/css/bootstrap.min.css">
@@ -35,7 +35,7 @@ include ("$root/admin/inc/navbar.php");?>
     <div class="col-md-9" name="maincontent" id="maincontent">
 		
 		<div id="exercise" name="exercise" class="panel panel-info">
-		<div class="panel-heading"><h5>Attracktions</h5></div>
+		<div class="panel-heading"><h5>Attractions</h5></div>
 			<div class="panel-body">
 			<!-- ***********Edit your content STARTS from here******** -->
 			<a href="insert-attractions.php" class="btn btn-primary btn-lg active" role="button">Add</a>

@@ -207,6 +207,12 @@ else{
           border: {lat: 7.886799, lng: 98.291450},
           distance: 0.4802
         },
+
+        "Present": {
+          center: {lat: 7.893907, lng: 98.352759},
+          border: {lat: 7.891928, lng: 98.355849},
+          distance: 0.4802
+        },
         
       };
 

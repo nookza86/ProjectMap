@@ -5,7 +5,8 @@
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
           </button>
-          <a class="navbar-brand" href="http://KERUL.net" target="_blank">Database Management</a>
+          <a class="navbar-brand" href="#" target="_blank">Hidden Journey</a>
+
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">

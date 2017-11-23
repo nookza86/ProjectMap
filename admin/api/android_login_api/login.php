@@ -22,18 +22,24 @@ if (isset($_POST['LoginSend'])) {
  
     if ($user != false) {
         // use is found
-        $response["error"] = FALSE;
-        $response["member_no"] = $user["member_no"];
-        $response["user"]["first_name"] = $user["first_name"];
-        $response["user"]["last_name"] = $user["last_name"];
-        $response["user"]["email"] = $user["email"];
-        $response["user"]["gender"] = $user["gender"];
-        $response["user"]["dob"] = $user["dob"];
-        $response["user"]["Country"] = $user["country"];
-        $response["user"]["UserFrom"] = $user["userfrom"];
-        $response["user"]["active"] = $user["active"];
-        $response["user"]["UserImage"] = $user["user_img"];
-        $response["user"]["LastUpdate"] = $user["last_update"];
+        if ($user["active"] == "yes" or $user["active"] == "Yes") {
+            $response["error"] = FALSE;
+            $response["member_no"] = $user["member_no"];
+            $response["user"]["first_name"] = $user["first_name"];
+            $response["user"]["last_name"] = $user["last_name"];
+            $response["user"]["email"] = $user["email"];
+            $response["user"]["gender"] = $user["gender"];
+            $response["user"]["dob"] = $user["dob"];
+            $response["user"]["Country"] = $user["country"];
+            $response["user"]["UserFrom"] = $user["userfrom"];
+            $response["user"]["active"] = $user["active"];
+            $response["user"]["UserImage"] = $user["user_img"];
+            $response["user"]["LastUpdate"] = $user["last_update"];
+        }else{
+            $response["error"] = TRUE;
+            $response["error_msg"] = "Please check your email and click the link to activate your account.";
+        }
+        
         echo json_encode($response);
     } else {
         // user is not found with the credentials
