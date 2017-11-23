@@ -113,12 +113,13 @@ local function GoS(  )
 end
 
 local function uploadListener( event )
-    print( "uploaddddL:is" )
+   
    if ( event.isError ) then
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
-
+      toast.show("Network Error.")
+    native.setActivityIndicator( false )
    else
       if ( event.phase == "began" ) then
          print( "Upload started" )
@@ -167,6 +168,7 @@ local function reNameImg( member_no )
     local doc_path = system.pathForFile( "", system.TemporaryDirectory )
     local destDir = system.TemporaryDirectory
     --myText.text = "reNameImg"
+
     for file in lfs.dir( doc_path ) do
         -- "file" is the current file or directory name
         print( "Found file: " .. file )
@@ -194,7 +196,8 @@ local function networkListener( event )
     
     if ( event.isError ) then
         print( "Network error!" )
-
+        toast.show("Network error!, Try again.")
+        native.setActivityIndicator( false )
     else
         print( "RESPONSE: " .. event.response )
 
@@ -205,6 +208,9 @@ local function networkListener( event )
             --myText.text = decodedData["member_no"] 
              print( decodedData["member_no"] )
              reNameImg( decodedData["member_no"] )
+         else
+            native.setActivityIndicator( false )
+            toast.show(decodedData["error_msg"])
         end
     end
 end
@@ -251,6 +257,11 @@ local function CreateAccountListener( event )
     if isRechable() == false then 
         --native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
         toast.show("It seems internet is not Available. Please connect to internet.")
+        return
+    end
+
+    if (PhotoName == nil or PhotoName == "" or PhotoName == 0) then
+        toast.show("Please select profile image.")
         return
     end
 
