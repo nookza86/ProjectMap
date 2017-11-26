@@ -227,18 +227,8 @@ local function loadImageListener( event )
 			UserImage1.id = event.response.filename
 			UserImage1:addEventListener( "touch", SelectImg )
 			UserImage1.alpha = 0
-       		--transition.to( UserImage1, { alpha=1.0 } )
        		LOADING_IMG_1 = true
-       		--FitFrameImage( UserImage1 )	
-       		--[[
-			UserImage1:setMask( mask )
-					
-					UserImage1.maskX = 1
-					--UserImage1.maskY = 1
-					--UserImage1.maskRotation = 20
-					UserImage1.maskScaleX = IMG_SCALE
-					UserImage1.maskScaleY = IMG_SCALE
-					]]
+
 			ShareGroup:insert( UserImage1 )
 		end
 
@@ -254,18 +244,7 @@ local function loadImageListener( event )
 			UserImage2.id = event.response.filename
 			UserImage2:addEventListener( "touch", SelectImg )
 			UserImage2.alpha = 0
-       		--transition.to( UserImage2, { alpha=1.0 } )
        		LOADING_IMG_2 = true
-       		--FitFrameImage( UserImage2 )	
---[[
-       		UserImage2:setMask( mask )
-					
-					UserImage2.maskX = 1
-					--UserImage2.maskY = 1
-					--UserImage2.maskRotation = 20
-					UserImage2.maskScaleX = IMG_SCALE
-					UserImage2.maskScaleY = IMG_SCALE
-					]]
 			ShareGroup:insert( UserImage2 )
 		end
 
@@ -281,18 +260,7 @@ local function loadImageListener( event )
 			UserImage3.id = event.response.filename
 			UserImage3:addEventListener( "touch", SelectImg )
 			UserImage3.alpha = 0
-       		--transition.to( UserImage3, { alpha=1.0 } )
        		LOADING_IMG_3 = true
-       		--FitFrameImage( UserImage3 )	
---[[
-       		UserImage3:setMask( mask )
-					
-					UserImage3.maskX = 1
-					--UserImage3.maskY = 1
-					--UserImage3.maskRotation = 20
-					UserImage3.maskScaleX = IMG_SCALE
-					UserImage3.maskScaleY = IMG_SCALE
-					]]
 			ShareGroup:insert( UserImage3 )
 		end
 
@@ -310,16 +278,6 @@ local function loadImageListener( event )
 			UserImage4.alpha = 0
        		--transition.to( UserImage4, { alpha=1.0 } )
        		LOADING_IMG_4 = true
-       		--FitFrameImage( UserImage4 )	
---[[
-       		UserImage4:setMask( mask )
-					
-					UserImage4.maskX = 1
-					--UserImage4.maskY = 1
-					--UserImage4.maskRotation = 20
-					UserImage4.maskScaleX = IMG_SCALE
-					UserImage4.maskScaleY = IMG_SCALE
-					]]
 			ShareGroup:insert( UserImage4 )
 		end
 		
@@ -328,12 +286,13 @@ local function loadImageListener( event )
 end
 
 local function LoadDirayImage( event )
+	--[[
 	if isRechable() == false then 
  		--native.showAlert( "No Internet","It seems internet is not Available. Please connect to internet.", { "OK" } )
  		toast.show("It seems internet is not Available.\n Please connect to internet.")
  		return
 	end
-
+]]
 	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/diary/" ..NoAtt .."/" .. event 
 	--print( url )
 network.download( url , 
@@ -430,19 +389,31 @@ end
 local function listener( event )
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
     	 timer.cancel( event.source )
-    	 FitFrameImage( UserImage1 )	
-    	 FitFrameImage( UserImage2 )	
-    	 FitFrameImage( UserImage3 )	
-    	 FitFrameImage( UserImage4 )
-    	 transition.to( UserImage1, { alpha=1.0 } )
-    	 transition.to( UserImage2, { alpha=1.0 } )
-    	 transition.to( UserImage3, { alpha=1.0 } )
-    	 transition.to( UserImage4, { alpha=1.0 } )	
+    	 if (CheckImg1) then
+    	 	FitFrameImage( UserImage1 )
+    	 	transition.to( UserImage1, { alpha=1.0 } )
+    	 end
+
+    	  if (CheckImg2) then
+    	 	FitFrameImage( UserImage2 )
+    	 	transition.to( UserImage2, { alpha=1.0 } )
+    	 end
+
+    	  if (CheckImg3) then
+    	 	FitFrameImage( UserImage3 )
+    	 	transition.to( UserImage3, { alpha=1.0 } )
+    	 end
+
+    	  if (CheckImg4) then
+    	 	FitFrameImage( UserImage4 )
+    	 	transition.to( UserImage4, { alpha=1.0 } )	
+    	 end
+    	
     	 native.setActivityIndicator( false )
     	 print( "LOADING DONE" )
 
     	else
-    		print( "LOADING IMG" )
+    		print( tostring( CheckImg1 ) .. " " ..tostring( CheckImg2 ) .. " " .. tostring( CheckImg3 ) .. " " ..tostring( CheckImg4 ))
     end
 end
 
@@ -544,19 +515,20 @@ function scene:show(event)
 		--composer.removeScene( "HomePlace" )
 		local prevScene = composer.getSceneName( "previous" )
 		composer.removeScene( prevScene )
-		
+		--[[
 		LOADING_IMG_1 = false
 	    LOADING_IMG_2 = false
 	    LOADING_IMG_3 = false
 	    LOADING_IMG_4 = false
+	    ]]
 		native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, listener, 0 )
-		
+		--[[
 	    CheckImg1 = false
 	    CheckImg2 = false
 	    CheckImg3 = false
 	    CheckImg4 = false
-	    
+	    ]]
 	 -- toast.show('Loading Image!')  
 
 		Bg = display.newImageRect("Phuket/share/bg.jpg", cw, ch )
@@ -586,7 +558,20 @@ function scene:show(event)
 		for row in db:nrows(sql) do
 			--print( row.member_no , row.diary_pic1, row.diary_pic2, row.diary_pic3, row.diary_pic4 )
 			member_no = row.member_no
-
+--[[
+			if (row.diary_pic1 == "" or row.diary_pic1 == nil) then
+				CheckImg1 = false
+			end
+			if (row.diary_pic2 == "" or row.diary_pic2 == nil) then
+				CheckImg2 = false
+			end
+			if (row.diary_pic3 == "" or row.diary_pic3 == nil) then
+				CheckImg3 = false
+			end
+			if (row.diary_pic4 == "" or row.diary_pic4 == nil) then
+				CheckImg4 = false
+			end
+			
 			if (row.diary_pic1 ~= "") then
 				
 				CheckImg1 = true
@@ -603,35 +588,32 @@ function scene:show(event)
 					UserImage1.id = Filename
 					UserImage1:addEventListener( "touch", SelectImg )
 					UserImage1.alpha = 0
-		       		--transition.to( UserImage1, { alpha=1.0 } )
 		       		LOADING_IMG_1 = true
-		       		--FitFrameImage( UserImage1 )	
---[[
-		       		local Fit_X = fitImage( UserImage1, 125, 125, true )
-		       		UserImage1:scale( Fit_X, Fit_X )
 
-		       		FrameUserImage1 = display.newImageRect( "Phuket/share/frame2.png", UserImage1.width, UserImage1.height )
-		       		FrameUserImage1.x = UserImage1.x
-		       		FrameUserImage1.y = UserImage1.y
-		       		FrameUserImage1:scale( Fit_X, Fit_X )
-
-		       					
-		       		UserImage1:setMask( mask )
-					
-					UserImage1.maskX = 1
-					--UserImage1.maskY = 1
-					--UserImage1.maskRotation = 20
-					UserImage1.maskScaleX = IMG_SCALE
-					UserImage1.maskScaleY = IMG_SCALE
-]]
 					ShareGroup:insert( UserImage1 )
 
 				else
 					LoadDirayImage(row.diary_pic1)
 				end
-				--LoadDirayImage(row.diary_pic1)
+			end
+			]]
+
+			if (row.diary_pic1 == nil or row.diary_pic1 == "") then
+				UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
+				UserImage1.x = ImagePosition_X_1
+				UserImage1.y = ImagePosition_Y_1
+				UserImage1.id = row.diary_pic1
+				--UserImage1:addEventListener( "touch", SelectImg )
+				ShareGroup:insert( UserImage1 )
+	     		LOADING_IMG_1 = true
+	      		CheckImg1 = false
+     
+			else
+				LoadDirayImage(row.diary_pic1)
+				CheckImg1 = true
 			end
 -----------------------------------------2---------------------------------------------
+--[[
 			if (row.diary_pic2 ~= "") then
 
 				CheckImg2 = true
@@ -648,24 +630,31 @@ function scene:show(event)
 					UserImage2.id = Filename
 					UserImage2:addEventListener( "touch", SelectImg )
 					UserImage2.alpha = 0
-		       		--transition.to( UserImage2, { alpha=1.0 } )
 		       		LOADING_IMG_2 = true
-		       		--FitFrameImage( UserImage2 )	
---[[
-		       		UserImage2:setMask( mask )
-					
-					UserImage2.maskX = 1
-					--UserImage2.maskY = 1
-					--UserImage2.maskRotation = 20
-					UserImage2.maskScaleX = IMG_SCALE
-					UserImage2.maskScaleY = IMG_SCALE
-					]]
+
 					ShareGroup:insert( UserImage2 )
 				else
 				LoadDirayImage(row.diary_pic2)
 			end
 		end
+		]]
+
+		if (row.diary_pic2 == nil or row.diary_pic2 == "") then
+				UserImage2 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
+				UserImage2.x = ImagePosition_X_2
+				UserImage2.y = ImagePosition_Y_2
+				UserImage2.id = row.diary_pic2
+				--UserImage2:addEventListener( "touch", SelectImg )
+				ShareGroup:insert( UserImage2 )
+	     		LOADING_IMG_2 = true
+	      		CheckImg2 = false
+     
+			else
+				LoadDirayImage(row.diary_pic2)
+				CheckImg2 = true
+			end
 -----------------------------------------3---------------------------------------------
+--[[
 			if (row.diary_pic3 ~= "") then
 
 				CheckImg3 = true
@@ -682,24 +671,29 @@ function scene:show(event)
 					UserImage3.id = Filename
 					UserImage3:addEventListener( "touch", SelectImg )
 					UserImage3.alpha = 0
-		       		--transition.to( UserImage3, { alpha=1.0 } )
 		       		LOADING_IMG_3 = true
-		       		--FitFrameImage( UserImage3 )	
-		       		--[[
-		       		UserImage3:setMask( mask )
-					
-					UserImage3.maskX = 1
-					--UserImage3.maskY = 1
-					--UserImage3.maskRotation = 20
-					UserImage3.maskScaleX = IMG_SCALE
-					UserImage3.maskScaleY = IMG_SCALE
-					]]
 					ShareGroup:insert( UserImage3 )
 				else
 				LoadDirayImage(row.diary_pic3)
 			end
 		end
+		]]
+		if (row.diary_pic3 == nil or row.diary_pic3 == "") then
+				UserImage3 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
+				UserImage3.x = ImagePosition_X_3
+				UserImage3.y = ImagePosition_Y_3
+				UserImage3.id = row.diary_pic3
+				--UserImage3:addEventListener( "touch", SelectImg )
+				ShareGroup:insert( UserImage3 )
+	     		LOADING_IMG_3 = true
+	      		CheckImg3 = false
+     
+			else
+				LoadDirayImage(row.diary_pic3)
+				CheckImg3 = true
+			end
 -----------------------------------------4---------------------------------------------
+--[[
 			if (row.diary_pic4 ~= "") then
 
 				CheckImg4 = true
@@ -716,27 +710,31 @@ function scene:show(event)
 					UserImage4.id = Filename
 					UserImage4:addEventListener( "touch", SelectImg )
 					UserImage4.alpha = 0
-		       		--transition.to( UserImage4, { alpha=1.0 } )
 		       		LOADING_IMG_4 = true
-		       		--FitFrameImage( UserImage4 )	
-		       		--[[
-		       		UserImage4:setMask( mask )
-					
-					UserImage4.maskX = 1
-					--UserImage4.maskY = 1
-					--UserImage4.maskRotation = 20
-					UserImage4.maskScaleX = IMG_SCALE
-					UserImage4.maskScaleY = IMG_SCALE
-					]]
 					ShareGroup:insert( UserImage4 )
 				else
 				LoadDirayImage(row.diary_pic4)
 			end
 
 		end
+		]]
+		if (row.diary_pic4 == nil or row.diary_pic4 == "") then
+				UserImage4 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
+				UserImage4.x = ImagePosition_X_4
+				UserImage4.y = ImagePosition_Y_4
+				UserImage4.id = row.diary_pic4
+				--UserImage4:addEventListener( "touch", SelectImg )
+				ShareGroup:insert( UserImage4 )
+	     		LOADING_IMG_4 = true
+	      		CheckImg4 = false
+     
+			else
+				LoadDirayImage(row.diary_pic4)
+				CheckImg4 = true
+			end
 end
 
-
+--[[
 		if (CheckImg1 == false) then
 			print( "else1" )
 			UserImage1 = display.newImageRect( "Phuket/share/addpicture.png", 999/9, 929/9 )
@@ -772,7 +770,7 @@ end
 			ShareGroup:insert( UserImage4 )
 			LOADING_IMG_4 = true
 		end
-		
+		]]
 		BackBtn = widget.newButton(
     	{
 	        width = 130/2.5,
@@ -800,28 +798,14 @@ end
 		
 		ShareBtn.x = cx 
 		ShareBtn.y = cy + 120
---[[
-		ReloadBtn = widget.newButton(
-    	{
-	        width = 451/3.5,
-	        height = 121/3.5,
-	        defaultFile = "Phuket/Button/Button/share_on_fb.png",
-	        overFile = "Phuket/Button/ButtonPress/share_on_fb.png",
-	        id = "ReloadBtn",
-	        onEvent = Check
-    	}
-			)
-		
-		ReloadBtn.x = cx + 150
-		ReloadBtn.y = cy + 120
-]]
+
 		ShareGroup:insert( BackBtn )
 		ShareGroup:insert( ShareBtn )
-		--ShareGroup:insert( ReloadBtn )
+
 		sceneGroup:insert(ShareGroup)
 	elseif (phase == "did") then
 		print("Scene #share : show (did)")
-		--timer.performWithDelay(3000, showScene)
+
 		
 	end
 end
@@ -834,6 +818,15 @@ function scene:hide(event)
 		UserImage2:removeEventListener( "touch", SelectImg )
 		UserImage3:removeEventListener( "touch", SelectImg )
 		UserImage4:removeEventListener( "touch", SelectImg )
+
+		LOADING_IMG_1 = nil
+		LOADING_IMG_2 = nil
+		LOADING_IMG_3 = nil
+		LOADING_IMG_4 = nil
+		CheckImg1 = nil
+		CheckImg2 = nil
+		CheckImg3 = nil
+		CheckImg4 = nil
 --[[
 		if (CheckImg1 == true) then
 			UserImage1:removeEventListener( "touch", SelectImg )

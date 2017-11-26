@@ -14,6 +14,7 @@ local db = sqlite.open(path)
 local params, cx, cy, cw, ch
 local Bg, BgText, BackBtn, SaveBtn
 local ImageUser1, ImageUser2, ImageUser3, ImageUser4
+local CheckImg1, CheckImg2, CheckImg3, CheckImg4
 local ImpressionRadioGroup, BeautyRadioGroup, CleanRadioGroup
 local ImpressionRadioButton
 local BeautyRadioButton
@@ -422,12 +423,18 @@ local function Check( event )
  				return
 			end
       if (CheckIsHaveDiary == false) then
-  			if (PhotoPickerCheck1 == false or PhotoPickerCheck2 == false or PhotoPickerCheck3 == false or PhotoPickerCheck4 == false ) then
-  				native.showAlert( "No photo select","Add least 1 photo.", { "OK" } )
-  				return
+  			if (PhotoPickerCheck1 == false ) then
+  				if (PhotoPickerCheck2 == false ) then
+  					if (PhotoPickerCheck3 == false ) then
+  						if (PhotoPickerCheck4 == false ) then
+  							toast.show("Please add photo at least 1.")
+  							return
+  						end
+  					end
+  				end
   			end
       end
-      
+
 			if (PhotoPickerCheck1 == true ) then
           local result = imgOper.reName( PhotoArray[1], NoAtt .. "_" .. NoMember .. "_1"  )
 
@@ -795,34 +802,37 @@ end
 local IsDone = false
 
 local function listener( event )
-
+	
     if (LOADING_IMG_1 == true and LOADING_IMG_2 == true and LOADING_IMG_3 == true and LOADING_IMG_4 == true) then
     	 if (IsDone == false) then
     	 	timer.cancel( event.source )
 	    	 native.setActivityIndicator( false )
-	    	 FitFrameImage( ImageUser1 )	
-	    	 FitFrameImage( ImageUser2 )	
-	    	 FitFrameImage( ImageUser3 )	
-	    	 FitFrameImage( ImageUser4 )
-
---[[
-	    	 if (IsImg1Landscape == true) then
-	    	 	if (IsImg2Landscape == true) then
-	    	 		
-	    	 	end
+	    	 if (CheckImg1) then
+	    	 	FitFrameImage( ImageUser1 )
+	    	 	transition.to( ImageUser1, { alpha=1.0 } )
 	    	 end
-]]
-	    	 transition.to( ImageUser1, { alpha=1.0 } )
-	    	 transition.to( ImageUser2, { alpha=1.0 } )
-	    	 transition.to( ImageUser3, { alpha=1.0 } )
-	    	 transition.to( ImageUser4, { alpha=1.0 } )	
+
+	    	  if (CheckImg2) then
+	    	 	FitFrameImage( ImageUser2 )
+	    	 	transition.to( ImageUser2, { alpha=1.0 } )
+	    	 end
+
+	    	  if (CheckImg3) then
+	    	 	FitFrameImage( ImageUser3 )
+	    	 	transition.to( ImageUser3, { alpha=1.0 } )
+	    	 end
+
+	    	  if (CheckImg4) then
+	    	 	FitFrameImage( ImageUser4 )
+	    	 	transition.to( ImageUser4, { alpha=1.0 } )	
+	    	 end	
 	    	 print( "LOADING DONE" )
 	    	 IsDone = true
     	 end
       elseif (CheckIsHaveDiary == false) then
         native.setActivityIndicator( false )
     	else
-    		print( "LOADING IMG" )
+    		print("loading")
     end
 end
 
@@ -922,11 +932,12 @@ function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
 	params = event.params
-
+--[[
   LOADING_IMG_1 = false
 	LOADING_IMG_2 = false
 	LOADING_IMG_3 = false
 	LOADING_IMG_4 = false
+	]]
 	native.setActivityIndicator( true )
 	timer.performWithDelay( 1000, listener, 0 )
 
@@ -993,10 +1004,10 @@ function scene:show(event)
 		DiaryGroup:insert( Text )
 
 	    local sqlDes = "SELECT diary_note, diary_pic1, diary_pic2, diary_pic3, diary_pic4 FROM diary WHERE `att_no` IN (SELECT `att_no` FROM `attractions` WHERE `att_name` = '" .. params.PlaceName .. "');"
-	    DB_diary_pic1 = ""
-	    DB_diary_pic2 = ""
-	    DB_diary_pic3 = ""
-	    DB_diary_pic4 = ""
+	    DB_diary_pic1 = nil
+	    DB_diary_pic2 = nil
+	    DB_diary_pic3 = nil
+	    DB_diary_pic4 = nil
 		for row in db:nrows(sqlDes) do
 			TextDesField.text = row.diary_note
 			DB_diary_pic1 = row.diary_pic1
@@ -1007,6 +1018,8 @@ function scene:show(event)
 		end
 		print( DB_diary_pic1,DB_diary_pic2,DB_diary_pic3,DB_diary_pic4 )
 
+		--toast.show(DB_diary_pic1 .. " " ..DB_diary_pic2 .. " " ..DB_diary_pic3 .. " " ..DB_diary_pic4)
+		
 		local sql = "SELECT id FROM personel;"
 		NoMember = ""
 		for row in db:nrows(sql) do
@@ -1021,6 +1034,10 @@ function scene:show(event)
 			print( NoAtt )
 		end
 
+		CheckImg1 = false
+	    CheckImg2 = false
+	    CheckImg3 = false
+	    CheckImg4 = false
 		if (DB_diary_pic1 == nil or DB_diary_pic1 == "") then
 			ImageUser1 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15, 1280/15 )
 			ImageUser1.x = ImagePosition_X_1
@@ -1029,14 +1046,18 @@ function scene:show(event)
 			ImageUser1:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser1 )
       LOADING_IMG_1 = true
+      CheckImg1 = false
+      
 			--PhotoPickerCheck1 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_1.jpg")
+			CheckImg1 = true
 			--PhotoPickerCheck1 = true
 		end
 		
 		if (DB_diary_pic2 == nil or DB_diary_pic2 == "") then
+
 			ImageUser2 = display.newImageRect( "Phuket/Diary/addpicture.png", 1280/15 ,1280/15 )
 			ImageUser2.x = cx - 80
 			ImageUser2.y = ImagePosition_Y_2
@@ -1044,10 +1065,15 @@ function scene:show(event)
 			ImageUser2:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser2 )
       LOADING_IMG_2 = true
+      CheckImg2 = false
+      print( "2 " .. tostring( LOADING_IMG_2 ) )
+
 			--PhotoPickerCheck2 = false
 
 		else
+
 			randomFlag(NoAtt .. "_" .. NoMember .. "_2.jpg")
+			CheckImg2 = true
 			--PhotoPickerCheck2 = true
 		end
 
@@ -1059,10 +1085,12 @@ function scene:show(event)
 			ImageUser3:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser3 )
       LOADING_IMG_3 = true
+      CheckImg3 = false
 			--PhotoPickerCheck3 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_3.jpg")
+			CheckImg3 = true
 			--PhotoPickerCheck3 = true
 		end
 
@@ -1074,10 +1102,12 @@ function scene:show(event)
 			ImageUser4:addEventListener( "touch", AddImgListener )
 			DiaryGroup:insert( ImageUser4 )
       LOADING_IMG_4 = true
+      CheckImg4 = false
 			--PhotoPickerCheck4 = false
 
 		else
 			randomFlag(NoAtt .. "_" .. NoMember .. "_4.jpg")
+			CheckImg4 = true
 			--PhotoPickerCheck4 = true
 		end
 
@@ -1296,6 +1326,14 @@ function scene:hide(event)
     PhotoPickerCheck2 = false
     PhotoPickerCheck3 = false
     PhotoPickerCheck4 = false
+    LOADING_IMG_1 = false
+    LOADING_IMG_2 = false
+    LOADING_IMG_3 = false
+    LOADING_IMG_4 = false
+    CheckImg1 = false
+    CheckImg2 = false
+    CheckImg3 = false
+    CheckImg4 = false
 --[[
 		scrollView:remove( ImpressionRadioGroup )
 		scrollView:remove( BeautyRadioGroup )
