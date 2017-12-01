@@ -69,8 +69,8 @@ local function networkListener( event )
 
         else
         	--local alert = native.showAlert( "", "Check your email", { "OK" })
-        	toast.shwo("Please check your email.")
-        	composer.gotoScene("menu")
+        	toast.show("Please check your email.")
+        	
 
     	end
 
@@ -152,7 +152,7 @@ function scene:show(event)
 
 		EmailTxf = native.newTextField( cx , cy + 40, 200, 25 )
 	    EmailTxf.inputType = "default"
-	    EmailTxf.text = "nook_we@hotmail.com"
+	    EmailTxf.text = ""
 	    EmailTxf.hasBackground = false
 	    EmailTxf.placeholder = "E-mail"
 

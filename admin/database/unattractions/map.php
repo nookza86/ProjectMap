@@ -119,8 +119,8 @@ else{
         },
         
        "Big Buddha": {
-          center: {lat: 7.827521, lng: 98.312399},
-          border: {lat: 7.826901, lng: 98.311446},
+          center: {lat: 7.827648, lng: 98.312619},
+          border: {lat: 7.826333, lng: 98.311464},
           distance: 0.1256
         },
     

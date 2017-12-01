@@ -75,6 +75,11 @@ settings =
 			publisherId = "com.coronalabs",
 			supportedPlatforms = { iphone=true, android=true, ["android-kindle"]=true }
 		},
+
+		["plugin.openssl"] =
+        {
+            publisherId = "com.coronalabs",
+        },
 		
     	['plugin.toast'] = {publisherId = 'com.spiralcodestudio'}
 

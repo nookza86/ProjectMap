@@ -56,17 +56,27 @@ local function networkListener( event )
         decodedData = (json.decode( myNewData ))
 
         if (decodedData["error"] == false) then
+            toast.show(decodedData["error_msg"])
             composer.gotoScene("profile")
-
+        else
+            toast.show(decodedData["error_msg"])
         end
     end
 end
 
 function UpdatePassword(  )
 
-    local EditPassSend = {}
-    EditPassSend["member_no"] = ID_USER
-    EditPassSend["password"] = NewPassTxf.text
+    local EditPass = {}
+    local ID_USER
+    local sql2 = "SELECT id FROM personel;"
+        for row in db:nrows(sql2) do
+            ID_USER = row.id
+        end
+
+    EditPass["member_no"] = ID_USER
+    EditPass["password"] = NewPassTxf.text
+
+    local EditPassSend = json.encode( EditPass )
 
     local headers = {}
 

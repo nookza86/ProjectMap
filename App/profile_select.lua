@@ -144,10 +144,10 @@ function scene:show(event)
 		
 		PasswordTxf = native.newTextField( cx , cy, 200, 25 )
         PasswordTxf.inputType = "default"
-        PasswordTxf.text = "111111111"
+        PasswordTxf.text = ""
         PasswordTxf.isSecure = true
         PasswordTxf.hasBackground = false
-        PasswordTxf.placeholder = "password"
+        PasswordTxf.placeholder = "Password"
 
         PasswordImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
         PasswordImage.x = PasswordTxf.x

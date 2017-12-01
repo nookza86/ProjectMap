@@ -69,7 +69,7 @@ local function DisableBTN(  )
 	BackBtn:setEnabled( false )
 
 	if (LocationBtn) then
-		BackBtn:setEnabled( false )
+		LocationBtn:setEnabled( false )
 	end
 end
 
@@ -82,7 +82,7 @@ local function EnableBTN(  )
 	BackBtn:setEnabled( true )
 
 	if (LocationBtn) then
-		BackBtn:setEnabled( true )
+		LocationBtn:setEnabled( true )
 	end
 end
 
@@ -293,6 +293,7 @@ local function UnlockSendListener( event )
         print( "Network error!" )
         --local alert = native.showAlert( "Error", "Network error!, Try again.", { "OK" })
         ShowPopUp("Network error!, Try again.", false)
+        native.setActivityIndicator( false )
 
     else
 
@@ -414,8 +415,10 @@ local function CalDis( currentLatitude, currentLongitude )
 			else
 
 				--toast.show("You are not in the area. Please try again.")
+				
 				ShowPopUp("You are not in the area.\n\n Please try again.", true)
 			end
+			
 		
 	end -- decode
 end
@@ -455,7 +458,7 @@ if(event.phase == "ended") then
  	if myMap == nil then
 		return
 	end
-
+	native.setActivityIndicator( true )
     -- Fetch the user's current location
 	-- Note: in Xcode Simulator, the current location defaults to Apple headquarters in Cupertino, CA
 	currentLocation = myMap:getUserLocation()
@@ -466,6 +469,7 @@ if(event.phase == "ended") then
 			--native.showAlert( "Error", currentLocation.errorMessage, { "OK" } )
 			--toast.show(currentLocation.errorMessage)
 			ShowPopUp(currentLocation.errorMessage, true)
+			native.setActivityIndicator( false )
 		end
 	else
 		-- Current location data was received.

@@ -725,7 +725,7 @@ print( display.pixelHeight / display.actualContentHeight )
 							cx - 250,
 							cy - 130 
 							)
-				--ProfileImage:scale( 0.2, 0.2 )
+				ProfileImage:scale( 0.1, 0.1 )
 				ProfileImage.name = "profile"
 				ProfileImage:addEventListener( "touch", check )
 
@@ -763,7 +763,7 @@ print( display.pixelHeight / display.actualContentHeight )
 		end
 
 		--ProfileImage:scale( ScaleProFile, ScaleProFile )
-		ProfileImage:scale( 0.2, 0.2 )
+		--ProfileImage:scale( 0.2, 0.2 )
 
 		 local mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
@@ -773,8 +773,8 @@ print( display.pixelHeight / display.actualContentHeight )
 			ProfileImage.maskX = 1
 			--ProfileImage.maskY = 1
 			--ProfileImage.maskRotation = 20
-			ProfileImage.maskScaleX = 0.75
-			ProfileImage.maskScaleY = 0.75
+			ProfileImage.maskScaleX = 1.5
+			ProfileImage.maskScaleY = 1.5
 
 			print( ProfileImage.width, ProfileImage.height )
 

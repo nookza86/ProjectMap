@@ -26,9 +26,13 @@ if (isset($_POST['ForgotSend'])) {
         $strHeader .= "From: admin@map.com\nReply-To: admin@map.com";
         $strMessage = "";
         $strMessage .= "=================================<br>";
-        $strMessage .= "Reset password account click here.<br>";
-        $strMessage .= "mapofmem.esy.es/admin/login/reset.php?mid=".$member_no."&uid=".$uniqid."<br>";
-        $strMessage .= "=================================<br>";
+        $strMessage .= "Reset password account by ";
+        //$strMessage .= "mapofmem.esy.es/admin/api/android_login_api/reset.php?mid=".$member_no."&uid=".$uniqid."<br>";
+
+        $query_string = 'mid=' . urlencode($member_no) . '&uid=' . urlencode($uniqid);
+
+        $strMessage .= '<a href="mapofmem.esy.es/admin/api/android_login_api/reset.php?' . htmlentities($query_string) . '">';
+        $strMessage .= "click here.";
 
         $flgSend = mail($strTo,$strSubject,$strMessage,$strHeader); 
 

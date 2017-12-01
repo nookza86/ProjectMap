@@ -1,9 +1,14 @@
 local composer = require("composer")
 local widget = require("widget" )
 local json = require ("json")
+--https://forums.coronalabs.com/topic/66630-how-can-i-encrypt-my-saved-data/
+local openssl = require( "plugin.openssl" )
+local cipher = openssl.get_cipher ( "aes-256-cbc" )
+local myPassword = "5]:-a9Ya5H(;"
 local sqlite = require("sqlite3")
 local facebook = require( "plugin.facebook.v4" )
 local toast = require('plugin.toast')
+local imgOper = require('image')
 require ("Network-Check")
 local scene = composer.newScene()
 local LoginWithFaceBookBtn, LoginBtn, register, myText
@@ -16,7 +21,10 @@ local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
 local CountGetDatabase = 0
 local GetData
-local INSERT_DATA_1, INSERT_DATA_2, INSERT_DATA_3, INSERT_DATA_4
+local INSERT_DATA_1, INSERT_DATA_2, INSERT_DATA_3, INSERT_DATA_4, INSERT_DATA_5
+local saveEncryptedData, loadEncryptedData
+local RememberCheckBox, RememberCheckBoxImage,isRememberCheckBox
+
 local function RemoveAll( event )
 	if(event) then
 		--print( "deletePic in scene #Menu " )
@@ -94,6 +102,19 @@ local function InsertData(  )
 	--print(insertQuery)
 	INSERT_DATA_4 = true
 
+	if (isRememberCheckBox == true) then
+		local myTable = {
+			email = decodedData["user"]["email"],
+			password = PasswordTxf.text,
+			remember = "true",
+		}
+		saveEncryptedData(myTable, "user.json")
+	else
+		imgOper.Remove( "user.json", system.DocumentsDirectory )
+		INSERT_DATA_5 = true
+	end
+	
+
  end
 
 local function GoS(  )
@@ -102,13 +123,13 @@ local function GoS(  )
 end
 
 local function listener( event )
-    if (INSERT_DATA_4 == true) then
+    if (INSERT_DATA_4 == true and INSERT_DATA_5 == true) then
     	native.setActivityIndicator( false )
     	 timer.cancel( event.source )
     	 composer.gotoScene("loading")
     	 print( "LOADING DONE" )
     	else
-    		print( "4 : " .. tostring( INSERT_DATA_4 ) )
+    		print( "4 : " .. tostring( INSERT_DATA_4 ) .. " 5 : " .. tostring( INSERT_DATA_5 ) )
     end
 end
 
@@ -136,6 +157,10 @@ local function networkListener( event )
         	--print( "Welcome " .. decodedData["user"]["first_name"] )
 
 	    INSERT_DATA_4 = false
+	    INSERT_DATA_5 = false
+
+	    
+
 		--native.setActivityIndicator( true )
 		timer.performWithDelay( 1000, listener, 0 )
 		InsertData(  )
@@ -214,6 +239,82 @@ local function Check( event )
 
 end
 
+function saveEncryptedData(tableName, fileName)
+	
+	--turn table into json string
+	local myJsonString = json.encode(tableName)
+
+	--encrypt that json string
+	local encryptedData = cipher:encrypt ( myJsonString, myPassword )
+
+	--save to a file
+	local path = system.pathForFile(fileName, system.DocumentsDirectory )
+	local file = io.open(path, "w")
+	file:write(encryptedData)	
+	io.close(file)
+	INSERT_DATA_5 = true
+
+end
+
+function loadEncryptedData(filename)
+
+	local path = system.pathForFile( filename, system.DocumentsDirectory )
+
+	-- will hold contents of file
+	local contents
+
+	--predeclare file variable
+	local file
+
+	-- io.open opens a file at path. returns nil if no file found
+	if path then
+		file = io.open( path, "r" )
+	end
+
+	--if file could be opened then proceed
+	if file then
+	    -- read all contents of file into a string
+	   	contents = file:read( "*a" )
+	    io.close( file )	-- close the file after using it
+	else
+		--if file could not be opened, then set contents to be an empty table json string
+		contents = "[]"
+	end
+
+	--decrypt the string that we have retrieved
+	local decryptedData = cipher:decrypt ( contents, myPassword )
+
+	--then turn json string back into a lua table
+	local newTable = json.decode(decryptedData)
+
+	--and return the table
+	return newTable
+
+end
+
+local function onSwitchPress( event )
+    local switch = event.target
+    isRememberCheckBox = switch.isOn
+    print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+end
+
+local function FIND_FILE( Filename )
+	local lfs = require( "lfs" )
+ 	--print( "FINDING : " ..Filename )
+	-- Get raw path to the app documents directory
+	local doc_path = system.pathForFile( "", system.DocumentsDirectory )
+	 
+	for file in lfs.dir( doc_path ) do
+	    -- "file" is the current file or directory name
+	    
+	    if (file == Filename) then
+	    	print( "Found file: " .. file )
+	    	--native.showAlert( "No Internet","Found file: " .. file, { "OK" } )
+	    	return true
+	    end
+	end
+end
+
 function scene:show(event)
 	local sceneGroup = self.view
 	local phase = event.phase
@@ -249,39 +350,65 @@ function scene:show(event)
 		myText.x = display.contentCenterX 
 		myText.y = display.contentCenterY
 
-		EmailTxf = native.newTextField( cx , cy + 40, 200, 25 )
+		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 480/2, 360/2 )
+		TextFieldImage.x = cx
+		TextFieldImage.y = cy + 65
+
+		EmailTxf = native.newTextField( TextFieldImage.x , TextFieldImage.y - 50, 200, 25 )
 	    EmailTxf.inputType = "default"
 	    --EmailTxf.text = ""
-	    EmailTxf.text = "nook_we@hotmail.com"
-	    --EmailTxf.text = "nooza86@gmail.com"
+	    --EmailTxf.text = "nook_we@hotmail.com"
+	    EmailTxf.text = ""
 	    EmailTxf.hasBackground = false
-	    EmailTxf.placeholder = "E-mail"
+	    EmailTxf.placeholder = "Your E-mail"
 
 	    EmailImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
 		EmailImage.x = EmailTxf.x
 		EmailImage.y = EmailTxf.y
 
-	    PasswordTxf = native.newTextField( cx , cy + 80, 200, 25 )
+	    PasswordTxf = native.newTextField( EmailTxf.x , EmailTxf.y + 40, 200, 25 )
 	    PasswordTxf.inputType = "default"
 	    PasswordTxf.isSecure = true
-	    --PasswordTxf.text = ""
-	    PasswordTxf.text = "111111111"
-	    --PasswordTxf.text = "8"
+	    --PasswordTxf.text = "1234"
+	    PasswordTxf.text = ""
 	    PasswordTxf.hasBackground = false
 	    PasswordTxf.placeholder = "Password"
 
 	    PasswordImage = display.newImageRect("Phuket/menu/box.png", 210, 35 )
 		PasswordImage.x = PasswordTxf.x
 		PasswordImage.y = PasswordTxf.y
---[[
-		ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5)
-		ForgotImage.x = PasswordTxf.x - 50
-		ForgotImage.y = PasswordTxf.y + 25
-]]
-		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 480/2, 360/2.5 )
-		TextFieldImage.x = cx
-		TextFieldImage.y = cy + 75
 
+		local DB_Email = ""
+		local initRemember = false
+
+		if (FIND_FILE( "user.json" ) == true) then
+
+			local UserDataJson = loadEncryptedData("user.json")
+			EmailTxf.text = UserDataJson.email
+			PasswordTxf.text = UserDataJson.password
+			if (UserDataJson.remember == "true") then
+				initRemember = true
+			end
+
+		end
+
+	local RememberCheckBox = widget.newSwitch(
+    	{
+	        left = PasswordImage.x - 100,
+	        top = PasswordImage.y + 20,
+	        style = "checkbox",
+	        id = "Checkbox",
+	        initialSwitchState = initRemember,
+	        width = 20,
+    		height = 20,
+	        onPress = onSwitchPress
+    	}
+	)
+
+	RememberCheckBoxImage = display.newImageRect("Phuket/menu/rememberme.png", 234 / 2.5, 40 / 2.5 )
+	RememberCheckBoxImage.x = RememberCheckBox.x + 60
+	RememberCheckBoxImage.y = RememberCheckBox.y
+	isRememberCheckBox = false
 
 	 LoginBtn = widget.newButton(
     	{
@@ -314,6 +441,8 @@ function scene:show(event)
 	sceneGroup:insert(LoginBtn)
 	sceneGroup:insert(ForgotImage)
 	sceneGroup:insert(EmailTxf)
+	sceneGroup:insert(RememberCheckBox)
+	sceneGroup:insert(RememberCheckBoxImage)
 	sceneGroup:insert(SignUpImage)
 	sceneGroup:insert(EmailImage)
 	sceneGroup:insert(PasswordImage)
