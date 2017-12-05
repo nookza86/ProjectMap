@@ -6,6 +6,7 @@ local mime = require( "mime" )
 local lfs = require( "lfs" )
 local toast = require('plugin.toast')
 local imgOper = require('image')
+require("FitImage")
 require("createAcc")
 require ("Network-Check")
 local txfFirstName, txfLastName, txfPassword, txfConfirmPassword, txfEmail, BirthDay, BirthMonth, BirthYear, Gender, Country
@@ -24,7 +25,9 @@ local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
 local SelectImg, mask, ProfileFrame
 local myText, scrollView
+local Member_NO_RE_UPLOAD
 local CountImg = 0
+local UploadUserImage
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -118,7 +121,9 @@ local function uploadListener( event )
       print( "Network Error." )
       print( "Status:", event.status )
       print( "Response:", event.response )
-      toast.show("Network Error.")
+      --toast.show("Network Error.")
+      UploadUserImage( Member_NO_RE_UPLOAD )
+      --native.showAlert( event.status, event.response, { "OK", "Learn More" } )
     native.setActivityIndicator( false )
    else
       if ( event.phase == "began" ) then
@@ -137,7 +142,7 @@ local function uploadListener( event )
    end
 end
 
-local function UploadUserImage( MemNo )
+function UploadUserImage( MemNo )
    
     local url = "http://mapofmem.esy.es/admin/api/android_upload_api/register_upload.php"
   
@@ -207,6 +212,7 @@ local function networkListener( event )
         if (decodedData["error"] == false) then
             --myText.text = decodedData["member_no"] 
              print( decodedData["member_no"] )
+             Member_NO_RE_UPLOAD = decodedData["member_no"]
              reNameImg( decodedData["member_no"] )
          else
             native.setActivityIndicator( false )
@@ -314,12 +320,15 @@ local sessionComplete = function(event)
         
         local maxWidth = imgOper.getWidth(  )
         local maxHeight = imgOper.getHeight(  )
+        --local maxWidth = 256
+        --local maxHeight = 256
 
         --photo:scale( scale, scale )
         photo.x = centerX
         photo.y = centerY
         --myText.text =  "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale
         print( "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
+        --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
         --local alert = native.showAlert( "Error", "photo w,h = " .. photo.width .. "," .. photo.height .." ".. xScale .." ".. yScale .." ".. scale, { "OK" })
         --rescale width
         if ( photo.width > maxWidth ) then
@@ -334,7 +343,7 @@ local sessionComplete = function(event)
            photo.height = maxHeight
            photo.width = photo.width * ratio
         end
-
+        --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
         --local alert = native.showAlert( "Error", "photo w,h = " .. photo.width .. "," .. photo.height .." ".. xScale .." ".. yScale .." ".. scale, { "OK" })
 
         
@@ -353,12 +362,23 @@ local sessionComplete = function(event)
             PicUser = nil
 
             display.save( photo, { filename=PhotoName..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
-        display.remove( photo )
+        
             
             PicUser = display.newImage( PhotoName..".jpg", system.TemporaryDirectory, cx - 195, cy - 80, true )
             PicUser:scale(0.2  , 0.2  )
             PicUser.name = "PIC"
             PicUser:addEventListener( "touch", SelectImg )
+            local markX
+            local markY
+             if ( PicUser.height < 512 and PicUser.width < 512) then
+                local Fit = fitImage( PicUser, 512, 512, true )
+                PicUser:scale(Fit, Fit)
+                markX = 0.28
+                markY = 0.28
+            else
+                markX = 2
+                markY = 2
+            end
 
             mask = graphics.newMask( "cc.png" )
              
@@ -367,15 +387,16 @@ local sessionComplete = function(event)
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 2
-            PicUser.maskScaleY = 2
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
 
             ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
             ProfileFrame.x = PicUser.x 
             ProfileFrame.y = PicUser.y + 6
             ImageGroup:insert( PicUser )
             ImageGroup:insert( ProfileFrame )
-
+            --toast.show("photo w,h = " .. PicUser.width .. "," .. PicUser.height)
+            display.remove( photo )
     else
         PhotoPickerCheck = false
         --myText.text = "No Image Selected"

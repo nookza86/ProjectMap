@@ -294,6 +294,9 @@ end
 
 local function onSwitchPress( event )
     local switch = event.target
+
+    	--RememberCheckBox:setState( { isOn=true } )
+
     isRememberCheckBox = switch.isOn
     print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
 end
@@ -350,11 +353,11 @@ function scene:show(event)
 		myText.x = display.contentCenterX 
 		myText.y = display.contentCenterY
 
-		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 480/2, 360/2 )
+		TextFieldImage = display.newImageRect("Phuket/menu/wbg.png", 480/2, 360/3.5 )
 		TextFieldImage.x = cx
-		TextFieldImage.y = cy + 65
+		TextFieldImage.y = cy + 40
 
-		EmailTxf = native.newTextField( TextFieldImage.x , TextFieldImage.y - 50, 200, 25 )
+		EmailTxf = native.newTextField( TextFieldImage.x , TextFieldImage.y - 20, 200, 25 )
 	    EmailTxf.inputType = "default"
 	    --EmailTxf.text = ""
 	    --EmailTxf.text = "nook_we@hotmail.com"
@@ -380,7 +383,7 @@ function scene:show(event)
 
 		local DB_Email = ""
 		local initRemember = false
-
+		isRememberCheckBox = false
 		if (FIND_FILE( "user.json" ) == true) then
 
 			local UserDataJson = loadEncryptedData("user.json")
@@ -388,6 +391,7 @@ function scene:show(event)
 			PasswordTxf.text = UserDataJson.password
 			if (UserDataJson.remember == "true") then
 				initRemember = true
+				isRememberCheckBox = true
 			end
 
 		end
@@ -395,12 +399,12 @@ function scene:show(event)
 	local RememberCheckBox = widget.newSwitch(
     	{
 	        left = PasswordImage.x - 100,
-	        top = PasswordImage.y + 20,
+	        top = PasswordImage.y + 25,
 	        style = "checkbox",
 	        id = "Checkbox",
 	        initialSwitchState = initRemember,
-	        width = 20,
-    		height = 20,
+	        width = 25,
+    		height = 25,
 	        onPress = onSwitchPress
     	}
 	)
@@ -408,7 +412,9 @@ function scene:show(event)
 	RememberCheckBoxImage = display.newImageRect("Phuket/menu/rememberme.png", 234 / 2.5, 40 / 2.5 )
 	RememberCheckBoxImage.x = RememberCheckBox.x + 60
 	RememberCheckBoxImage.y = RememberCheckBox.y
-	isRememberCheckBox = false
+	RememberCheckBoxImage.id = "text"
+	--RememberCheckBoxImage:addEventListener("touch", onSwitchPress)
+	
 
 	 LoginBtn = widget.newButton(
     	{
@@ -422,7 +428,7 @@ function scene:show(event)
 			)
 		
 		LoginBtn.x = cx 
-		LoginBtn.y = cy + 115
+		LoginBtn.y = cy + 120
 
 	ForgotImage = display.newImageRect("Phuket/menu/forgotpass.png", 270/2.5, 50/2.5 )
 	ForgotImage.x = display.contentCenterX - 40

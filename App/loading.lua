@@ -13,7 +13,7 @@ local CountGetDatabase = 0
 local GetData
 local INSERT_DATA_1, INSERT_DATA_2, INSERT_DATA_3, INSERT_DATA_4
 local progressView
-local Result_1, Result_2, Result_3
+local Result_1, Result_2, Result_3, LoadUserImg
 local NOOOO = 0	
 
 local function RemoveAll( event )
@@ -42,6 +42,8 @@ local function loadImageListener( event )
 
 	if ( event.isError ) then
         print( "Network error: ", event.response )
+        LoadUserImg(  )
+        --composer.gotoScene( "menu" )
  
     elseif ( event.phase == "began" ) then
         if ( event.bytesEstimated <= 0 ) then
@@ -67,7 +69,7 @@ local function loadImageListener( event )
 
 end
 
-local function LoadUserImg(  )
+function LoadUserImg(  )
 	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. NOOOO ..".jpg"
 	print( url )
 network.download( url , 

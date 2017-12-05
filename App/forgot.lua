@@ -191,6 +191,7 @@ function scene:show(event)
 		sceneGroup:insert(EmailTxf)
 		sceneGroup:insert(EmailImage)
 		sceneGroup:insert(OkBtn)
+		sceneGroup:insert(BackBtn)
 
 	elseif (phase == "did") then
 		print("Scene #Forgot : show (did)")

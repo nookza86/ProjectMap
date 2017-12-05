@@ -3,6 +3,7 @@ local widget = require("widget" )
 local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
+require("FitImage")
 require ("cal")
 require ("Network-Check")
 require ("image_proportion")
@@ -728,6 +729,17 @@ print( display.pixelHeight / display.actualContentHeight )
 				ProfileImage:scale( 0.1, 0.1 )
 				ProfileImage.name = "profile"
 				ProfileImage:addEventListener( "touch", check )
+				local markX = 1.5
+				local markY = 1.5
+				if ( ProfileImage.height < 512 and ProfileImage.width < 512) then
+                	local Fit = fitImage( ProfileImage, 512, 512, true )
+                	ProfileImage:scale(Fit, Fit)
+                	markX = 0.28
+				 	markY = 0.28
+				 else
+				 	markX = 1.5
+				 	markY = 1.5
+            	end
 
 	       if ProfileImage.width > ProfileImage.height then
 			--ProfileImage:rotate( -90 )			-- rotate for landscape
@@ -773,8 +785,8 @@ print( display.pixelHeight / display.actualContentHeight )
 			ProfileImage.maskX = 1
 			--ProfileImage.maskY = 1
 			--ProfileImage.maskRotation = 20
-			ProfileImage.maskScaleX = 1.5
-			ProfileImage.maskScaleY = 1.5
+			ProfileImage.maskScaleX = markX
+			ProfileImage.maskScaleY = markY
 
 			print( ProfileImage.width, ProfileImage.height )
 

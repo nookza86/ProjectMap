@@ -565,7 +565,7 @@ local sessionComplete = function(event)
 		
 		print( "Before photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 		 --native.showAlert( "You Are Here", "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale, { "OK" } )
-     toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
+     --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
 
 		--rescale width
 		if ( photo.width > maxWidth ) then
@@ -580,7 +580,7 @@ local sessionComplete = function(event)
 		   photo.height = maxHeight
 		   photo.width = photo.width * ratio
 		end
-    toast.show("After photo w,h = " .. photo.width .. "," .. photo.height)
+    --toast.show("After photo w,h = " .. photo.width .. "," .. photo.height)
 		display.save( photo, { filename=CountImg[PhotoNo]..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
    		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
    			DiaryGroup:remove( FrameUserImage1 )        

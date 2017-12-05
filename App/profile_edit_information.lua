@@ -9,6 +9,7 @@ local imgOper = require('image')
 require("createAcc")
 require ("Network-Check")
 require ("get-data")
+require("FitImage")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -385,6 +386,19 @@ local SelectImageListener = function(event)
             PicUser:scale(0.2  , 0.2  )
             PicUser.name = ID_USER
             PicUser:addEventListener( "touch", SelectImg )
+            local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 512, 512, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+                    markX = 2
+                    markY = 2
+                end
 
             mask = graphics.newMask( "cc.png" )
              
@@ -393,8 +407,8 @@ local SelectImageListener = function(event)
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 2
-            PicUser.maskScaleY = 2
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
 
             ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
             ProfileFrame.x = PicUser.x 
@@ -429,6 +443,17 @@ local function loadImageListener( event )
                             )
                 PicUser:scale( 0.2, 0.2 )
                 PicUser.name = "profile"
+
+                local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 425, 425, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                end
                 
 
            if PicUser.width > PicUser.height then
@@ -470,8 +495,8 @@ local function loadImageListener( event )
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 2
-            PicUser.maskScaleY = 2
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
 
             print( PicUser.width, PicUser.height )
 
@@ -568,12 +593,14 @@ function scene:show(event)
     txfLastName.hasBackground = false
     txfLastName.placeholder = "Lastname"
 
-    txfEmail = native.newTextField( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
+    txfEmail = native.newTextBox( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
     txfEmail.hasBackground = false
     txfEmail.name = "txfEmail"
     txfEmail.placeholder = "Email"
+    txfEmail.isEditable = false
+    txfEmail.size = 12
 
     txfEmail:addEventListener("userInput", textFieldHandler)
     local gender = ""
@@ -607,6 +634,20 @@ function scene:show(event)
                 PicUser:scale( 0.2, 0.2 )
                 PicUser.name = id
                 PicUser:addEventListener( "touch", SelectImg )
+
+                local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 512, 512, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+                    markX = 1.5
+                    markY = 1.5
+                end
             end
         end
 
@@ -634,6 +675,15 @@ function scene:show(event)
            PicUser.width = PicUser.width * ratio
            ScaleProFile = scale / 1.7
         end
+        if ( PicUser.height < 512 and PicUser.width < 512) then
+                    
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                else
+                    markX = 1.5
+                    markY = 1.5
+        end
         --PicUser:scale( ScaleProFile, ScaleProFile )
          local mask = graphics.newMask( "cc.png" )
          --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
@@ -643,8 +693,10 @@ function scene:show(event)
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 1.5
-            PicUser.maskScaleY = 1.5
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
+
+            print( markX, markY )
 
             ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
     ProfileFrame.x = PicUser.x 

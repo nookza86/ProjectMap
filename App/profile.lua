@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
 local imgOper = require('image')
+require("FitImage")
 require("createAcc")
 require("get-data")
 local sqlite = require("sqlite3")
@@ -274,6 +275,19 @@ function scene:show(event)
 							)
 				UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
+
+				local markX = 1.5
+                local markY = 1.5
+				if ( UserImage.height < 512 and UserImage.width < 512) then
+                    local Fit = fitImage( UserImage, 512, 512, true )
+                    UserImage:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+				 	markX = 1.5
+				 	markY = 1.5
+                end
 				
 
 	       if UserImage.width > UserImage.height then
@@ -315,8 +329,8 @@ function scene:show(event)
 			UserImage.maskX = 1
 			--UserImage.maskY = 1
 			--UserImage.maskRotation = 20
-			UserImage.maskScaleX = 1.5
-			UserImage.maskScaleY = 1.5
+			UserImage.maskScaleX = markX
+			UserImage.maskScaleY = markY
 
 			print( UserImage.width, UserImage.height )
 
