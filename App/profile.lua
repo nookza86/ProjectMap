@@ -4,6 +4,7 @@ local scene = composer.newScene()
 local json = require ("json")
 local toast = require('plugin.toast')
 local imgOper = require('image')
+require("FitImage")
 require("createAcc")
 require("get-data")
 local sqlite = require("sqlite3")
@@ -117,7 +118,18 @@ local function loadImageListener( event )
 				UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
 				
-
+				local markX = 1.5
+                local markY = 1.5
+				if ( UserImage.height < 512 and UserImage.width < 512) then
+                    local Fit = fitImage( UserImage, 512, 512, true )
+                    --UserImage:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+				 	markX = 1.5
+				 	markY = 1.5
+                end
 	       if UserImage.width > UserImage.height then
 			--UserImage:rotate( -90 )			-- rotate for landscape
 			print( "Rotated" )
@@ -128,8 +140,8 @@ local function loadImageListener( event )
 		local yScale = ch / UserImage.contentHeight
 		local scale = math.max( xScale, yScale ) * .75
 		
-		local maxWidth = imgOper.getWidth(  )
-		local maxHeight = imgOper.getHeight(  )
+		local maxWidth = 512
+		local maxHeight = 512
 
 		--UserImage:scale( scale, scale )
 		--UserImage.x = cx
@@ -148,6 +160,9 @@ local function loadImageListener( event )
 		   UserImage.height = maxHeight
 		   UserImage.width = UserImage.width * ratio
 		end
+
+		
+
 		--UserImage:scale( 0.2, 0.2 )
 		 mask = graphics.newMask( "cc.png" )
 		 --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
@@ -157,8 +172,8 @@ local function loadImageListener( event )
 			UserImage.maskX = 1
 			--UserImage.maskY = 1
 			--UserImage.maskRotation = 20
-			UserImage.maskScaleX = 2
-			UserImage.maskScaleY = 2
+			UserImage.maskScaleX = markX
+			UserImage.maskScaleY = markY
 
 			print( UserImage.width, UserImage.height )
 
@@ -238,7 +253,7 @@ function scene:show(event)
 		UserImage.y = cy - 55
 ]]
 		NameImage = display.newImageRect( "Phuket/Profile/name.png", 226/3, 77/3 )
-		NameImage.x = cx + 40
+		NameImage.x = cx + 10
 		NameImage.y = cy - 80
 		ProfileGroup:insert( NameImage )
 
@@ -247,7 +262,7 @@ function scene:show(event)
 		CountryImage.y = NameImage.y + 40
 		ProfileGroup:insert( CountryImage )
 
-		TextName = display.newText( "", cx + 160 , cy - 80, "Cloud-Bold", 16 )
+		TextName = display.newText( "", NameImage.x + 130 , NameImage.y, "Cloud-Bold", 16 )
 		--TextName:setFillColor( 1, 0, 0 )
 		ProfileGroup:insert( TextName )
 
@@ -274,6 +289,19 @@ function scene:show(event)
 							)
 				UserImage:scale( 0.2, 0.2 )
 				UserImage.name = "profile"
+
+				local markX = 1.5
+                local markY = 1.5
+				if ( UserImage.height < 512 and UserImage.width < 512) then
+                    local Fit = fitImage( UserImage, 512, 512, true )
+                    UserImage:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+				 	markX = 1.5
+				 	markY = 1.5
+                end
 				
 
 	       if UserImage.width > UserImage.height then
@@ -315,8 +343,8 @@ function scene:show(event)
 			UserImage.maskX = 1
 			--UserImage.maskY = 1
 			--UserImage.maskRotation = 20
-			UserImage.maskScaleX = 1.5
-			UserImage.maskScaleY = 1.5
+			UserImage.maskScaleX = markX
+			UserImage.maskScaleY = markY
 
 			print( UserImage.width, UserImage.height )
 

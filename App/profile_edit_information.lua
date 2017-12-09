@@ -9,6 +9,7 @@ local imgOper = require('image')
 require("createAcc")
 require ("Network-Check")
 require ("get-data")
+require("FitImage")
 local sqlite = require("sqlite3")
 local path = system.pathForFile( "data.db", system.DocumentsDirectory )
 local db = sqlite.open(path)
@@ -28,8 +29,9 @@ local CheckPasswordMatch, CheckEmail
 local myNewData, decodedData
 local PhotoName, PhotoPickerCheck
 local SelectImg, mask, ProfileFrame
-local myText, scrollView
+local myText, scrollView, UploadUserImage, Member_NO_RE_UPLOAD, LoadUserImg
 local CountImg = 100000
+local LoadImg = 1
 
 -----------------PPhoto Picker----------------------------------------
 --https://forums.coronalabs.com/topic/50270-photo-editing-and-corona-how-can-i-save-a-photo-at-full-resolution/
@@ -104,15 +106,12 @@ local function textFieldHandler( event )
 
 end
 
-local function GoS(  )
-  composer.gotoScene( "profile" )
-  
-end
-
 local function loadProfileImageListener( event )
 
 	if ( event.isError ) then
         print( "Network error: ", event.response )
+        toast.show(event.response)
+        LoadUserImg( Member_NO_RE_UPLOAD )
  
     elseif ( event.phase == "began" ) then
         if ( event.bytesEstimated <= 0 ) then
@@ -131,14 +130,28 @@ local function loadProfileImageListener( event )
          
     elseif ( event.phase == "ended" ) then
         print( "Download complete, total bytes transferred: " .. event.bytesTransferred )
-        composer.gotoScene( "profile" )
+        --toast.show("Download complete, total bytes transferred: " .. event.bytesTransferred)
+        --toast.show(LoadImg)
+        
+
+        if (LoadImg == 3 ) then
+            composer.gotoScene( "profile" )
         native.setActivityIndicator( false )
+        else
+            LoadImg = LoadImg + 1
+            LoadUserImg( Member_NO_RE_UPLOAD )
+            for row in db:nrows("SELECT id FROM personel;") do
+                --imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
+               LoadUserImg( row.id )
+            end
+        end
+        
 		
     end
 
 end
 
-local function LoadUserImg( NOOOO )
+function LoadUserImg( NOOOO )
 	local url = "http://mapofmem.esy.es/admin/api/android_upload_api/upload/profile/" .. NOOOO ..".jpg"
 	print( url )
 network.download( url , 
@@ -151,6 +164,14 @@ network.download( url ,
 
 end
 
+local function GoS(  )
+    for row in db:nrows("SELECT id FROM personel;") do
+        LoadUserImg( row.id )
+        --composer.gotoScene( "profile" )
+    end
+  
+end
+
 local function uploadListener( event )
     --toast.show("uploadListener")
    if ( event.isError ) then
@@ -159,6 +180,7 @@ local function uploadListener( event )
       print( "Response:", event.response )
        --myText.text = "Status:" .. event.status .. " Response: " .. event.response
     --toast.show("Network Error, Try again.")
+      UploadUserImage( Member_NO_RE_UPLOAD )
 
    else
       if ( event.phase == "began" ) then
@@ -173,26 +195,21 @@ local function uploadListener( event )
         for row in db:nrows("SELECT id FROM personel;") do
         	id = row.id
             imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
+            --toast.show(row.id .. ".jpg")
         end
 
          --imgOper.Remove( PhotoName .. ".jpg", system.DocumentsDirectory  )
-
+         imgOper.Remove( id .. ".jpg", system.DocumentsDirectory  )
          imgOper.CleanDir(system.TemporaryDirectory)
-         LoadUserImg( id )
-         --timer.performWithDelay( 5000, GoS )
+         --LoadUserImg( id )
+         timer.performWithDelay( 3000, GoS )
 
       end
    end
 end
 
-local function UploadUserImage( MemberNo )
-    --[[
-    local MemNo = 0
+function UploadUserImage( MemberNo )
 
-    for row in db:nrows("SELECT id FROM personel;") do
-        MemNo = row.id
-    end
-]]
     local url = "http://mapofmem.esy.es/admin/api/android_upload_api/register_upload.php"
   
     local method = "PUT"
@@ -222,6 +239,8 @@ local function networkListener( event )
     
     if ( event.isError ) then
         print( "Network error!" )
+        toast.show("Error, Try again!")
+        native.setActivityIndicator( false )
 
     else
         print( "RESPONSE: " .. event.response )
@@ -241,6 +260,7 @@ local function networkListener( event )
 
             if ( Result_Rename == true ) then
                 UploadUserImage( MemberNo )
+                Member_NO_RE_UPLOAD = MemberNo
                 native.setActivityIndicator( true )
                 --toast.show("true " .. MemberNo)
             else
@@ -385,6 +405,19 @@ local SelectImageListener = function(event)
             PicUser:scale(0.2  , 0.2  )
             PicUser.name = ID_USER
             PicUser:addEventListener( "touch", SelectImg )
+            local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 512, 512, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+                    markX = 2
+                    markY = 2
+                end
 
             mask = graphics.newMask( "cc.png" )
              
@@ -393,8 +426,8 @@ local SelectImageListener = function(event)
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 2
-            PicUser.maskScaleY = 2
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
 
             ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
             ProfileFrame.x = PicUser.x 
@@ -429,6 +462,17 @@ local function loadImageListener( event )
                             )
                 PicUser:scale( 0.2, 0.2 )
                 PicUser.name = "profile"
+
+                local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 425, 425, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                end
                 
 
            if PicUser.width > PicUser.height then
@@ -470,12 +514,12 @@ local function loadImageListener( event )
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 2
-            PicUser.maskScaleY = 2
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
 
             print( PicUser.width, PicUser.height )
 
-    ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.7, 187*0.7 )
+    ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
     ProfileFrame.x = PicUser.x 
     ProfileFrame.y = PicUser.y + 6
     ProfileFrame.name = "profile"
@@ -568,12 +612,14 @@ function scene:show(event)
     txfLastName.hasBackground = false
     txfLastName.placeholder = "Lastname"
 
-    txfEmail = native.newTextField( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
+    txfEmail = native.newTextBox( PicEmail.x  , PicEmail.y, PicEmail.width - 10, PicEmail.height - 10 )
     txfEmail.inputType = "email"
     txfEmail.text = ""
     txfEmail.hasBackground = false
     txfEmail.name = "txfEmail"
     txfEmail.placeholder = "Email"
+    txfEmail.isEditable = false
+    txfEmail.size = 12
 
     txfEmail:addEventListener("userInput", textFieldHandler)
     local gender = ""
@@ -607,6 +653,20 @@ function scene:show(event)
                 PicUser:scale( 0.2, 0.2 )
                 PicUser.name = id
                 PicUser:addEventListener( "touch", SelectImg )
+
+                local markX = 1.5
+                local markY = 1.5
+                print( PicUser.height, PicUser.width )
+                if ( PicUser.height < 512 and PicUser.width < 512) then
+                    local Fit = fitImage( PicUser, 512, 512, true )
+                    PicUser:scale(Fit, Fit)
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                    else
+                    markX = 1.5
+                    markY = 1.5
+                end
             end
         end
 
@@ -634,6 +694,15 @@ function scene:show(event)
            PicUser.width = PicUser.width * ratio
            ScaleProFile = scale / 1.7
         end
+        if ( PicUser.height < 512 and PicUser.width < 512) then
+                    
+                    markX = 0.28
+                    markY = 0.28
+                    print( markX, markY )
+                else
+                    markX = 1.5
+                    markY = 1.5
+        end
         --PicUser:scale( ScaleProFile, ScaleProFile )
          local mask = graphics.newMask( "cc.png" )
          --local mask = graphics.newMask( "Phuket/Overview/profilebut.png" )
@@ -643,8 +712,10 @@ function scene:show(event)
             PicUser.maskX = 1
             --PicUser.maskY = 1
             --PicUser.maskRotation = 20
-            PicUser.maskScaleX = 1.5
-            PicUser.maskScaleY = 1.5
+            PicUser.maskScaleX = markX
+            PicUser.maskScaleY = markY
+
+            print( markX, markY )
 
             ProfileFrame = display.newImageRect( "Phuket/Overview/profilebut.png", 190*0.6, 187*0.6 )
     ProfileFrame.x = PicUser.x 

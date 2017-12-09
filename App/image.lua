@@ -57,7 +57,7 @@ function image.Remove( Filename, Dir )
 	  
 	if result then
 	   print( "File removed" )
-	   --local alert = native.showAlert( "Error", Filename .. " removed.", { "OK" })
+	   --local alert = native.showAlert( "RR", Filename .. " removed.", { "OK" })
 	else
 	   print( "File does not exist", reason )  --> File does not exist    apple.txt: No such file or directory
 		--local alert = native.showAlert( "File does not exist", reason, { "OK" })
