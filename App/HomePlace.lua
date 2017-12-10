@@ -87,7 +87,7 @@ local function EnableBTN(  )
 end
 
 local function ShowPopUp( TextAlert, IsAlert )
-
+	native.setActivityIndicator( false )
 	backgroundALpha = display.newRect(0,0,cw,ch)
 	backgroundALpha.x = display.contentWidth / 2
 	backgroundALpha.y = display.contentHeight / 2

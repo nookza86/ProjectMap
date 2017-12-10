@@ -505,7 +505,7 @@ local function onSwitchPress( event )
     		ImpressionScore = 1
     	end
 
-    elseif (switch == "BeautyRadioButton1" or switch.id == "BeautyRadioButton2" or switch.id == "BeautyRadioButton3" or switch.id == "BeautyRadioButton4" or switch.id == "BeautyRadioButton5") then
+    elseif (switch.id == "BeautyRadioButton1" or switch.id == "BeautyRadioButton2" or switch.id == "BeautyRadioButton3" or switch.id == "BeautyRadioButton4" or switch.id == "BeautyRadioButton5") then
     	print( "2" )
     	if (switch.id == "BeautyRadioButton1") then
     		BeautyScore = 5
