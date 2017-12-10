@@ -4,7 +4,7 @@
 <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 <meta charset="UTF-8">
 
-<title>Elegant Login - Designscrazed</title>
+<title>Login</title>
 <style>
 body {
     background: url('http://i.imgur.com/Eor57Ae.jpg') no-repeat fixed center center;
