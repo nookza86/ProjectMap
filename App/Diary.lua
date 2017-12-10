@@ -436,7 +436,7 @@ local function Check( event )
       end
 
 			if (PhotoPickerCheck1 == true ) then
-          local result = imgOper.reName( PhotoArray[1], NoAtt .. "_" .. NoMember .. "_1"  )
+          local result = imgOper.reName( PhotoArray[1].."a", NoAtt .. "_" .. NoMember .. "_1"  )
 
           if (result == true) then
             UploadUserImage(NoAtt .. "_" .. NoMember .. "_1")
@@ -447,7 +447,7 @@ local function Check( event )
 			end
 
 			if (PhotoPickerCheck2 == true) then
-          local result = imgOper.reName( PhotoArray[2], NoAtt .. "_" .. NoMember .. "_2"  )
+          local result = imgOper.reName( PhotoArray[2].."b", NoAtt .. "_" .. NoMember .. "_2"  )
 
           if (result == true) then
             UploadUserImage(NoAtt .. "_" .. NoMember .. "_2")
@@ -458,7 +458,7 @@ local function Check( event )
 			end
 
 			if (PhotoPickerCheck3 == true) then
-          local result = imgOper.reName( PhotoArray[3], NoAtt .. "_" .. NoMember .. "_3"  )
+          local result = imgOper.reName( PhotoArray[3].."c", NoAtt .. "_" .. NoMember .. "_3"  )
 
           if (result == true) then
             UploadUserImage(NoAtt .. "_" .. NoMember .. "_3")
@@ -469,7 +469,7 @@ local function Check( event )
 			end
 
 			if (PhotoPickerCheck4 == true) then
-         local result = imgOper.reName( PhotoArray[4], NoAtt .. "_" .. NoMember .. "_4"  )
+         local result = imgOper.reName( PhotoArray[4].."d", NoAtt .. "_" .. NoMember .. "_4"  )
 
           if (result == true) then
             UploadUserImage(NoAtt .. "_" .. NoMember .. "_4")
@@ -565,7 +565,7 @@ local sessionComplete = function(event)
 		
 		print( "Before photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale )
 		 --native.showAlert( "You Are Here", "photo w,h = " .. photo.width .. "," .. photo.height, xScale, yScale, scale, { "OK" } )
-     --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
+   --toast.show("photo w,h = " .. photo.width .. "," .. photo.height)
 
 		--rescale width
 		if ( photo.width > maxWidth ) then
@@ -582,8 +582,10 @@ local sessionComplete = function(event)
 		end
     --toast.show("After photo w,h = " .. photo.width .. "," .. photo.height)
 		display.save( photo, { filename=CountImg[PhotoNo]..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+    
    		if (PhotoName == NoAtt .. "_" .. NoMember .. "_1" or PhotoName == NoAtt .. "_" .. NoMember .. "_1.jpg") then
-   			DiaryGroup:remove( FrameUserImage1 )        
+   			display.save( photo, { filename=(CountImg[PhotoNo].."a")..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+        DiaryGroup:remove( FrameUserImage1 )        
    			RemoveAll(FrameUserImage1)
    			ImageUser1:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser1)
@@ -601,7 +603,8 @@ local sessionComplete = function(event)
         --toast.show(PhotoArray[1])
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_2" or PhotoName == NoAtt .. "_" .. NoMember .. "_2.jpg") then
-   			DiaryGroup:remove( FrameUserImage2 )        
+   			display.save( photo, { filename=(CountImg[PhotoNo].."b")..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+        DiaryGroup:remove( FrameUserImage2 )        
    			RemoveAll(FrameUserImage2)
    			ImageUser2:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser2)
@@ -619,7 +622,8 @@ local sessionComplete = function(event)
         --toast.show(PhotoArray[2])
 
    		elseif (PhotoName == NoAtt .. "_" .. NoMember .. "_3" or PhotoName == NoAtt .. "_" .. NoMember .. "_3.jpg") then
-   			DiaryGroup:remove( FrameUserImage3 )
+   			display.save( photo, { filename=(CountImg[PhotoNo].."c")..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
+        DiaryGroup:remove( FrameUserImage3 )
    			RemoveAll(FrameUserImage3)
    			ImageUser3:removeEventListener( "touch", AddImgListener )
    			RemoveAll(ImageUser3)
@@ -637,6 +641,7 @@ local sessionComplete = function(event)
         --toast.show(PhotoArray[3])
 
    		else
+        display.save( photo, { filename=(CountImg[PhotoNo].."d")..".jpg", baseDir=system.TemporaryDirectory, isFullResolution=true } )
         DiaryGroup:remove( FrameUserImage4 )   			
    			RemoveAll(FrameUserImage4)
    			ImageUser4:removeEventListener( "touch", AddImgListener )
@@ -870,7 +875,7 @@ function FitFrameImage( ImageObj )
 	local Fit_X = fitImage( ImageObj, Fit_X_MAX, Fit_Y_MAX, true )
 	ImageObj:scale( Fit_X - 0.1, Fit_X - 0.1)
 	Fit_Y = Fit_X
-	
+	--toast.show("photo w,h = " .. ImageObj.width .. "," .. ImageObj.height)
 	if (ImageObj.width > ImageObj.height) then
 		--Frame = "Phuket/Frame/frame_1.png"
 		Fit_X = Fit_X 

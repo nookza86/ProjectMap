@@ -69,7 +69,7 @@ function image.reName( OldName, NewName  )
     -- Get raw path to the app documents directory
     local doc_path = system.pathForFile( "", system.TemporaryDirectory )
     local destDir = system.TemporaryDirectory
-    
+    local IsRename = false
     for file in lfs.dir( doc_path ) do
         -- "file" is the current file or directory name
         print( "Found file: " .. file )
@@ -85,12 +85,14 @@ function image.reName( OldName, NewName  )
             if result then
                 print( "File renamed" )
                 --local alert = native.showAlert( "Error", "File renamed.", { "OK" })
-                return true
+                IsRename = true
+                return IsRename
 
             else          
                 print( "File not renamed", reason )  --> File not renamed    orange.txt: No such file or directory
             	--local alert = native.showAlert( "File not renamed", reason, { "OK" })
-            	return false
+            	IsRename = false
+            	return IsRename
             	
             end
 

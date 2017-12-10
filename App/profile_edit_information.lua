@@ -134,7 +134,7 @@ local function loadProfileImageListener( event )
         --toast.show(LoadImg)
         
 
-        if (LoadImg == 3 ) then
+        if (LoadImg == 1 ) then
             composer.gotoScene( "profile" )
         native.setActivityIndicator( false )
         else
@@ -192,10 +192,11 @@ local function uploadListener( event )
          print( "Status:", event.status )
          print( "Response:", event.response )
       local id = 0   
-        for row in db:nrows("SELECT id FROM personel;") do
+        for row in db:nrows("SELECT id, img FROM personel;") do
         	id = row.id
-            imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
-            --toast.show(row.id .. ".jpg")
+            --imgOper.Remove( row.id .. ".jpg", system.DocumentsDirectory  )
+            imgOper.Remove( row.img, system.DocumentsDirectory  )
+            --toast.show(row.img)
         end
 
          --imgOper.Remove( PhotoName .. ".jpg", system.DocumentsDirectory  )
@@ -263,21 +264,30 @@ local function networkListener( event )
             DropTableData( 4 )
 
             if (PhotoPickerCheck  == true) then
+                --toast.show("if Photo ".. tostring(PhotoName) .. " " ..  tostring(MemberNo))
                 local Result_Rename = imgOper.reName( PhotoName, MemberNo  )
+                 UploadUserImage( MemberNo )
+                Member_NO_RE_UPLOAD = MemberNo
+                native.setActivityIndicator( true )
+            else
+                timer.performWithDelay( 5000, GosPro )
             end
             
+            --toast.show(tostring(PhotoPickerCheck) .. " " ..  tostring(Result_Rename))
 
+
+            --[[
             if ( Result_Rename == true ) then
                 UploadUserImage( MemberNo )
                 Member_NO_RE_UPLOAD = MemberNo
                 native.setActivityIndicator( true )
-                --toast.show("true " .. MemberNo)
+                toast.show("true " .. MemberNo)
             else
                 
                 timer.performWithDelay( 5000, GosPro )
-                --toast.show("Try again")
+                toast.show("else rename")
             end
-
+            ]]
         else
             native.setActivityIndicator( false )
             ---native.showAlert( "Error","Try again.", { "OK" } )
