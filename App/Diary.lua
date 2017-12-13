@@ -1003,8 +1003,8 @@ function scene:show(event)
 	    TextDesField.font = native.newFont( "Cloud-Light", 16 )
 	    DiaryGroup:insert( TextDesField )
 
-	    Text = display.newImageRect( "Phuket/Diary/text.png", 658/4, 367/4)
-		Text.x = cx + 95
+	    Text = display.newImageRect( "Phuket/Diary/text.png", 807/4, 373/4)
+		Text.x = cx + 115
 		Text.y = cy + 42
 		DiaryGroup:insert( Text )
 

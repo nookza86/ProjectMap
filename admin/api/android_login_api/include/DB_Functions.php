@@ -28,6 +28,7 @@ class DB_Functions {
         $strSubject = "Activate Member Account";
         $strHeader = "Content-type: text/html; charset=windows-874\n"; // or UTF-8 //
         $strHeader .= "From: admin@map.com\nReply-To: admin@map.com";
+        //$strHeader .= "From: admin@hiddenjourney\nReply-To: Hidden Journey";
         $strMessage = "";
         $strMessage .= "Welcome to hidden journey: <br>";
         $strMessage .= "=================================<br>";
