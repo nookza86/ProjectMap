@@ -48,6 +48,8 @@ if(mysqli_num_rows($result) > 0)
                 <th>No.</th>
                 <th>Member No</th>
                 <th>Att no</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
               </tr>
             </thead>
  ';
@@ -61,7 +63,9 @@ if(mysqli_num_rows($result) > 0)
    <tr>
     <td>'.$row["un_id"].'</td>
     <td>'.$row["member_no"].'</td>
-    <td>'.$row["att_no"].'</td>  
+    <td>'.$row["att_no"].'</td> 
+    <td>'.$row["latitude"].'</td>
+    <td>'.$row["longitude"].'</td> 
 
     <td><a href="'.$urlview.'" class="btn btn-info" title="View complete members info" 
             data-toggle="tooltip" >
