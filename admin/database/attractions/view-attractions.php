@@ -57,7 +57,7 @@ include ("$root/admin/inc/navbar.php");?>
 				<form role="form" name="" action="" method="GET">
 				<div class="row">
 				  <div class="col-xs-9"></div>
-				  	<div class="col-xs-4"><img src="<?php echo $rec['att_img']; ?>" alt="..." class="img-rounded"></div>
+				  	<div class="col-xs-4"><img src="<?php echo $rec['att_img']; ?>" alt="..." class="img-thumbnail"></div>
 				  <div class="col-xs-6">
 				  	 No <input class="form-control" name="staffname" type="text" value="<?php echo $rec['att_no']; ?>" ">
 					  Name  <input class="form-control" name="staffname" type="text" value="<?php echo $rec['att_name']; ?>" "> 
